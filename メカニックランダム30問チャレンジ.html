@@ -150,7 +150,9 @@ function renderQ() {
   } else if (ans) {
     html += `<div class="expl">正解：<strong>${q.answer}</strong></div>`;
   }
-  document.getElementById('quiz').innerHTML = html;
+  document.getElementById('quiz');
+  html += '<a href="./index.html" style="display:block;text-align:center;margin-top:16px;padding:12px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.95rem">🏠 ホームへ戻る</a>'
+  .innerHTML = html;
   document.getElementById('nextBtn').textContent = current === quiz.length - 1 ? '結果を見る 📊' : '次へ ▶';
 }
 

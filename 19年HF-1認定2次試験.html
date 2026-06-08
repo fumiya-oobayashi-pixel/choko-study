@@ -6,7 +6,7 @@
 <title>19年HF-1認定2次試験 スマホ問題集</title>
 <style>
 body{margin:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Yu Gothic',Meiryo,sans-serif;color:#111}
-header{position:sticky;top:0;background:#fff;padding:10px 14px;border-bottom:1px solid #ddd;z-index:10}
+header{position:relative;position:sticky;top:0;background:#fff;padding:10px 14px;border-bottom:1px solid #ddd;z-index:10}
 header .title{font-weight:900;font-size:15px;margin-bottom:6px}
 .wrap{max-width:900px;margin:auto;padding:10px 10px 90px}
 .card{background:#fff;border-radius:14px;padding:16px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:10px}
@@ -35,7 +35,7 @@ header .title{font-weight:900;font-size:15px;margin-bottom:6px}
   <div class="title">19年 HF-1認定2次試験</div>
   <div class="bar"><div id="barfill"></div></div>
   <div class="small" id="prog"></div>
-</header>
+<div id="fb-login-badge" style="position:absolute;top:14px;right:14px"></div></header>
 
 <div class="wrap">
   <div class="card" id="quiz"></div>
@@ -51,6 +51,9 @@ header .title{font-weight:900;font-size:15px;margin-bottom:6px}
 const L3=['A','B','C'];
 const L4=['A','B','C','D'];
 const L5=['A','B','C','D','E'];
+const LABELS3=L3;
+const LABELS4=L4;
+const LABELS5=L5;
 const questions = [
   {no:1,section:'問１',label:'(1)',points:3,
    text:'外注依頼の基本業務フローに関する記述として、不適切なものはどれか。',
@@ -248,7 +251,7 @@ function norm(q) {
     var labs = q.o.length <= 3 ? L3 : q.o.length === 4 ? L4 : L5;
     var ch = {};
     q.o.forEach(function(v, i) { ch[labs[i]] = v; });
-    return {no:q.n, section:q.s||'', label:(q.s||'問'+q.n), points:q.p, answer:labs[q.a], stem:q.q, choices:ch, explanation:q.exp||'', invalid:false};
+    return {no:q.n, section:q.s||'', label:(q.s||'問'+q.n), points:q.p, answer:labs[q.a], stem:q.q, choices:ch, explanation:q.exp||'', invalid:false, multi:false, freeAnswer:false};
   }
   if (q.opts !== undefined && Array.isArray(q.opts)) {
     var labs2 = q.labels || L4;
@@ -256,9 +259,10 @@ function norm(q) {
     q.opts.forEach(function(v, i) { if (labs2[i]) ch2[labs2[i]] = v; });
     var sec = q.section || q.s || '';
     var lbl = q.label || (sec ? sec + '(' + (q.no||q.n) + ')' : '問' + (q.no||q.n));
-    return {no:q.no||q.n, section:sec, label:lbl, points:q.pts||q.points||1, answer:labs2[q.ans], stem:q.text||q.stem||q.q||'', choices:ch2, explanation:q.exp||q.explanation||'', invalid:false};
+    var ansVal = Array.isArray(q.ans) ? q.ans.map(function(i){return labs2[i];}).join(',') : labs2[q.ans];
+    return {no:q.no||q.n, section:sec, label:lbl, points:q.pts||q.points||1, answer:ansVal, stem:q.text||q.stem||q.q||'', choices:ch2, explanation:q.exp||q.explanation||'', invalid:false, multi:q.multi||false, freeAnswer:false};
   }
-  return {no:q.no, section:q.section||q.s||'', label:q.label||('問'+q.no), points:q.points||q.pts||1, answer:q.answer, stem:q.stem||q.text||q.q||'', choices:q.choices||{}, explanation:q.explanation||q.exp||'', invalid:q.invalid||false};
+  return {no:q.no, section:q.section||q.s||'', label:q.label||('問'+q.no), points:q.points||q.pts||1, answer:q.answer, stem:q.stem||q.text||q.q||'', choices:q.choices||{}, explanation:q.explanation||q.exp||'', invalid:q.invalid||false, multi:false, freeAnswer:q.freeAnswer||false};
 }
 
 const totalQ = questions.length;
@@ -279,16 +283,25 @@ function render() {
   let html = '';
   if (q.section) html += '<div class="section-badge">'+q.section+'</div>';
   html += '<div class="qtitle">'+q.label+'（'+q.points+'点）</div>';
-  if (q.invalid) html += '<div class="calc-note" style="background:#fff5f5;border-color:#fca5a5;color:#dc2626">⚠️ この問題は試験では無効問題でした</div>';
-  if (isCalc) html += '<div class="calc-note">📝 計算問題 — 電卓使用可</div>';
+  if (q.invalid) html += '<div class="calc-note" style="background:#fff5f5;border-color:#fca5a5;color:#dc2626">⚠️ この問題は試験では無効問題でした（採点対象外）</div>';
+  if (q.freeAnswer) html += '<div class="calc-note" style="background:#eff6ff;border-color:#93c5fd;color:#1d4ed8">📝 記述問題 — 計算して答えを確認してください（採点対象外）</div>';
+  if (q.multi) html += '<div class="calc-note" style="background:#fff7ed;border-color:#fdba74;color:#c2410c">☑️ 複数選択問題（採点対象外）</div>';
+  if (isCalc && !q.freeAnswer) html += '<div class="calc-note">📝 計算問題 — 電卓使用可</div>';
   html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
-  html += '<div class="choices">';
-  choiceKeys.forEach(function(c) {
-    if (!q.choices[c]) return;
-    const sel = ans[q.no] === c ? ' selected' : '';
-    html += '<button class="choice'+sel+'" onclick="selectAns('+q.no+',\'' + c + '\')"><span class="label">'+c+'</span><span>'+q.choices[c]+'</span></button>';
-  });
-  html += '</div>';
+  if (q.freeAnswer) {
+    html += '<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:12px;margin-top:10px">';
+    html += '<div style="font-weight:700;color:#1d4ed8;margin-bottom:6px">正解：'+q.answer+'</div>';
+    if (q.explanation) html += '<div style="color:#333;font-size:14px;line-height:1.6">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+    html += '</div>';
+  } else {
+    html += '<div class="choices">';
+    choiceKeys.forEach(function(c) {
+      if (!q.choices[c]) return;
+      const sel = ans[q.no] === c ? ' selected' : '';
+      html += '<button class="choice'+sel+'" onclick="selectAns('+q.no+',\'' + c + '\')"><span class="label">'+c+'</span><span>'+q.choices[c]+'</span></button>';
+    });
+    html += '</div>';
+  }
   document.getElementById('quiz').innerHTML = html;
   document.getElementById('nextBtn').textContent = idx === totalQ - 1 ? '採点する ✓' : '次へ ▶';
   updateProg();
@@ -302,10 +315,15 @@ function nextQ() { if (idx < totalQ - 1) { idx++; render(); } else { showResult(
 function showResult() {
   let score = 0, max = 0;
   const norms = questions.map(norm);
-  norms.forEach(function(q) { max += q.points; if (ans[q.no] === q.answer) score += q.points; });
+  norms.forEach(function(q) {
+    if (q.invalid || q.freeAnswer || q.multi) return;
+    max += q.points;
+    if (ans[q.no] === q.answer) score += q.points;
+  });
   let html = '<div class="result"><h2>📊 採点結果</h2><div class="score-big">'+score+' / '+max+' 点</div>';
   const sections = {}, secOrder = [];
   norms.forEach(function(q) {
+    if (q.invalid || q.freeAnswer || q.multi) return;
     if (!sections[q.section]) { sections[q.section] = {score:0,max:0}; secOrder.push(q.section); }
     sections[q.section].max += q.points;
     if (ans[q.no] === q.answer) sections[q.section].score += q.points;
@@ -319,6 +337,29 @@ function showResult() {
   let hasMiss = false;
   html += '<h3 style="margin:16px 0 8px;font-size:15px;color:#333">📝 全問解説</h3>';
   norms.forEach(function(q) {
+    if (q.invalid) {
+      html += '<div style="border-left:5px solid #d1d5db;background:#f9fafb;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#6b7280">'+q.label+' ⚠️ 無効問題（採点対象外）</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    if (q.freeAnswer) {
+      html += '<div style="border-left:5px solid #93c5fd;background:#eff6ff;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#1d4ed8">'+q.label+' 📝 記述問題（採点対象外）</div>';
+      html += '<div style="color:#1d4ed8;font-weight:700;margin-bottom:4px">正解：'+q.answer+'</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    if (q.multi) {
+      html += '<div style="border-left:5px solid #fdba74;background:#fff7ed;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#c2410c">'+q.label+' ☑️ 複数選択（採点対象外）</div>';
+      html += '<div style="color:#c2410c;font-weight:700;margin-bottom:4px">正解：'+q.answer+'</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
     const wrong = ans[q.no] !== q.answer;
     if (wrong) hasMiss = true;
     const bc = wrong ? '#dc2626' : '#d1d5db';
@@ -328,7 +369,7 @@ function showResult() {
     html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:'+(wrong?'#dc2626':'#111')+'">'+q.label+(wrong?' ❌':' ✅')+'</div>';
     if (wrong) {
       const myText = q.choices[ans[q.no]] || '';
-      html += '<div style="color:#dc2626;font-weight:700;margin-bottom:2px">あなたの答え：'+( ans[q.no]||'未回答')+(myText ? '　'+myText : '')+'</div>';
+      html += '<div style="color:#dc2626;font-weight:700;margin-bottom:2px">あなたの答え：'+(ans[q.no]||'未回答')+(myText ? '　'+myText : '')+'</div>';
       html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
     } else {
       html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
@@ -342,6 +383,7 @@ function showResult() {
   document.getElementById('nav').style.display = 'none';
   const r = document.getElementById('result');
   r.style.display = 'block';
+  html += '<a href="./index.html" style="display:block;text-align:center;margin-top:16px;padding:12px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.95rem">🏠 ホームへ戻る</a>';
   r.innerHTML = html;
   window.scrollTo(0, 0);
 }
@@ -349,7 +391,9 @@ function showResult() {
 function reviewMistakes() {
   const norms = questions.map(norm);
   for (let i = 0; i < norms.length; i++) {
-    if (ans[norms[i].no] !== norms[i].answer) {
+    const q = norms[i];
+    if (q.invalid || q.freeAnswer || q.multi) continue;
+    if (ans[q.no] !== q.answer) {
       idx = i;
       document.getElementById('quiz').style.display = 'block';
       document.getElementById('nav').style.display = 'flex';
@@ -369,6 +413,73 @@ function resetQuiz() {
 }
 
 render();
+</script>
+
+<script src="./firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, deleteDoc, collection, getDocs, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const SOURCE_KEY = document.title.replace(/[\s　]/g,'_').replace(/[^\w\u3040-\u9FFF]/g,'');
+
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async user => {
+    const badge = document.getElementById('fb-login-badge');
+    if (badge) {
+      if (user) {
+        const name = user.displayName || user.email.split('@')[0];
+        badge.innerHTML = `<a href="./index.html" style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;text-decoration:none">👤 ${name}</a>`;
+      } else {
+        badge.innerHTML = `<a href="./login.html" style="font-size:.72rem;background:rgba(255,255,255,.15);color:white;padding:3px 10px;border-radius:999px;text-decoration:none">ログイン</a>`;
+      }
+    }
+    window._fbUser = user;
+    window._fbDb = db;
+    window._fbSrc = SOURCE_KEY;
+  });
+
+  const _orig = window.selectAns;
+  if (typeof _orig === 'function') {
+    window.selectAns = function(no, choice) {
+      _orig(no, choice);
+      const user = window._fbUser; const db = window._fbDb;
+      if (!user || !db) return;
+      const q = (window.questions||[]).find(q2 => q2.no === no);
+      if (!q) return;
+      const isCorrect = choice === q.answer;
+      const key = window._fbSrc + '_q' + no;
+      if (isCorrect) {
+        deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
+      } else {
+        setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
+          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
+          stem:(q.stem||'').substring(0,120),timestamp:serverTimestamp()
+        },{merge:true}).catch(()=>{});
+      }
+    };
+  }
+
+  const _origResult = window.showResult;
+  if (typeof _origResult === 'function') {
+    window.showResult = function() {
+      _origResult();
+      const user = window._fbUser; const db = window._fbDb;
+      if (!user || !db) return;
+      const norms = (window.questions||[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
+      let correct=0,total=0;
+      norms.forEach(q=>{total+=q.points||3;if(window.ans&&window.ans[q.no]===q.answer)correct+=q.points||3;});
+      setDoc(doc(db,'users',user.uid,'stats',window._fbSrc),{
+        source:window._fbSrc,lastCorrect:correct,lastTotal:total,
+        lastDate:serverTimestamp(),totalAttempts:increment(1)
+      },{merge:true}).catch(()=>{});
+    };
+  }
+} catch(e){ console.warn('Firebase:',e.message); }
 </script>
 </body>
 </html>
