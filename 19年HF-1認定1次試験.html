@@ -647,7 +647,7 @@ try {
       _orig(no, choice);
       const user = window._fbUser; const db = window._fbDb;
       if (!user || !db) return;
-      const q = (window.questions||[]).find(q2 => q2.no === no);
+      const q = (typeof questions!=="undefined"?questions:[]).find(q2 => q2.no === no);
       if (!q) return;
       const isCorrect = choice === q.answer;
       const key = window._fbSrc + '_q' + no;
@@ -672,7 +672,7 @@ try {
       _origResult();
       const user = window._fbUser; const db = window._fbDb;
       if (!user || !db) return;
-      const norms = (window.questions||[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
+      const norms = (typeof questions!=="undefined"?questions:[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
       let correct=0,total=0;
       norms.forEach(q=>{total+=q.points||3;if(window.ans&&window.ans[q.no]===q.answer)correct+=q.points||3;});
       setDoc(doc(db,'users',user.uid,'stats',window._fbSrc),{

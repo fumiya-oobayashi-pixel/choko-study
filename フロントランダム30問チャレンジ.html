@@ -207,7 +207,7 @@ try {
     _orig(i, c);
     const user = window._fbUser; const dbInst = window._fbDb;
     if (!user || !dbInst) return;
-    const q = window.questions ? window.questions[i] : null;
+    const q = (typeof questions!=="undefined") ? questions[i] : null;
     if (!q) return;
     const isCorrect = c === q.answer;
     // sourceはランダムプールのsourceフィールド（例: "25年 1次"）
@@ -231,7 +231,7 @@ try {
       _origResult();
       const user = window._fbUser; const dbInst = window._fbDb;
       if (!user || !dbInst) return;
-      const qs = window.questions || [];
+      const qs = (typeof questions!=="undefined"?questions:[]);
       let correct = 0, total = 0;
       qs.forEach((q, i) => {
         if (q.freeAnswer) return;
@@ -279,7 +279,7 @@ try {
       _orig(no, choice);
       const user = window._fbUser; const db = window._fbDb;
       if (!user || !db) return;
-      const q = (window.questions||[]).find(q2 => q2.no === no);
+      const q = (typeof questions!=="undefined"?questions:[]).find(q2 => q2.no === no);
       if (!q) return;
       const isCorrect = choice === q.answer;
       const key = window._fbSrc + '_q' + no;
@@ -304,7 +304,7 @@ try {
       _origResult();
       const user = window._fbUser; const db = window._fbDb;
       if (!user || !db) return;
-      const norms = (window.questions||[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
+      const norms = (typeof questions!=="undefined"?questions:[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
       let correct=0,total=0;
       norms.forEach(q=>{total+=q.points||3;if(window.ans&&window.ans[q.no]===q.answer)correct+=q.points||3;});
       setDoc(doc(db,'users',user.uid,'stats',window._fbSrc),{
