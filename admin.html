@@ -69,11 +69,16 @@ main{max-width:900px;margin:0 auto;padding:16px}
     <div class="card" id="user-detail" style="display:none">
       <h2 id="user-detail-title">📋 ユーザー詳細</h2>
       <div class="tab-row">
-        <button class="tab-btn active" onclick="showTab('wrong')">間違い問題</button>
+        <button class="tab-btn active" onclick="showTab('wrong')">🔄 復習フォルダ</button>
+        <button class="tab-btn" onclick="showTab('history')">📚 全履歴フォルダ</button>
         <button class="tab-btn" onclick="showTab('stats')">取り組み履歴</button>
       </div>
       <div id="tab-wrong">
         <div class="wrong-list" id="wrong-list"></div>
+      </div>
+      <div id="tab-history" style="display:none">
+        <div id="history-reset-area" style="margin-bottom:10px"></div>
+        <div class="wrong-list" id="history-list"></div>
       </div>
       <div id="tab-stats" style="display:none">
         <table class="stats-table" id="stats-table">
@@ -89,7 +94,7 @@ main{max-width:900px;margin:0 auto;padding:16px}
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
@@ -130,15 +135,16 @@ async function loadAllData() {
       const userData = userDoc.data();
       totalUsers++;
 
-      // Get wrong answers
       const wrongSnap = await getDocs(collection(db, 'users', uid, 'wrongAnswers'));
+      const historySnap = await getDocs(collection(db, 'users', uid, 'wrongHistory'));
       const statsSnap = await getDocs(collection(db, 'users', uid, 'stats'));
 
       const wrongList = wrongSnap.docs.map(d => ({id: d.id, ...d.data()}));
+      const historyList = historySnap.docs.map(d => ({id: d.id, ...d.data()}));
       const statsList = statsSnap.docs.map(d => ({id: d.id, ...d.data()}));
       totalWrong += wrongList.length;
 
-      allUsersData[uid] = { uid, email: userData.email || uid, displayName: userData.displayName || userData.email || uid, wrongList, statsList };
+      allUsersData[uid] = { uid, email: userData.email || uid, displayName: userData.displayName || userData.email || uid, wrongList, historyList, statsList };
 
       const totalAttempts = statsList.reduce((s,x) => s + (x.totalAttempts||0), 0);
 
@@ -149,7 +155,8 @@ async function loadAllData() {
       div.innerHTML = `
         <div class="user-name">👤 ${userData.displayName || userData.email || uid.substring(0,8)}</div>
         <div class="user-meta">${userData.email || ''}</div>
-        <span class="stat-badge red">❌ 間違い ${wrongList.length}問</span>
+        <span class="stat-badge red">❌ 復習 ${wrongList.length}問</span>
+        <span class="stat-badge" style="background:#faf5ff;color:#7e22ce">📚 全履歴 ${historyList.length}問</span>
         <span class="stat-badge">📝 ${totalAttempts}回受験</span>
       `;
       userGrid.appendChild(div);
@@ -189,6 +196,7 @@ window.showUser = function(uid) {
   document.getElementById('user-detail-title').textContent = `📋 ${data.displayName || data.email} の詳細`;
 
   renderWrongList(data.wrongList);
+  renderHistoryList(data.historyList, uid);
   renderStatsList(data.statsList);
   showTab('wrong');
   document.getElementById('user-detail').scrollIntoView({ behavior: 'smooth' });
@@ -232,12 +240,47 @@ function renderStatsList(statsList) {
   }).join('');
 }
 
+function renderHistoryList(historyList, uid) {
+  const el = document.getElementById('history-list');
+  const resetArea = document.getElementById('history-reset-area');
+  if (!historyList || !historyList.length) {
+    el.innerHTML = '<div class="empty">全履歴なし</div>';
+    resetArea.innerHTML = '';
+    return;
+  }
+  resetArea.innerHTML = `<button onclick="resetHistory('${uid}')" style="padding:8px 16px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">🗑️ このユーザーの全履歴をリセット</button>`;
+  historyList.sort((a,b) => (b.firstWrong?.seconds||0)-(a.firstWrong?.seconds||0));
+  el.innerHTML = historyList.map(w => `
+    <div class="wrong-item" style="background:#faf5ff;border:1px solid #e9d5ff">
+      <div class="wi-label" style="color:#7e22ce">📚 ${w.label||'Q'+w.qNo}</div>
+      <div class="wi-stem">${w.stem||''}</div>
+      <div class="wi-source">📁 ${w.source||''}</div>
+    </div>`).join('');
+}
+
+window.resetHistory = async function(uid) {
+  if (!confirm('このユーザーの全履歴フォルダをリセットしますか？\n（復習フォルダはそのまま残ります）')) return;
+  const data = allUsersData[uid];
+  if (!data || !data.historyList) return;
+  try {
+    for (const item of data.historyList) {
+      await deleteDoc(doc(db, 'users', uid, 'wrongHistory', item.id));
+    }
+    data.historyList = [];
+    renderHistoryList([], uid);
+    alert('リセット完了しました');
+  } catch(e) {
+    alert('エラー: ' + e.message);
+  }
+};
+
 window.showTab = function(tab) {
   document.querySelectorAll('.tab-btn').forEach((b,i) => {
-    const tabs = ['wrong','stats'];
+    const tabs = ['wrong','history','stats'];
     b.classList.toggle('active', tabs[i] === tab);
   });
   document.getElementById('tab-wrong').style.display = tab === 'wrong' ? '' : 'none';
+  document.getElementById('tab-history').style.display = tab === 'history' ? '' : 'none';
   document.getElementById('tab-stats').style.display = tab === 'stats' ? '' : 'none';
 };
 </script>

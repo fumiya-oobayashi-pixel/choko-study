@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ちょこスタ マイページ</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f1f5f9;font-family:'Hiragino Sans','Meiryo',sans-serif;color:#1e293b;min-height:100vh}
+header{background:linear-gradient(135deg,#1e3a5f,#2d5a8e);color:white;padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+header h1{font-size:1.1rem;font-weight:900}
+.home-btn{padding:6px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;border-radius:8px;text-decoration:none;font-size:.8rem;font-weight:700}
+main{max-width:900px;margin:0 auto;padding:16px}
+.card{background:white;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:14px}
+.card h2{font-size:.95rem;font-weight:700;color:#1e3a5f;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:6px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.stat-box{background:#f8fafc;border-radius:10px;padding:14px;text-align:center}
+.stat-num{font-size:1.8rem;font-weight:900;color:#1e3a5f}
+.stat-label{font-size:.75rem;color:#64748b;margin-top:2px}
+.stat-num.red{color:#dc2626}
+.stat-num.green{color:#059669}
+.chart-wrap{position:relative;max-width:500px;margin:0 auto}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tab{padding:6px 14px;border:2px solid #e2e8f0;border-radius:20px;font-size:.8rem;font-weight:700;cursor:pointer;background:white;color:#64748b;font-family:inherit;transition:.15s}
+.tab.active{border-color:#1e3a5f;background:#eff6ff;color:#1e3a5f}
+.folder-tabs{display:flex;gap:0;margin-bottom:12px;border-radius:10px;overflow:hidden;border:2px solid #e2e8f0}
+.folder-tab{flex:1;padding:10px;border:none;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;background:white;color:#64748b;transition:.15s}
+.folder-tab.active.review{background:#fef3c7;color:#b45309;border-bottom:3px solid #f59e0b}
+.folder-tab.active.history{background:#fdf2f8;color:#7e22ce;border-bottom:3px solid #9333ea}
+.wrong-list{display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto}
+.wrong-item{border-radius:8px;padding:10px 12px}
+.wrong-item.review{background:#fff5f5;border:1px solid #fecaca}
+.wrong-item.history{background:#faf5ff;border:1px solid #e9d5ff}
+.wi-label{font-size:.75rem;font-weight:700;margin-bottom:2px}
+.wi-label.review{color:#dc2626}
+.wi-label.history{color:#7e22ce}
+.wi-stem{font-size:.85rem;color:#374151;line-height:1.5}
+.wi-src{font-size:.7rem;color:#64748b;margin-top:3px}
+.perf-list{display:flex;flex-direction:column;gap:6px}
+.perf-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f8fafc;border-radius:8px}
+.perf-source{font-size:.82rem;font-weight:700;flex:1;color:#1e293b}
+.perf-bar-wrap{width:140px;background:#e2e8f0;border-radius:999px;height:8px;overflow:hidden}
+.perf-bar{height:100%;border-radius:999px;transition:width .3s}
+.perf-pct{font-size:.78rem;font-weight:700;min-width:38px;text-align:right}
+.empty{text-align:center;color:#94a3b8;padding:24px;font-size:.9rem}
+.loading{text-align:center;color:#64748b;padding:24px}
+.no-login{text-align:center;padding:60px 20px}
+.no-login .icon{font-size:3rem;margin-bottom:12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>📊 マイページ</h1>
+  <a href="./index.html" class="home-btn">🏠 ホーム</a>
+</header>
+
+<main>
+  <div class="loading" id="loading">読み込み中...</div>
+  <div id="no-login" class="no-login" style="display:none">
+    <div class="icon">🔒</div>
+    <div style="font-weight:700;font-size:1.1rem;margin-bottom:8px">ログインが必要です</div>
+    <a href="./login.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700">ログインする</a>
+  </div>
+  <div id="content" style="display:none">
+
+    <div class="card">
+      <h2>📈 あなたの記録</h2>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num" id="total-attempts">0</div><div class="stat-label">総受験回数</div></div>
+        <div class="stat-box"><div class="stat-num red" id="wrong-count">0</div><div class="stat-label">復習フォルダ</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#7e22ce" id="history-count">0</div><div class="stat-label">全履歴フォルダ</div></div>
+        <div class="stat-box"><div class="stat-num green" id="best-pct">-</div><div class="stat-label">最高正答率</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📉 試験別 正答率</h2>
+      <div class="tabs">
+        <button class="tab active" onclick="showChart(this,'hs1')">HS-1</button>
+        <button class="tab" onclick="showChart(this,'mechanic')">メカニック</button>
+        <button class="tab" onclick="showChart(this,'front')">フロント</button>
+        <button class="tab" onclick="showChart(this,'all')">すべて</button>
+      </div>
+      <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h2>📋 試験別 詳細</h2>
+      <div class="perf-list" id="perf-list"></div>
+    </div>
+
+    <div class="card">
+      <h2>📁 間違い問題フォルダ</h2>
+      <div class="folder-tabs">
+        <button class="folder-tab review active" onclick="showFolder(this,'review')">🔄 復習フォルダ（正解で消える）<span id="review-badge"></span></button>
+        <button class="folder-tab history" onclick="showFolder(this,'history')">📚 全履歴フォルダ（永久記録）<span id="history-badge"></span></button>
+      </div>
+      <div id="folder-review">
+        <div class="wrong-list" id="wrong-list-review"><div class="empty">間違い問題なし！</div></div>
+      </div>
+      <div id="folder-history" style="display:none">
+        <div class="wrong-list" id="wrong-list-history"><div class="empty">履歴なし</div></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="./firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const app = initializeApp(FIREBASE_CONFIG);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let allStats=[], allWrong=[], allHistory=[], radarChart=null;
+
+const CAT = {
+  hs1:{keys:['HS-1','HS1','HS_1']},
+  mechanic:{keys:['メカニック','Mechanic','新人','エンジニア']},
+  front:{keys:['HF','フロント','Front','フロント']},
+};
+
+onAuthStateChanged(auth, async user => {
+  document.getElementById('loading').style.display='none';
+  if(!user){document.getElementById('no-login').style.display='block';return;}
+  document.getElementById('content').style.display='block';
+  const [ws,hs,ss]=await Promise.all([
+    getDocs(collection(db,'users',user.uid,'wrongAnswers')),
+    getDocs(collection(db,'users',user.uid,'wrongHistory')),
+    getDocs(collection(db,'users',user.uid,'stats')),
+  ]).catch(()=>[{docs:[]},{docs:[]},{docs:[]}]);
+  allWrong=(ws.docs||[]).map(d=>({id:d.id,...d.data()}));
+  allHistory=(hs.docs||[]).map(d=>({id:d.id,...d.data()}));
+  allStats=(ss.docs||[]).map(d=>({id:d.id,...d.data()}));
+  render();
+});
+
+function render(){
+  const tot=allStats.reduce((s,x)=>s+(x.totalAttempts||0),0);
+  const best=allStats.length?Math.max(...allStats.map(s=>s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0)):0;
+  document.getElementById('total-attempts').textContent=tot;
+  document.getElementById('wrong-count').textContent=allWrong.length;
+  document.getElementById('history-count').textContent=allHistory.length;
+  document.getElementById('best-pct').textContent=best?best+'%':'-';
+  document.getElementById('review-badge').textContent=' ('+allWrong.length+'問)';
+  document.getElementById('history-badge').textContent=' ('+allHistory.length+'問)';
+
+  renderWrongList('wrong-list-review', allWrong, 'review');
+  renderWrongList('wrong-list-history', allHistory, 'history');
+  renderPerfList();
+  showChartData('hs1');
+}
+
+function renderWrongList(elId, list, type){
+  const el=document.getElementById(elId);
+  if(!list.length){el.innerHTML='<div class="empty">'+(type==='review'?'✅ 間違い問題なし！':'まだ履歴なし')+'</div>';return;}
+  const sorted=[...list].sort((a,b)=>(b.timestamp?.seconds||b.firstWrong?.seconds||0)-(a.timestamp?.seconds||a.firstWrong?.seconds||0));
+  el.innerHTML=sorted.map(w=>`
+    <div class="wrong-item ${type}">
+      <div class="wi-label ${type}">${type==='review'?'❌':'📚'} ${w.label||'Q'+w.qNo}</div>
+      <div class="wi-stem">${w.stem||''}</div>
+      <div class="wi-src">📁 ${w.source||''}</div>
+    </div>`).join('');
+}
+
+function renderPerfList(){
+  const el=document.getElementById('perf-list');
+  if(!allStats.length){el.innerHTML='<div class="empty">受験データなし</div>';return;}
+  const sorted=[...allStats].sort((a,b)=>(b.lastDate?.seconds||0)-(a.lastDate?.seconds||0));
+  el.innerHTML=sorted.map(s=>{
+    const pct=s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0;
+    const color=pct>=70?'#059669':pct>=50?'#f59e0b':'#dc2626';
+    return `<div class="perf-item">
+      <div class="perf-source">${s.source||s.id}</div>
+      <div class="perf-bar-wrap"><div class="perf-bar" style="width:${pct}%;background:${color}"></div></div>
+      <div class="perf-pct" style="color:${color}">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+window.showChart=function(btn, type){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  showChartData(type);
+};
+
+function showChartData(type){
+  let filtered=allStats;
+  if(type!=='all'){
+    const cat=CAT[type];
+    if(cat) filtered=allStats.filter(s=>cat.keys.some(k=>(s.source||s.id).includes(k)));
+  }
+  const ctx=document.getElementById('radarChart');
+  if(radarChart){radarChart.destroy();radarChart=null;}
+  if(!filtered.length){ctx.parentElement.innerHTML='<div class="empty">データなし</div>';return;}
+  const labels=filtered.map(s=>(s.source||s.id).replace(/_/g,' ').substring(0,12));
+  const data=filtered.map(s=>s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0);
+  radarChart=new Chart(ctx,{
+    type:'radar',
+    data:{labels,datasets:[{label:'正答率（%）',data,backgroundColor:'rgba(29,78,216,0.15)',borderColor:'#1d4ed8',borderWidth:2,pointBackgroundColor:'#1d4ed8',pointRadius:4}]},
+    options:{responsive:true,scales:{r:{min:0,max:100,ticks:{stepSize:20}}},plugins:{legend:{position:'bottom'}}}
+  });
+}
+
+window.showFolder=function(btn, type){
+  document.querySelectorAll('.folder-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('folder-review').style.display=type==='review'?'':'none';
+  document.getElementById('folder-history').style.display=type==='history'?'':'none';
+};
+</script>
+</body>
+</html>

@@ -75,29 +75,44 @@ main{padding:14px;max-width:640px;margin:0 auto;}
 <header>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
     <h1>🚛 ちょこスタ</h1>
-    <div id="login-badge"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <a href="./mypage.html" style="font-size:.72rem;background:rgba(255,255,255,.15);color:white;padding:3px 10px;border-radius:999px;text-decoration:none">📊 マイページ</a>
+      <div id="login-badge"></div>
+    </div>
   </div>
   <p>愛知日野自動車　資格試験 問題集</p>
 </header>
 <div class="tabs">
-  <button class="tab-btn mechanic" onclick="showSection('mechanic')"><span class="icon">🔧</span>メカニック</button>
-  <button class="tab-btn front active" onclick="showSection('front')"><span class="icon">📋</span>フロント</button>
+  <button class="tab-btn mechanic active" onclick="showSection('mechanic')"><span class="icon">🔧</span>メカニック</button>
+  <button class="tab-btn front" onclick="showSection('front')"><span class="icon">📋</span>フロント</button>
 </div>
 <main>
-<div class="section" id="section-mechanic">
+<div class="section active" id="section-mechanic">
   <a class="random-banner" href="./メカニックランダム30問チャレンジ.html" target="_blank" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);">
     <span class="rb-icon">🎲</span>
     <div class="rb-body"><div class="rb-title">ランダム 28問＋計算2問チャレンジ</div><div class="rb-sub">19〜25年度 HS-1全問からランダム出題 / 毎回ちがう問題</div></div>
     <span>›</span>
   </a>
   <div class="sub-tabs">
-    <button class="sub-tab hs1 active" onclick="showMecSub('mhs1')">HS-1</button>
-    <button class="sub-tab mec" onclick="showMecSub('mmec')">メカニック</button>
-    <button class="sub-tab shin" onclick="showMecSub('mshin')">新人試験</button>
-    <button class="sub-tab eng" onclick="showMecSub('meng')">エンジニア</button>
+    <button class="sub-tab mec active" onclick="showMecSub('mzenkoku')">全国</button>
+    <button class="sub-tab shin" onclick="showMecSub('mshin')">新人選</button>
+    <button class="sub-tab hs1" onclick="showMecSub('mhs1')">HS-1</button>
+  </div>
+  <!-- 全国 -->
+  <div class="sub-panel active" id="panel-mzenkoku">
+    <div class="sec-label">🔧 全国サービス技術コンクール メカニック</div>
+    <div class="card-list">
+      <a class="qcard mec" href="./2025年度メカニック.html" target="_blank"><span class="qcard-icon">🔧</span><div class="qcard-body"><div class="qcard-title">2025年度　メカニック試験</div><div class="qcard-meta">60問 ／ 150点満点</div></div><span class="qcard-arr">›</span></a>
+      <a class="qcard mec" href="./2024年度メカニック.html" target="_blank"><span class="qcard-icon">🔧</span><div class="qcard-body"><div class="qcard-title">2024年度　メカニック試験</div><div class="qcard-meta">60問 ／ 150点満点</div></div><span class="qcard-arr">›</span></a>
+    </div>
+    <div class="sec-label">🏆 全国サービス技術コンクール エンジニア</div>
+    <div class="card-list">
+      <a class="qcard eng" href="./第49回全国エンジニア.html" target="_blank"><span class="qcard-icon">🏆</span><div class="qcard-body"><div class="qcard-title">第49回　全国大会　エンジニア試験</div><div class="qcard-meta">32問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
+      <a class="qcard eng" href="./第49回支部エンジニア.html" target="_blank"><span class="qcard-icon">🏢</span><div class="qcard-body"><div class="qcard-title">第49回　支部大会　エンジニア試験</div><div class="qcard-meta">47問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
+    </div>
   </div>
   <!-- HS-1 -->
-  <div class="sub-panel active" id="panel-mhs1">
+  <div class="sub-panel" id="panel-mhs1">
     <div class="sec-label">📗 HS-1 認定1次試験</div>
     <div class="card-list">
       <a class="qcard hs1" href="./25年HS-1認定1次試験.html" target="_blank"><span class="qcard-icon">📗</span><div class="qcard-body"><div class="qcard-title">25年度　HS-1 認定1次試験</div><div class="qcard-meta">32問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
@@ -118,15 +133,7 @@ main{padding:14px;max-width:640px;margin:0 auto;}
       <a class="qcard hs1" href="./19年HS-1認定2次試験.html" target="_blank"><span class="qcard-icon">📘</span><div class="qcard-body"><div class="qcard-title">19年度　HS-1 認定2次試験</div><div class="qcard-meta">32問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
     </div>
   </div>
-  <!-- メカニック -->
-  <div class="sub-panel" id="panel-mmec">
-    <div class="sec-label">🔧 全国サービス技術コンクール メカニック</div>
-    <div class="card-list">
-      <a class="qcard mec" href="./2025年度メカニック.html" target="_blank"><span class="qcard-icon">🔧</span><div class="qcard-body"><div class="qcard-title">2025年度　メカニック試験</div><div class="qcard-meta">60問 ／ 150点満点</div></div><span class="qcard-arr">›</span></a>
-      <a class="qcard mec" href="./2024年度メカニック.html" target="_blank"><span class="qcard-icon">🔧</span><div class="qcard-body"><div class="qcard-title">2024年度　メカニック試験</div><div class="qcard-meta">60問 ／ 150点満点</div></div><span class="qcard-arr">›</span></a>
-    </div>
-  </div>
-  <!-- 新人試験 -->
+  <!-- 新人選 -->
   <div class="sub-panel" id="panel-mshin">
     <div class="sec-label">🌱 新人エンジニア試験</div>
     <div class="card-list">
@@ -134,23 +141,15 @@ main{padding:14px;max-width:640px;margin:0 auto;}
       <a class="qcard shin" href="./2023新人試験.html" target="_blank"><span class="qcard-icon">🌱</span><div class="qcard-body"><div class="qcard-title">2023年度　新人エンジニア試験</div><div class="qcard-meta">60問 ／ 150点満点</div></div><span class="qcard-arr">›</span></a>
     </div>
   </div>
-  <!-- エンジニア -->
-  <div class="sub-panel" id="panel-meng">
-    <div class="sec-label">🏆 全国サービス技術コンクール エンジニア</div>
-    <div class="card-list">
-      <a class="qcard eng" href="./第49回全国エンジニア.html" target="_blank"><span class="qcard-icon">🏆</span><div class="qcard-body"><div class="qcard-title">第49回　全国大会　エンジニア試験</div><div class="qcard-meta">32問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
-      <a class="qcard eng" href="./第49回支部エンジニア.html" target="_blank"><span class="qcard-icon">🏢</span><div class="qcard-body"><div class="qcard-title">第49回　支部大会　エンジニア試験</div><div class="qcard-meta">47問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
-    </div>
-  </div>
 </div>
-<div class="section active" id="section-front">
+<div class="section" id="section-front">
   <a class="random-banner" href="./フロントランダム30問チャレンジ.html" target="_blank">
     <span class="rb-icon">🎲</span>
     <div class="rb-body"><div class="rb-title">ランダム 30問＋計算2問チャレンジ</div><div class="rb-sub">全分野からランダム出題 / 毎回ちがう問題</div></div>
     <span>›</span>
   </a>
   <div class="sub-tabs">
-    <button class="sub-tab sf active" onclick="showSub('sf')">フロント資格試験</button>
+    <button class="sub-tab sf active" onclick="showSub('sf')">全国</button>
     <button class="sub-tab s1" onclick="showSub('s1')">HF-1</button>
     <button class="sub-tab s2" onclick="showSub('s2')">HF-2</button>
     <button class="sub-tab s3" onclick="showSub('s3')">HF-3</button>
@@ -225,7 +224,7 @@ function showMecSub(id){
   document.querySelectorAll('#section-mechanic .sub-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('#section-mechanic .sub-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  var map={mhs1:'hs1',mmec:'mec',mshin:'shin',meng:'eng'};
+  var map={mhs1:'hs1',mshin:'shin',mzenkoku:'mec'};
   document.querySelector('#section-mechanic .sub-tab.'+map[id]).classList.add('active');
 }
 document.addEventListener('click',function(e){
@@ -245,7 +244,7 @@ document.addEventListener('click',function(e){
     a.style.opacity='';
   });
 });
-showSection('front');
+showSection('mechanic');
 </script>
 <script src="firebase-config.js"></script>
 <script type="module">

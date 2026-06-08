@@ -176,6 +176,10 @@ function selectAns(idx, key) {
           source: q.source, qNo: q.no, label: q.label,
           stem: q.stem.substring(0,120), timestamp: serverTimestamp()
         }, {merge:true}).catch(()=>{});
+        setDoc(doc(db, 'users', currentUid, 'wrongHistory', wkey), {
+          source: q.source, qNo: q.no, label: q.label,
+          stem: q.stem.substring(0,120), firstWrong: serverTimestamp()
+        }, {merge:true}).catch(()=>{});
       });
     }
   }

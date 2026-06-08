@@ -531,6 +531,10 @@ try {
           source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
           stem:(q.stem||'').substring(0,120),timestamp:serverTimestamp()
         },{merge:true}).catch(()=>{});
+        setDoc(doc(db,'users',user.uid,'wrongHistory',key),{
+          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
+          stem:(q.stem||'').substring(0,120),firstWrong:serverTimestamp()
+        },{merge:true}).catch(()=>{});
       }
     };
   }
