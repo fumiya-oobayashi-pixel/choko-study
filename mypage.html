@@ -194,9 +194,15 @@ function showChartData(type){
     const cat=CAT[type];
     if(cat) filtered=allStats.filter(s=>cat.keys.some(k=>(s.source||s.id).includes(k)));
   }
-  const ctx=document.getElementById('radarChart');
   if(radarChart){radarChart.destroy();radarChart=null;}
-  if(!filtered.length){ctx.parentElement.innerHTML='<div class="empty">データなし</div>';return;}
+  const wrap=document.getElementById('radarChart')?.parentElement||document.querySelector('.chart-wrap');
+  if(!wrap) return;
+  if(!filtered.length){wrap.innerHTML='<div class="empty">データなし</div>';return;}
+  // canvasを再生成（消えている場合に備えて）
+  if(!document.getElementById('radarChart')){
+    const c=document.createElement('canvas');c.id='radarChart';wrap.innerHTML='';wrap.appendChild(c);
+  }
+  const ctx=document.getElementById('radarChart');
   const labels=filtered.map(s=>(s.source||s.id).replace(/_/g,' ').substring(0,12));
   const data=filtered.map(s=>s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0);
   radarChart=new Chart(ctx,{

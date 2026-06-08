@@ -258,10 +258,10 @@ try {
     if (!badge) return;
     if (user) {
       const name = user.displayName || user.email.split('@')[0];
-      const isAdmin = user.email === MASTER_ADMIN_EMAIL;
+      const admin = typeof isAdmin === 'function' ? isAdmin(user.email) : MASTER_ADMIN_EMAILS.includes(user.email);
       badge.innerHTML = `<span style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;display:flex;align-items:center;gap:6px">
         👤 ${name}
-        ${isAdmin ? `<a href="admin.html" style="color:#fde68a;font-weight:700;text-decoration:none">管理</a>` : ''}
+        ${admin ? `<a href="./admin.html" style="background:#fde68a;color:#1e3a5f;font-weight:700;text-decoration:none;padding:2px 8px;border-radius:6px">🔐 管理者</a>` : ''}
         <span style="cursor:pointer;opacity:.7" onclick="(async()=>{await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js').then(({getAuth,signOut})=>signOut(getAuth()));location.reload();})()">ログアウト</span>
       </span>`;
     } else {
