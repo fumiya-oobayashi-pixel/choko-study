@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>18年HF-1認定1次試験 スマホ問題集</title>
+<style>
+body{margin:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Yu Gothic',Meiryo,sans-serif;color:#111}
+header{position:sticky;top:0;background:#fff;padding:10px 14px;border-bottom:1px solid #ddd;z-index:10}
+header .title{font-weight:900;font-size:15px;margin-bottom:6px}
+.wrap{max-width:900px;margin:auto;padding:10px 10px 90px}
+.card{background:#fff;border-radius:14px;padding:16px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:10px}
+.qtitle{font-size:13px;color:#666;font-weight:700;margin-bottom:4px}
+.qstem{font-size:16px;font-weight:700;line-height:1.6;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #eee}
+.choices{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.choice{padding:14px 16px;font-size:15px;font-weight:700;border-radius:12px;border:2px solid #c7d2fe;background:#ffffff;color:#111;text-align:left;line-height:1.5;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.choice .label{min-width:24px;font-size:18px;font-weight:900;color:#6366f1}
+.choice.selected{background:#e8f0ff;border-color:#2563eb}
+.choice.selected .label{color:#2563eb}
+.nav{position:fixed;left:0;right:0;bottom:0;max-width:900px;margin:auto;display:flex;gap:10px;padding:10px 14px;background:#f3f4f6ee;border-top:1px solid #ddd}
+.nav button{flex:1;padding:14px;border:none;border-radius:12px;background:#2563eb;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.nav button.secondary{background:#6b7280}
+.result{background:#fff;border-radius:14px;padding:18px;border:1px solid #ddd}
+.bar{height:8px;background:#ddd;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar div{height:100%;background:#2563eb;transition:width 0.3s;width:0%}
+.small{font-size:12px;color:#666;margin-top:3px}
+.actions{display:grid;gap:10px;margin-top:16px}
+.score-big{font-size:32px;font-weight:900;color:#2563eb;margin:10px 0}
+.section-badge{display:inline-block;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-bottom:8px}
+.calc-note{background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px;font-size:13px;margin-bottom:12px;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <div class="title">18年 HF-1認定1次試験</div>
+  <div class="bar"><div id="barfill"></div></div>
+  <div class="small" id="prog"></div>
+</header>
+
+<div class="wrap">
+  <div class="card" id="quiz"></div>
+  <div id="result" style="display:none"></div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="secondary" onclick="prevQ()">◀ 前へ</button>
+  <button onclick="nextQ()" id="nextBtn">次へ ▶</button>
+</div>
+
+<script>
+const L3=['A','B','C'];
+const L4=['A','B','C','D'];
+const L5=['A','B','C','D','E'];
+const questions = [
+  {
+    no:1, section:'問1', label:'問1(1)', points:3, invalid:false,
+    text:'補給部品の保証規定に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'補給部品の再保証は、最大：初回保証から１年間である。',
+      B:'お客様が直接、日野販売会社又は、指定整備工場で購入した部品については、日野純正部品であっても保証されない。',
+      C:'日野純正部品を他メーカーブランド車に取付けした場合、一切保証を受ける事ができない。',
+      D:'ガラス類については、組付け直後の指摘を除き、保証の適用除外となる。'
+    },
+    answer:'B',
+    explanation:'お客様が日野販売会社または指定整備工場で購入した日野純正部品は、部品保証（一般保証部品に準じた保証）の対象となる。'
+  },
+  {
+    no:2, section:'問1', label:'問1(2)', points:3, invalid:false,
+    text:'車検整備にかかわる概算見積の料金項目に関する記述として、適切なものはどれか。',
+    choices:{
+      A:'お客様ご依頼事項料金は引き取り・納車料、下回り塗装料、検査代行手数料等のことである。',
+      B:'点検・整備料金は基本点検技術料、引取り・納車料、検査代行手数料等のことである。',
+      C:'検査諸費用は自賠責保険料、自動車重量税、検査代行手数料等のことである。',
+      D:'点検・整備料金は基本点検技術料、部品・油脂料、下回り塗装料等のことである。'
+    },
+    answer:'A',
+    explanation:'お客様ご依頼事項料金は引き取り・納車料、下回り塗装料、検査代行手数料等。点検・整備料金は基本点検技術料・部品・油脂料等、検査諸費用は自賠責保険料・自動車重量税等が含まれる。'
+  },
+  {
+    no:3, section:'問1', label:'問1(3)', points:3, invalid:false,
+    text:'保証申請期間に関する記述として、適切なものはどれか。',
+    choices:{
+      A:'一般保証修理（日野車）の保証申請期間は、故障発生日から３０日以内である。',
+      B:'通過車両保証修理（日野車）の保証申請期間は、故障発生日から６０日以内である。',
+      C:'納入前保証修理（日野車）の保証申請期間は、故障発生日から６０日以内である。',
+      D:'保証申請で一部又は全部が否決で、それに異議のある場合の再申請は、故障発生日から６０日以内である。'
+    },
+    answer:'C',
+    explanation:'納入前保証修理（日野車）の保証申請期間は、故障発生日から60日以内。一般保証修理は故障発生日から30日以内が正しい。'
+  },
+  {
+    no:4, section:'問1', label:'問1(4)', points:3, invalid:false,
+    text:'HITOSSⅡお客様照会画面の対応区分に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'適応時間帯の「２」は、夜間のみ適応コードである。',
+      B:'対応区分の「０２」は、不良（Ｂ）客のコードである。',
+      C:'対応区分の「０４」は、条件付き（Ｇ）客のコードである。',
+      D:'適応時間帯の「０」は、共通コードである。'
+    },
+    answer:'A',
+    explanation:'適応時間帯「２」は夜間のみではなく、別の意味を持つコードである（共通コードは「0」）。'
+  },
+  {
+    no:5, section:'問1', label:'問1(5)', points:3, invalid:false,
+    text:'通過車両規定に関する記述として、適切なものはどれか。',
+    choices:{
+      A:'休日とは、元販売会社の休日をいう。',
+      B:'通過車両とは、自社以外の販売会社が販売した車両をいう。（流入車両、登録前車両は含まない）',
+      C:'営業時間外の修理時間は、約３時間／件を目安とする。',
+      D:'平日とは原則、月曜日から土曜日をいう。（但し、各実施販売会社の休業日を除く）'
+    },
+    answer:'D',
+    explanation:'平日とは原則、月曜日から土曜日をいう（実施販売会社の休業日を除く）。休日は実施販売会社の休日をいう。通過車両には流入車両・登録前車両も含む。'
+  },
+  {
+    no:6, section:'問1', label:'問1(6)', points:3, invalid:false,
+    text:'HITOSSⅡで使用する作業ＣＤに関する記述として、適切なものはどれか。',
+    choices:{
+      A:'作業ＣＤで「３１０」から始まる作業ＣＤは、油脂類関係コード。',
+      B:'作業ＣＤで「４００」から始まる作業ＣＤは、サスペンション関係コード。',
+      C:'作業ＣＤで「７００」から始まる作業ＣＤは、電装品関係コード。',
+      D:'作業ＣＤで「６００」から始まる作業ＣＤは、ステアリング関係コード。'
+    },
+    answer:'C',
+    explanation:'700→電装品、310→ブレーキ・アクスル、400→ステアリング、500→サスペンション、600→フレーム・ボデー・キャブ。'
+  },
+  {
+    no:7, section:'問1', label:'問1(7)', points:3, invalid:false,
+    text:'板金修理見積書でキャブ回りの標準的な記載順序として、適切なものはどれか。',
+    choices:{
+      A:'①フロントボデー ②サイドボデー ③リヤボデー ④ルーフ ⑤フロア',
+      B:'①フロントボデー ②フロア ③サイドボデー ④リヤボデー ⑤ルーフ',
+      C:'①フロントボデー ②ルーフ ③フロア ④サイドボデー ⑤リヤボデー',
+      D:'①フロントボデー ②フロア ③ルーフ ④サイドボデー ⑤リヤボデー'
+    },
+    answer:'A',
+    explanation:'キャブ回りの標準的な記載順序：①フロントボデー ②サイドボデー ③リヤボデー ④ルーフ ⑤フロア。'
+  },
+  {
+    no:8, section:'問1', label:'問1(8)', points:3, invalid:false,
+    text:'収入印紙に関する記述として、適切なものはどれか。',
+    choices:{
+      A:'小切手に貼る収入印紙は、記載金額１０万円未満は非課税、１００万円以下は２００円の収入印紙が必要となる。',
+      B:'手形に貼る収入印紙は、記載金額１０万円未満は非課税、１００万円以下は２００円の収入印紙が必要となる。',
+      C:'小切手に貼る収入印紙は、記載金額５万円未満は非課税、１００万円以下は２００円の収入印紙が必要となる。',
+      D:'手形に貼る収入印紙は、記載金額５万円未満は非課税、１００万円以下は２００円の収入印紙が必要となる。'
+    },
+    answer:'B',
+    explanation:'手形は記載金額10万円未満は非課税、100万円以下は200円。小切手は記載金額に関係なく一律200円（一定額以上のみ）。A・Cの「小切手 10万円未満非課税」は誤り。'
+  },
+  {
+    no:9, section:'問1', label:'問1(9)', points:3, invalid:false,
+    text:'整備料金の説明と回収に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'サービス部門で販売する商品は、点検、整備という点検整備作業における「技術の提供」である。',
+      B:'点検・整備の価値をお客様に理解していただけるよう、必要性、効果などをわかりやすくお客様に説明することも、「機能的サービス」の一環である。',
+      C:'無償、有償作業を同時に行う場合、受注の時点で「料金」とその有償、無償についてお客様に説明しておく。',
+      D:'売掛金が回収予定日を過ぎても入金されない場合は、督促状を普通郵便や内容証明付郵便などの手段を講じることも大切である。'
+    },
+    answer:'D',
+    explanation:'点検・整備の価値説明は「機能的サービス」ではなく「説明サービス（ソフト面のサービス）」である。'
+  },
+  {
+    no:10, section:'問1', label:'問1(10)', points:3, invalid:false,
+    text:'領収書に関する記述として、適切なものはどれか。',
+    choices:{
+      A:'領収書そのものには有効期限はない。',
+      B:'領収書そのものには保管期間はない。',
+      C:'領収書の有効期限は１年間。',
+      D:'領収書の保管期間は５年間。'
+    },
+    answer:'A',
+    explanation:'領収書そのものには有効期限はない。商法上の保存期間は10年間、税法上は7年間。'
+  },
+  {
+    no:11, section:'問1', label:'問1(11)', points:3, invalid:false,
+    text:'通過車両の事故車や故障車の保管料に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'修理しないものは、入庫日の翌日から起算し７日間は無料。８日間以上は１日につき小型車は５００円とする。',
+      B:'小型車の修理を実施したものは、元販売会社宛に完成した旨を通知した日の翌日から起算し、７日間は無料。８日間以上は１日につき５００円とする。',
+      C:'保管料の振替割引は行わない。',
+      D:'元販売会社は、車両を預かる販売会社の立場も考慮し、お客様と相談の上、短期間で対応方針を決めるよう努めること。'
+    },
+    answer:'B',
+    explanation:'修理を実施した車両の保管料は、元販売会社への完成通知日翌日から起算し7日間無料。8日間以上は1日につき「300円」（500円ではない）。'
+  },
+  {
+    no:12, section:'問1', label:'問1(12)', points:3, invalid:false,
+    text:'通過車両規定において、事故修理に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'保険外の場合のみ、正式見積書を提出し、修理を実施しないときは見積料金として、見積額の３％を元販売会社に請求できる。',
+      B:'保険外修理の場合、販売会社間相互に協議した見積額によるものとする。',
+      C:'外注作業部品代は、保険査定額の５％を控除する。',
+      D:'部品代は、保険査定額の１０％を控除する。'
+    },
+    answer:'A',
+    explanation:'修理を実施しないときの見積料金3%は、「保険外の場合のみ」ではなく、保険による場合・保険外の場合を問わず請求できる。'
+  },
+  {
+    no:13, section:'問1', label:'問1(13)', points:3, invalid:false,
+    text:'通過車両規定において、元販売会社の支払い方法として、適切なものはどれか。',
+    choices:{
+      A:'支払金額が、１０万円を超える場合は、支払日起算支払月から２ヶ月目の２０日を期限とする自社手形払いとする。',
+      B:'実施販売会社からの請求書は、毎月１５日をもって締め切る。',
+      C:'支払金額は、原則として１５万円以下は、現金払いとする。',
+      D:'元販売会社は締切月の翌月１５日を支払日とする。'
+    },
+    answer:'D',
+    explanation:'元販売会社は締切月の翌月15日を支払日とする。請求書の締め切りは毎月20日。'
+  },
+  {
+    no:14, section:'問1', label:'問1(14)', points:3, invalid:false,
+    text:'通過車両の売上に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'技術料割増が２つ以上の時間帯をまたぐ場合は、販売会社相互間で相談の上、整備料金を決定する。',
+      B:'休日で定時間外（深夜を除く）の技術料割増は、７５％である。',
+      C:'休日で深夜出張（２２：００～翌５：００）の技術料割増は、１００％である。',
+      D:'悪条件の場合は、元販売会社へ事前連絡の上、出張技術料割増を５０％とすることができる。'
+    },
+    answer:'B',
+    explanation:'休日で定時間外（深夜を除く）の技術料割増は「50%」である（75%ではない）。深夜出張は100%増し。'
+  },
+  {
+    no:15, section:'問1', label:'問1(15)', points:3, invalid:false,
+    text:'２０１７年１月発売のリエッセⅡに関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'エンジンイモビライザーを全車標準装備しており、標準キーを含む最大８本（マスター５本、サブ３本）登録することができる。',
+      B:'車両電源１２V化に伴い、バッテリーは並列接続に変更されている。',
+      C:'ＳＲＳエアバッグを運転席に全車標準装備されており、併せてプリテンショナ＋フォースリミッタ付フロントシートアウタベルトＡｓｓｙＲＨを設定されている。',
+      D:'ＥＳスタートはＭ／Ｔ車全車に標準装備されている。'
+    },
+    answer:'D',
+    explanation:'ESスタートはM/T車「全車」標準装備ではなく、一部設定のみとなっている。'
+  },
+  {
+    no:16, section:'問1', label:'問1(16)', points:3, invalid:false,
+    text:'２ＤＧ付メルファに関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'エンジンは単段ターボチャージャー搭載のＡ０５Ｃ型エンジンを採用している。',
+      B:'排ガス（後処理）システムには尿素フリーのＤＰＲⅡを採用している。',
+      C:'トランスミッションはＬＸ０６＋ＡＭＴのみの設定となっている。',
+      D:'運転席に電子式ＳＲＳエアバッグ＆プリテンショナ―付シートベルトを採用している。'
+    },
+    answer:'B',
+    explanation:'2DG付メルファの後処理システムはDPRⅡではなく、DPR＋尿素SCRシステムを採用している。'
+  },
+  {
+    no:17, section:'問1', label:'問1(17)', points:3, invalid:false,
+    text:'デュトロ（２０１６年モデル以降）のスマートエントリー＆スタートシステムに関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'スマート（電子）キーのキーＩＤコードは、メインキーとサブキー併せて８個まで登録可能である。',
+      B:'一度登録したスマート（電子）キーは、他の車両に登録することはできない。',
+      C:'カスタマイズ機能によりスマートエントリーシステムの、有効と無効を切り替えることができる。',
+      D:'長期駐車時にスマートキーの電池上がりを防止するため、節電機能（節電モード）がある。'
+    },
+    answer:'A',
+    explanation:'スマートキーのキーIDコードはメイン・サブの識別なく、最大「5個」まで登録可能（8個ではない）。'
+  },
+  {
+    no:18, section:'問1', label:'問1(18)', points:3, invalid:false,
+    text:'デュトロ（２０１６年モデル以降）に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'衝突被害軽減ブレーキシステム（ＰＣＳ）は、対向車、歩行者もしくは停止障害物との相対距離を検知して警報ブザーやインジケーターで運転者に注意を促す、または自動的にブレーキを作動させて衝突回避や衝突被害の軽減をします。',
+      B:'車線逸脱警報（ＬＤＷＳ）はカメラセンサーにより前方の車線を検知し、自車線からの逸脱を警報します。',
+      C:'電動パーキングシステムにダイアグが発生している場合、ＤＸⅡで読み出し、消去することができる。',
+      D:'一般用キーレスエントリーシステム装着車のダブルキャブ車のリヤドアにはキーレスシステム専用のカーテシスイッチが設定されており、ルームランプとは連動しない。'
+    },
+    answer:'C',
+    explanation:'電動パーキングシステムのダイアグはDXⅡで読み出しはできるが、消去はできない（TC端子短絡で対応）。'
+  },
+  {
+    no:19, section:'問1', label:'問1(19)', points:3, invalid:false,
+    text:'道路運送車両法に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'自動車使用の本拠に乗車定員１０人以下で車両総重量８トン以上の自家用自動車及び乗車定員１０人以下の自動車運送事業用に供する自動車を５両以上使用している自動車運送業者は整備管理者を選任しなければならない。',
+      B:'三級自動車整備士の資格を取得した者は、整備管理者の資格を有する。',
+      C:'自家用マイクロバスを運行する者は、１日１回、その運行の開始前に日常点検をしなければならない。',
+      D:'自動車が保安基準に適合しなくなるおそれがある状態又は適合しない状態にあるときは、運輸支局長から改善命令を受けることがある。'
+    },
+    answer:'D',
+    explanation:'整備命令を行うのは「地方運輸局長」であり、「運輸支局長」ではない。また名称も「改善命令」ではなく「整備命令」が正しい。'
+  },
+  {
+    no:20, section:'問1', label:'問1(20)', points:3, invalid:false,
+    text:'道路運送車両法に照らし、自動車の整備事業に関する記述として、適切なものはどれか。',
+    choices:{
+      A:'法令に違反した自動車分解整備事業者（認証工場）に対して、地方運輸局長が１８０日の業務停止命令を発令した。',
+      B:'自動車分解整備事業の認証の取消しを受けたが、その取消しの日から１年以上経過したので、認証を申請した。',
+      C:'普通自動車分解整備事業で認証を受けた事業者が分解整備を実施できる自動車の種類は、「普通自動車、四輪小型自動車、大型特殊自動車」である。',
+      D:'自動車分解整備事業者は、その事業を廃止したときは、その日から１５日以内に、その旨を地方運輸局長に届け出なければならない。'
+    },
+    answer:'C',
+    explanation:'普通自動車分解整備事業で認証を受けた事業者は「普通自動車、四輪小型自動車、大型特殊自動車」の分解整備を実施できる。業務停止は90日以内が上限。認証取消後の再申請は2年以上経過後。廃止届けは30日以内。'
+  },
+  {
+    no:21, section:'問1', label:'問1(21)', points:3, invalid:true,
+    text:'【問題無効】\n道路運送車両の保安基準に照らし、側方灯及び側方反射器に関する記述として、適切なものはどれか。\n\n（法規の改訂により反射部の条件が変更となったため、全選択肢が不適切となり、問題無効となりました。受験者全員に3点が付与されました。）',
+    choices:{
+      A:'長さ５ｍを超える普通自動車の両側面には、側方灯又は側方反射器を備えなければならない。',
+      B:'側方灯は昼間側方１５０ｍの距離から点灯を確認できるものであること。',
+      C:'側方反射器の反射部は、文字及び三角形以外の形状であること。',
+      D:'側方反射器の反射光の色は、前部又は中央部に備えるものにあっては橙色又は淡黄色であること。'
+    },
+    answer:null,
+    explanation:'この問題は法規の改訂により全ての選択肢が不適切となったため問題無効とされ、受験者全員に3点が付与されました。'
+  },
+  {
+    no:22, section:'問1', label:'問1(22)', points:3, invalid:false,
+    text:'道路運送車両の保安基準に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'燃料タンクの注入口及びガス抜き口は、露出した排気管の開口方向になく、かつ、排気管の開口部から３００ｍｍ以上離れていること、また露出した電気端子及び電気開閉器から２００ｍｍ以上離れている事。',
+      B:'車両総重量が８トン以下の自動車の突入防止装置は、車体後面の構造部が、その平面部の車両中心面に平行な鉛直面による断面の高さが１２０ｍｍ以上あって、その平面部の最外縁が後軸の車輪の最外側の内側１００ｍｍまでの間にある事。',
+      C:'貨物運送普通自動車及び車両総重量が８トン以上の普通車に取り付けられる巻込防止装置は、空車状態において、その下縁の高さが地上４５０ｍｍ以下、その上縁の高さが地上６５０ｍｍ以上となるように取り付けられる事。',
+      D:'普通自動車の車両総重量が３．５トンを超え原動機の最高出力が１５０ｋＷを超えるものについては９９ｄｂ以下、１５０ｋＷ以下のものは９８ｄｂ。車両総重量が３．５トン以下のものは９７ｄｂ以下の構造である事。'
+    },
+    answer:'B',
+    explanation:'突入防止装置の「平面部の最外縁」は後軸の車輪の最外側の内側ではなく、後軸の車輪の最外側まで（またはそれ以上）延びていなければならない。'
+  },
+  {
+    no:23, section:'問1', label:'問1(23)', points:3, invalid:false,
+    text:'日野デュトロメンテナンスパックに関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'対象車両は、新車日野デュトロで、用途は自家用および事業用でメンテナンス付リース車も含む。',
+      B:'加入可能期間は、登録日から新車１，０００ｋｍ点検実施前までになる。',
+      C:'対象車両が事故等により廃車となった場合、中途解約できる。',
+      D:'対象車両を売却・代替した場合には、中途解約できる。'
+    },
+    answer:'A',
+    explanation:'日野デュトロメンテナンスパックの対象は「自家用車に限る」。事業用やメンテナンス付リース車は対象外。'
+  },
+  {
+    no:24, section:'問1', label:'問1(24)', points:3, invalid:false,
+    text:'自動車保険に関する記述として、適切なものはどれか。',
+    choices:{
+      A:'自動車損害賠償責任保険の支払いとして、ケガの場合では１５０万円が限度となっている。',
+      B:'自家用自動車保険は、示談代行サービス付保険で通称Ｂ・Ａ・Ｐのことである。',
+      C:'自動車損害賠償責任保険の支払いとして、後遺障害（第一級）では４，０００万円が限度となっている。',
+      D:'自動車保険は、示談代行サービスのない保険で通称Ｐ・Ａ・Ｐのことである。'
+    },
+    answer:'C',
+    explanation:'自賠責保険の後遺障害第1級（常時介護を要する）の限度額は4,000万円（正しい）。傷害の限度額は120万円。P・A・Pは示談代行サービス付の自家用自動車保険。'
+  },
+  {
+    no:25, section:'問1', label:'問1(25)', points:3, invalid:false,
+    text:'サービス業態集計表に記載されている営業費カバー率の計算式として、適切なものはどれか。',
+    choices:{
+      A:'（整備売上高／総売上高）×１００',
+      B:'（整備売上利益／整備売上高）×１００',
+      C:'（整備売上利益／総売上利益）×１００',
+      D:'（整備売上利益／会社総経費）×１００'
+    },
+    answer:'D',
+    explanation:'営業費カバー率 ＝ 整備売上利益 ÷ 会社総経費 × 100。整備の利益が会社全体の経費をどれだけカバーできるかを示す指標。'
+  },
+  {
+    no:26, section:'問1', label:'問1(26)', points:3, invalid:false,
+    text:'平成２８年排出ガス規制適合車のメンテナンスノート見直しに関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'新規にVSC用電磁弁を、定期交換部品化（２年・ＡＳＳＹ）とし追加した。',
+      B:'ＥＧＲバルブは、定期点検継続＋定期交換推奨部品化（８０万ｋｍごと）とした。',
+      C:'インジェクタは、定期点検継続＋定期交換推奨部品化（５０万ｋｍごと）とした。',
+      D:'新規に排気バイパスバルブを、定期交換推奨部品化（８０万ｋｍごと）とし追加した。'
+    },
+    answer:'C',
+    explanation:'インジェクタは定期交換推奨部品化の対象ではない（定期点検継続品目）。50万kmでの定期交換推奨は誤り。'
+  },
+  {
+    no:27, section:'問1', label:'問1(27)', points:3, invalid:false,
+    text:'安全衛生教育（法令）で定められた特別教育の内容について、不適切なものはどれか。',
+    choices:{
+      A:'研削と石の取り替えまたは試運転',
+      B:'最大荷重１．０トン未満のフォークリフトの運転',
+      C:'可燃性ガス、酸素を用いる金属の溶接、溶断',
+      D:'アーク溶接機を用いる金属の溶接、溶断'
+    },
+    answer:'C',
+    explanation:'可燃性ガス・酸素を用いる溶接・溶断（ガス溶接）は「特別教育」ではなく「技能講習」が必要な作業。アーク溶接は特別教育の対象。'
+  },
+  {
+    no:28, section:'問1', label:'問1(28)', points:3, invalid:false,
+    text:'輪止めの使用方法に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'輪止めは、１対（２個）で使用する。',
+      B:'輪止めは、タイヤに確実に当てる（斜めにかけない）。足で軽く蹴って効いていることを確認する。',
+      C:'輪止めを「かける・外す」は車両誘導者が行う。',
+      D:'輪止めは、明るい色（蛍光テープ）などで目立つようにする。'
+    },
+    answer:'C',
+    explanation:'輪止めを「かける・外す」は「作業者自身」が行う（車両誘導者が行うのではない）。'
+  },
+  {
+    no:29, section:'問1', label:'問1(29)', points:3, invalid:false,
+    text:'廃棄物処理に関する記述として、不適切なものはどれか。',
+    choices:{
+      A:'お客様から廃タイヤの引き取りを求められた場合は、産業廃棄物の収集運搬ならびに中間処分許可を持つ業者を紹介する。',
+      B:'販売会社が自ら引取る場合は、交換品下取りし引取り、廃タイヤ処分料を徴収し有価物として収集運搬、処分契約を結び処理を行なう。',
+      C:'整備部門でのタイヤ交換またはお客様からの引取りにより発生した廃タイヤは、有価物とし売却リサイクルすること。',
+      D:'お客様からの買取りや再生業者等への売却および販売・交換時の同等品の無償下取りは可能。'
+    },
+    answer:'B',
+    explanation:'廃タイヤは「産業廃棄物」として適切に処理する必要がある。「有価物として収集運搬」ではなく、産業廃棄物収集運搬許可を持つ業者による適正処理が必要。'
+  },
+  {
+    no:30, section:'問1', label:'問1(30)', points:3, invalid:false,
+    text:'大規模災害発生時の対応として、不適切なものはどれか。',
+    choices:{
+      A:'社員の安否の確認と居場所（連絡先）を所在確認用社員名簿に基づき調査し、状況を把握する。',
+      B:'被災販売会社（もしくは日野自動車の現地調査班、近隣販売会社）はその被害状況を調査し、速やかに日野自動車に連絡する。',
+      C:'新車、預り車、ユーザ保有車の被害状況から、必要部品の選定を行い、早急に発注する。',
+      D:'車両整備要領に基づき被災車両の整備を行う。冠水による被害の場合は、修理不可とする。'
+    },
+    answer:'D',
+    explanation:'冠水による被害の場合でも、修理不可と一律に判断してはならない。被害状況を確認し、修理可能な場合は整備要領に従い対応する。'
+  },
+  // ===== 問2 =====
+  {
+    no:31, section:'問2', label:'問2(1)', points:5, invalid:false,
+    text:'プロフィアの故障車両がＡ販売会社へ６月１日に入庫したが、Ｂ販売会社からの指示で未修理のまま、６月１１日まで保管をした。\nＢ販売会社へ請求できる保管料（税込）として、適切なものはどれか。',
+    choices:{
+      A:'１，２９６円',
+      B:'１，６２０円',
+      C:'２，１６０円',
+      D:'２，９１６円',
+      E:'３，８８８円'
+    },
+    answer:'D',
+    explanation:'入庫日翌日(6/2)から起算し7日間は無料：6/2〜6/8\n有料期間：6/9、6/10、6/11 ＝ 3日間\n3日 × 900円 ＝ 2,700円\n消費税（8%）：2,700 × 1.08 ＝ 2,916円'
+  },
+  {
+    no:32, section:'問2', label:'問2(2)', points:5, invalid:false,
+    text:'２０１８年３月、平日の２３時頃、Ａ販売会社からエンジン始動不良（他メーカー車両）のバッテリー交換（２個）の広域サービス対応依頼が入ったため、Ｂ販売会社のサービスエンジニアが１３ｋｍ先の故障車両までサービスカーで出動した。\nＡ販売会社への請求金額を（消費税込み）で計算した場合、適切なものはどれか。\n\n部品代（純正ＰＢバッテリー原価） 13,500円（１個）\n標準作業時間（バッテリー交換） 0.5時間\nＡ販売会社の工賃レート 9,500円\nＢ販売会社の工賃レート 9,000円',
+    choices:{
+      A:'６０，６７４円',
+      B:'６６，０７４円',
+      C:'７１，１８０円',
+      D:'７１，４７４円',
+      E:'７６，８７４円'
+    },
+    answer:'E',
+    explanation:'答え：E（76,874円）\n\n内訳（平日深夜・他メーカー車）：\n・技術料（B社レート）：9,000×0.5h=4,500円、深夜100%割増=9,000円\n・バッテリー（PB原価×1.2）：13,500×1.2×2個=32,400円\n・サービスカー（13km）：6,000+3×400=7,200円、深夜25%割増=9,000円\n・特別対応料（深夜）：10,000+5,000=15,000円\n・消費税8%適用\n※詳細計算は解答用紙参照'
+  }
+];
+
+function norm(q) {
+  if (q.o !== undefined && Array.isArray(q.o)) {
+    var labs = q.o.length <= 3 ? L3 : q.o.length === 4 ? L4 : L5;
+    var ch = {};
+    q.o.forEach(function(v, i) { ch[labs[i]] = v; });
+    return {no:q.n, section:q.s||'', label:(q.s||'問'+q.n), points:q.p, answer:labs[q.a], stem:q.q, choices:ch, explanation:q.exp||'', invalid:false};
+  }
+  if (q.opts !== undefined && Array.isArray(q.opts)) {
+    var labs2 = q.labels || L4;
+    var ch2 = {};
+    q.opts.forEach(function(v, i) { if (labs2[i]) ch2[labs2[i]] = v; });
+    var sec = q.section || q.s || '';
+    var lbl = q.label || (sec ? sec + '(' + (q.no||q.n) + ')' : '問' + (q.no||q.n));
+    return {no:q.no||q.n, section:sec, label:lbl, points:q.pts||q.points||1, answer:labs2[q.ans], stem:q.text||q.stem||q.q||'', choices:ch2, explanation:q.exp||q.explanation||'', invalid:false};
+  }
+  return {no:q.no, section:q.section||q.s||'', label:q.label||('問'+q.no), points:q.points||q.pts||1, answer:q.answer, stem:q.stem||q.text||q.q||'', choices:q.choices||{}, explanation:q.explanation||q.exp||'', invalid:q.invalid||false};
+}
+
+const totalQ = questions.length;
+let idx = 0;
+const ans = {};
+
+function updateProg() {
+  const answered = Object.keys(ans).length;
+  document.getElementById('barfill').style.width = (answered/totalQ*100)+'%';
+  document.getElementById('prog').textContent = (idx+1)+' / '+totalQ+' 問  （回答済み '+answered+' 問）';
+}
+
+function render() {
+  const _q = questions[idx];
+  const q = norm(_q);
+  const isCalc = q.section === '問2' || q.section === '問２';
+  const choiceKeys = Object.keys(q.choices);
+  let html = '';
+  if (q.section) html += '<div class="section-badge">'+q.section+'</div>';
+  html += '<div class="qtitle">'+q.label+'（'+q.points+'点）</div>';
+  if (q.invalid) html += '<div class="calc-note" style="background:#fff5f5;border-color:#fca5a5;color:#dc2626">⚠️ この問題は試験では無効問題でした</div>';
+  if (isCalc) html += '<div class="calc-note">📝 計算問題 — 電卓使用可</div>';
+  html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
+  html += '<div class="choices">';
+  choiceKeys.forEach(function(c) {
+    if (!q.choices[c]) return;
+    const sel = ans[q.no] === c ? ' selected' : '';
+    html += '<button class="choice'+sel+'" onclick="selectAns('+q.no+',\'' + c + '\')"><span class="label">'+c+'</span><span>'+q.choices[c]+'</span></button>';
+  });
+  html += '</div>';
+  document.getElementById('quiz').innerHTML = html;
+  document.getElementById('nextBtn').textContent = idx === totalQ - 1 ? '採点する ✓' : '次へ ▶';
+  updateProg();
+  window.scrollTo(0, 0);
+}
+
+function selectAns(no, c) { ans[no] = c; updateProg(); render(); }
+function prevQ() { if (idx > 0) { idx--; render(); } }
+function nextQ() { if (idx < totalQ - 1) { idx++; render(); } else { showResult(); } }
+
+function showResult() {
+  let score = 0, max = 0;
+  const norms = questions.map(norm);
+  norms.forEach(function(q) { max += q.points; if (ans[q.no] === q.answer) score += q.points; });
+  let html = '<div class="result"><h2>📊 採点結果</h2><div class="score-big">'+score+' / '+max+' 点</div>';
+  const sections = {}, secOrder = [];
+  norms.forEach(function(q) {
+    if (!sections[q.section]) { sections[q.section] = {score:0,max:0}; secOrder.push(q.section); }
+    sections[q.section].max += q.points;
+    if (ans[q.no] === q.answer) sections[q.section].score += q.points;
+  });
+  const vs = secOrder.filter(function(s) { return s; });
+  if (vs.length > 0) {
+    let sh = '<p style="font-size:14px;color:#555">';
+    vs.forEach(function(s) { sh += s+'：'+sections[s].score+'/'+sections[s].max+'点　'; });
+    html += sh + '</p>';
+  }
+  let hasMiss = false;
+  html += '<h3 style="margin:16px 0 8px;font-size:15px;color:#333">📝 全問解説</h3>';
+  norms.forEach(function(q) {
+    const wrong = ans[q.no] !== q.answer;
+    if (wrong) hasMiss = true;
+    const bc = wrong ? '#dc2626' : '#d1d5db';
+    const bg = wrong ? '#fff5f5' : '#fff';
+    const correctText = q.choices[q.answer] || '';
+    html += '<div style="border-left:5px solid '+bc+';background:'+bg+';padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+    html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:'+(wrong?'#dc2626':'#111')+'">'+q.label+(wrong?' ❌':' ✅')+'</div>';
+    if (wrong) {
+      const myText = q.choices[ans[q.no]] || '';
+      html += '<div style="color:#dc2626;font-weight:700;margin-bottom:2px">あなたの答え：'+( ans[q.no]||'未回答')+(myText ? '　'+myText : '')+'</div>';
+      html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
+    } else {
+      html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
+    }
+    if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+    html += '</div>';
+  });
+  if (!hasMiss) html += '<p style="font-size:18px;font-weight:900;color:#16a34a">🎉 全問正解です！</p>';
+  html += '<div class="actions"><button onclick="reviewMistakes()" style="padding:14px;border:none;border-radius:12px;background:#dc2626;color:#fff;font-size:16px;font-weight:700;cursor:pointer">間違えた問題を復習</button><button onclick="resetQuiz()" style="padding:14px;border:none;border-radius:12px;background:#6b7280;color:#fff;font-size:16px;font-weight:700;cursor:pointer">最初からやり直す</button></div></div>';
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('nav').style.display = 'none';
+  const r = document.getElementById('result');
+  r.style.display = 'block';
+  r.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function reviewMistakes() {
+  const norms = questions.map(norm);
+  for (let i = 0; i < norms.length; i++) {
+    if (ans[norms[i].no] !== norms[i].answer) {
+      idx = i;
+      document.getElementById('quiz').style.display = 'block';
+      document.getElementById('nav').style.display = 'flex';
+      document.getElementById('result').style.display = 'none';
+      render(); return;
+    }
+  }
+}
+
+function resetQuiz() {
+  Object.keys(ans).forEach(function(k) { delete ans[k]; });
+  idx = 0;
+  document.getElementById('quiz').style.display = 'block';
+  document.getElementById('nav').style.display = 'flex';
+  document.getElementById('result').style.display = 'none';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

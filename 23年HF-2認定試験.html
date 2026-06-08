@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>23年HF-2認定試験 スマホ問題集</title>
+<style>
+body{margin:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Yu Gothic',Meiryo,sans-serif;color:#111}
+header{position:relative;position:sticky;top:0;background:#fff;padding:10px 14px;border-bottom:1px solid #ddd;z-index:10}
+header .title{font-weight:900;font-size:15px;margin-bottom:6px}
+.wrap{max-width:900px;margin:auto;padding:10px 10px 90px}
+.card{background:#fff;border-radius:14px;padding:16px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:10px}
+.qtitle{font-size:13px;color:#666;font-weight:700;margin-bottom:4px}
+.qstem{font-size:16px;font-weight:700;line-height:1.6;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #eee}
+.choices{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.choice{padding:14px 16px;font-size:15px;font-weight:700;border-radius:12px;border:2px solid #c7d2fe;background:#ffffff;color:#111;text-align:left;line-height:1.5;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.choice .label{min-width:24px;font-size:18px;font-weight:900;color:#6366f1}
+.choice.selected{background:#e8f0ff;border-color:#2563eb}
+.choice.selected .label{color:#2563eb}
+.nav{position:fixed;left:0;right:0;bottom:0;max-width:900px;margin:auto;display:flex;gap:10px;padding:10px 14px;background:#f3f4f6ee;border-top:1px solid #ddd}
+.nav button{flex:1;padding:14px;border:none;border-radius:12px;background:#2563eb;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.nav button.secondary{background:#6b7280}
+.result{background:#fff;border-radius:14px;padding:18px;border:1px solid #ddd}
+.bar{height:8px;background:#ddd;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar div{height:100%;background:#2563eb;transition:width 0.3s;width:0%}
+.small{font-size:12px;color:#666;margin-top:3px}
+.actions{display:grid;gap:10px;margin-top:16px}
+.score-big{font-size:32px;font-weight:900;color:#2563eb;margin:10px 0}
+.section-badge{display:inline-block;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-bottom:8px}
+.calc-note{background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px;font-size:13px;margin-bottom:12px;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <div class="title">2023年度 HF-2 資格認定試験</div>
+  <div class="bar"><div id="barfill"></div></div>
+  <div class="small" id="prog"></div>
+<div id="fb-login-badge" style="position:absolute;top:14px;right:14px"></div></header>
+
+<div class="wrap">
+  <div class="card" id="quiz"></div>
+  <div id="result" style="display:none"></div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="secondary" onclick="prevQ()">◀ 前へ</button>
+  <button onclick="nextQ()" id="nextBtn">次へ ▶</button>
+</div>
+
+<script>
+const L3=['A','B','C'];
+const L4=['A','B','C','D'];
+const L5=['A','B','C','D','E'];
+const LABELS3=L3;
+const LABELS4=L4;
+const LABELS5=L5;
+const questions = [
+  {no:1,pts:3,labels:L3,
+   text:"保証制度に関する記述として、不適切なものはどれか。",
+   opts:["保証制度は、お互いに約束（契約）を守って、正しく運用しなければならない。約束（契約）違反は信頼関係を損ない、重大問題に発展する。","日野自動車製品の取引等に関し、その基本的な事項について、販売会社と日野自動車の代表者間で契約を締結した契約書のことを「日野販売会社基本契約書」と言う。","日野自動車の保証制度は、販売会社・日野自動車がそれぞれの約束を結び、この約束によって成り立っている。"],
+   ans:2, exp:"日野自動車の保証制度は、お客様・販売会社・日野自動車の三者がそれぞれの約束を結び、この約束によって成り立っている。"
+  },
+  {no:2,pts:3,labels:L3,
+   text:"保険処理の事故受付対応に関する記述として、不適切なものはどれか。",
+   opts:["保険で処理するという安心感とお客様への同情心から、お客様の言い分を全面的に信用したりせずに、あくまでも聞き役になる。","お客様は精神的な苦痛を受けているので、事故処理にあたり直接介入し、効率よく相手側と話をすすめる。","事故処理は当事者間で行ってもらい、お客様には保険内容の適切な助言を行う。"],
+   ans:1, exp:"保険処理では前面には立たず、聞き役に徹する。相手側にも必ず言い分があるため、直接介入することは不適切。"
+  },
+  {no:3,pts:3,labels:L3,
+   text:"保証の種類に関する記述として、不適切なものはどれか。",
+   opts:["日野が補給するリンク品の保証は、リンク品保証書に基づき保証修理を行う。","自動車の保証とは日野が出荷する完成車両に対し、日野が発行する保証書に基づいて実施する保証を言う。","汎用エンジンの保証とは、汎用エンジンに添付された保証書に基づく保証を言う。"],
+   ans:0, exp:"リンク品の保証はメーカー内規保証修理に基づく保証を言い、リンク品には保証書はない。"
+  },
+  {no:4,pts:3,labels:L3,
+   text:"小型トラックにおける保証期間の記述として、不適切なものはどれか。",
+   opts:["エグゾースト・パイプマフラ等は一般保証である。","ハロゲン・ランプは保証外である。","ハイブリッド用メインバッテリ（駆動用電池）は架装物等に電源を供給した場合、一般保証である。"],
+   ans:1, exp:"ハロゲン・ランプは保証外ではなく、一般保証の対象である。"
+  },
+  {no:5,pts:3,labels:L3,
+   text:"受付など接客対応に関する記述として、不適切なものはどれか。",
+   opts:["第一印象がそれ以降の対応に重大な影響を及ぼすので、態度、言葉づかい、身だしなみなどには充分注意を払い、お客様に良い印象を与えるように努める。","不具合を訴えているお客様には、いつから、どこが、どんな時に、どのように、など話をよく聞き真意を知ることで自身とお客様の感覚の違いをなくすようにする。","再修理作業について、技術的には同一箇所の再修理作業ではなく同類の故障だった場合、まずは充分に技術的な説明をして再修理ではないことを弁解する必要がある。"],
+   ans:2, exp:"同類の故障が発生するとお客様は再修理と変わらない印象を受ける。まずはお詫びが必要であり、弁解から入ることは不適切。"
+  },
+  {no:6,pts:3,labels:L3,
+   text:"レッカーサービスの実施要領として、不適切なものはどれか。",
+   opts:["本サービスを提供するお客様は、日野販売会社と整備契約を結んでいる顧客の内、優良客および普通客を対象としている。","レッカーサービスの対象となる作業項目は、脱輪等の引き上げ及び自走不可能となった車両の牽引がある。","対象車両は、日野大型・中型・小型トラック／バスであり、他社車両や日野スカニア車については対象外である。"],
+   ans:2, exp:"対象車両は日野大中小型トラック／バス全車およびスカニア車を対象とし、他社車両も対応可能である。"
+  },
+  {no:7,pts:3,labels:L3,
+   text:"通過車両規定の特別対応料および体制維持費に関する記述として、不適切なものはどれか。",
+   opts:["営業時間外に作業をした場合、特別対応料および体制維持費を請求できる。この場合、特別対応料および体制維持費の振り替え割引はしない。","登録前車両の対応時は、特別対応料および体制維持費を保証申請にてメーカーに請求できる。","出張作業の安全確保の為に２名出動を原則とし、時間外の場合は特別対応料を１０，０００円とする。"],
+   ans:1, exp:"登録前車両の対応時は、特別対応料のみ保証申請にてメーカーに申請できる（体制維持費は含まれない）。"
+  },
+  {no:8,pts:3,labels:L3,
+   text:"通過車両規定において、受付時の対応に関する記述として、適切なものはどれか。",
+   opts:["他販売会社のリコール未実施車両が入庫した場合、早急にリコール作業を実施しなければならないので、入庫した販売会社で実施する。","他販売会社のリコール未実施車両が入庫した場合、元販売会社で実施するようにお客様へ伝える。","他販売会社のリコール未実施車両が入庫した場合、元販売会社に連絡し、どちらの販売会社で実施するか相談する。"],
+   ans:2, exp:"他販売会社のリコール未実施車両が入庫した場合、元販売会社に連絡しどちらの販売会社で実施するか相談する。"
+  },
+  {no:9,pts:3,labels:L3,
+   text:"売掛金に関する記述として、適切なものはどれか。",
+   opts:["売掛金は約束日に支払う必要があり、その日に支払わない場合は法的な制裁がある。","売掛金の短期消滅時効は廃止され、以前より時効期間が長くなっている。","売掛金は銀行から融資を受ける場合の担保となる。"],
+   ans:1, exp:"法改正により売掛金の短期消滅時効は廃止され、通常の債権と同じ時効期間となり長くなった。A：法的制裁はない。C：売掛金は担保にならない。"
+  },
+  {no:10,pts:3,labels:L3,
+   text:"領収書に関する記述として、不適切なものはどれか。",
+   opts:["領収書には、日付、宛名、発行者、金額の記入が必ず必要である。","商法上の重要取引で使われた領収書の保管期間は、１０年である。","名刺の裏に必要項目の記載をしたとしても領収書として認められない。"],
+   ans:2, exp:"名刺の裏でも必要事項があれば領収書として認められる。"
+  },
+  {no:11,pts:3,labels:L3,
+   text:"売上・回収に関する記述として、不適切なものはどれか。",
+   opts:["受取手形は６ヶ月に２回、銀行を支払い場所とする約束手形を不渡りにすると銀行取引停止処分を受ける。","小切手とは振出人の取引銀行に対して、受取人に一定額の金額を支払うように委託する有価証券のこと。","ＨＩＴＯＳＳⅡ上のお客様ランクが「６，７」の場合、売上先確認。「８，９」の場合、売上不可が表示される。"],
+   ans:2, exp:"HITOSSⅡのランクは「6、7、8」の場合が売上先確認、「9」の場合が売上不可が表示される。「8」は売上先確認の対象であり、売上不可ではない。"
+  },
+  {no:12,pts:3,labels:L3,
+   text:"通過車両規定の業務処理要領に関する記述として、不適切なものはどれか。",
+   opts:["技術料割増は、実施販売会社の定時間内に作業完了した場合には適用しない。","ＨＩＴＯＳＳⅡに優良客（Ｓ）として登録されていれば、事故修理など突発案件の場合は元販売会社へ確認しなくてもよい。","技術料割増は、悪条件の場合は元販売会社へ事前連絡の上、出張技術料割増を５０％とすることができる。"],
+   ans:1, exp:"優良客（S）として登録されていても、保証修理・事故修理・他メーカー車修理・1件5万円以上になると思われる場合は元販売会社へ確認が必要。"
+  },
+  {no:13,pts:3,labels:L3,
+   text:"通過車両規定において、サービスカー使用料金（税抜）に関する記述として、不適切なものはどれか。\n【基本料金：8,000円、超過：400円/km（片道）、2往復の場合は300円/km、振替控除10%】",
+   opts:["出発地点から到着地点まで、片道１７ｋｍの場合に販売会社間振替料金は１３，３２０円となる。","出発地点から到着地点まで、片道９ｋｍの場合に販売会社間振替料金は９，５２０円となる。","出発地点から到着地点まで、片道で１７ｋｍを２往復した場合に販売会社間振替料金は１６，３８０円となる。"],
+   ans:1, exp:"片道9km：(8,000+400×9)×0.9=10,440円。B は9,520円としているが正しくは10,440円。A：(8,000+400×17)×0.9=13,320円✓　C：(8,000+300×17×2)×0.9=16,380円✓"
+  },
+  {no:14,pts:3,labels:L3,
+   text:"デュトロ ＺＥＶ（ＢＥＶ車）について、不適切なものはどれか。",
+   opts:["ｅＤＡＰは、アクセルペダル１つで加速から停止まで調整することが可能である。","誤発進抑制機能は、前進・後退ともに機能する。","モーター駆動で変速機がないため、走行がスムーズである。"],
+   ans:0, exp:"eDAPは停止まで可能なものではなく、停止にはブレーキ操作が必要。"
+  },
+  {no:15,pts:3,labels:L3,
+   text:"２ＰＧ付レンジャーのＭｙドライブマスターに関する記述として、不適切なものはどれか。",
+   opts:["アクセル警報は、アクセル開度を感知して、おもにラフなアクセルワークを警告する。","シフトアップ警報は、車速を感知して、シフトアップを促す。","長時間アイドリング警報は、アイドリング回転での停車時間が設定時間を超過した場合、アイドルストップを促す。"],
+   ans:1, exp:"シフトアップ警報は「車速」ではなく「エンジン回転数」を感知してシフトアップを促す。"
+  },
+  {no:16,pts:3,labels:L3,
+   text:"２＊Ｇ付メルファ（２０２１年モデル）に関する記述として、不適切なものはどれか。",
+   opts:["ＥＤＳＳが搭載された。","車線逸脱警報が搭載された。","ドライバーモニターⅡが搭載された。"],
+   ans:2, exp:"2021年モデルのメルファにドライバーモニターⅡは搭載されていない。"
+  },
+  {no:17,pts:3,labels:L3,
+   text:"２＊Ｇ付プロフィア（２０１９年モデル）について、不適切なものはどれか。",
+   opts:["ＧＰＳや地図情報などを利用した道路勾配先読み制御を追加した。","追突防止用に誤発進抑制装置が追加された。","衝突事故を未然に防止するためにサイトアラウンドモニターシステム（ＳＡＭＳ）を追加した。"],
+   ans:1, exp:"2019年モデルのプロフィアに誤発進抑制装置は搭載されていない。"
+  },
+  {no:18,pts:3,labels:L3,
+   text:"２＊Ｇ付デュトロのＨＶ車（２０１９年モデル）について、不適切なものはどれか。",
+   opts:["発進時は、モーターのみ走行が可能であり、その際にエンジンは停止している。","定常走行時は、状況によりエンジン走行、パラレル走行、モーター走行を行う。","減速時は、回生機能が作動するが、ＨＶバッテリーの残存容量によっては回生による減速力が低下するので注意が必要である。"],
+   ans:0, exp:"モーター走行時のエンジンはアイドリングで待機している。発進時でもエンジンは停止しているのではなく、アイドリング状態で待機している。"
+  },
+  {no:19,pts:3,labels:L3,
+   text:"道路運送車両法において、自動車の整備事業に関する記述として、適切なものはどれか。",
+   opts:["整備主任者は同一事業者が経営する事業場であれば、他の事業場の整備主任者を兼務することができる。","普通自動車特定整備事業のみの認証を受けた事業場では、四輪の軽自動車の分解整備を行うことはできない。","整備命令は、自動車整備事業者に対し、その実施した整備の状況が不良の場合に出される命令である。"],
+   ans:1, exp:"普通自動車特定整備事業の対象は普通自動車・四輪の小型自動車・大型特殊自動車であり、軽自動車は含まれない。C：整備命令は車両使用者に対して出されるもの。"
+  },
+  {no:20,pts:3,labels:L3,
+   text:"道路運送車両法の一部改正に伴う特定整備の電子制御装置整備に関する記述として、不適切なものはどれか。",
+   opts:["エーミング作業については「静的エーミング」と「動的エーミング」があり、ターゲット等を設置する必要がない「動的エーミング」については、原則として特定整備の対象外である。","電子制御装置点検整備作業場は、他の整備事業者の電子制御装置点検整備作業の共用を可能としている。この共用は、その場所で電子制御装置点検作業以外の従来の分解整備を行うことはできない。","電子制御装置整備対象車両のフロントガラス交換作業を外注で修理業者が自社工場（特定整備認証工場）にて行う場合、修理業者は特定整備事業者の資格が必要である。"],
+   ans:2, exp:"フロントガラス交換作業を外注で行う場合、修理業者は整備士資格も特定整備事業者資格も不要。"
+  },
+  {no:21,pts:3,labels:L3,
+   text:"道路運送車両法において、法令３ヶ月点検を実施しなければならない自動車の種別として、不適切なものはどれか。",
+   opts:["乗車定員１１人の自家用バス","乗車定員１０人以下の乗用の普通、小型、検査対象軽自動車のレンタカー","車両総重量８トンの自家用貨物トラック"],
+   ans:1, exp:"乗車定員10人以下の乗用レンタカーは6ヶ月ごとの定期点検が義務付けられており、3ヶ月点検の対象ではない。"
+  },
+  {no:22,pts:3,labels:L3,
+   text:"保安基準適合証および保安基準適合標章の有効期限として、適切なものはどれか。",
+   opts:["検査員が検査をした日を含み１５日間。","検査員が検査をした日を含み７日間。","検査員が検査をした日を含み３０日間。"],
+   ans:0, exp:"保安基準適合証および保安基準適合標章の有効期間は、検査をした日から15日間である。"
+  },
+  {no:23,pts:3,labels:L3,
+   text:"保険の処理および計算方法に関する記述として、不適切なものはどれか。",
+   opts:["分損とは、事故車が修理可能でしかも車両の修理費が、車の時価よりも低い場合の損害のことをいう。","保険金の限度は１事故ごとに取扱い、保険金が支払われると保険金額が減少する。","自動車保険では一定の枠を設けてそれ以下の損害は支払い対象としないことにしており、免責金額として契約している。"],
+   ans:1, exp:"保険金が支払われても保険金額は減少するものではない。1事故ごとの限度額で管理されるが、支払後に保険金額が減少することはない。"
+  },
+  {no:24,pts:3,labels:L3,
+   text:"自賠責保険に関する記述として、適切なものはどれか。",
+   opts:["自賠責保険で補償されるのは、相手を怪我、または死亡させた場合や、相手の物を破損した場合に、相手の損害賠償に対して保険金が支払われる。自分自身の怪我に対しては保険金は支払われない。","加害者が不誠実であったり、金額面で折り合いがつかずに示談が成立しない場合などには、被害者が損害賠償額を直接、保険会社に支払うよう請求できる。","賠償額の確定までに時間がかかるような場合、被害者は、加害者の加入している保険会社に保険金の前払いを請求することができる。これを仮渡金といい、死亡した者１人につき、３９０万円である。"],
+   ans:1, exp:"A：自賠責保険は物の損害には適用されない。C：仮渡金は死亡した者１人につき290万円（390万円ではない）。B：被害者が直接保険会社に請求できる（被害者請求）は正しい。"
+  },
+  {no:25,pts:3,labels:L3,
+   text:"日野メンテナンスリースに関する記述として、不適切なものはどれか。",
+   opts:["日野が販売する中古の大型・中型・小型トラック（新規導入・日野車）は、メンテナンスリースの受入れが可能である。","本契約締結後の法令の制定、改廃、官公庁の指示・指導に起因する修理、改造、部品の取付、点検整備などはメンテナンスサービスに含まれない。","保守整備契約（Ｒ契約：故障修理契約）については、代車費用も含まれる。"],
+   ans:2, exp:"保守整備契約（R契約：故障修理契約）では、代車費用は含まれない。"
+  },
+  {no:26,pts:3,labels:L3,
+   text:"日野デュトロハイブリッドバッテリー安心パックに関する記述として、適切なものはどれか。",
+   opts:["基本パック（リース以外）は、有効期限５年で価格は３０，０００円になる。","有効期間中、ハイブリッドバッテリーに交換の必要が生じた場合、無料でハイブリッドバッテリーを交換できる（交換工賃別）。","有効期間内である自動車を購入されたお客様は、自動車と証書を最寄りの販売会社にお持ちいただき、手続きを行うことにより継承することができる。"],
+   ans:2, exp:"A：基本パックは有効期限10年で50,000円。B：交換工賃も無料。C：有効期間内の自動車を購入したお客様は証書を持参して手続きにより継承できる（C は正しい）。"
+  },
+  {no:27,pts:3,labels:L3,
+   text:"販売会社整備工場の設備・機器類の検査・点検に関する記述として、不適切なものはどれか。",
+   opts:["始業点検の記録の保存は、１年間である。","定期点検の記録の保存は、２年間である。","定期自主検査の記録の保存は、３年間である。"],
+   ans:1, exp:"記録の保存期間：始業点検は1年、定期点検は1年（2年ではない）、定期自主検査は3年。"
+  },
+  {no:28,pts:3,labels:L3,
+   text:"安全衛生教育（法令）で定められた特別教育の種別について、不適切なものはどれか。",
+   opts:["可燃性ガス、酸素を用いる金属の溶接、溶断","最大荷重１．０トン未満のフォークリフトの運転","研削と石の取り替えまたは試運転"],
+   ans:0, exp:"可燃性ガス、酸素を用いる金属の溶接・溶断については技能講習修了者等の資格が必要であり、特別教育ではなく技能講習の対象。"
+  },
+  {no:29,pts:3,labels:L3,
+   text:"フロント受付時の安全に関する記述について、不適切なものはどれか。",
+   opts:["お客様車両入庫時には、積荷の安全確認を行う。","お客様車両入庫時には、フレーム腐食など作業の安全に支障がないか確認する。","お客様に提示する用事があるなど、すぐに使用する部品はフロントのカウンター内に置くようにしてお待たせしないようにする。"],
+   ans:2, exp:"フロントのカウンター内には部品などを置かない。部品はカウンター内に置いてはいけない。"
+  },
+  {no:30,pts:3,labels:L3,
+   text:"安全の心構えに関する記述として、不適切なものはどれか。",
+   opts:["作業の洗い出しと改善、異常処置時の安全のルール作りを行う。","作業能率を阻害する原因と事故や災害を起こす原因は関連性がない。","自分自身が主体となり自ら考えなければならない。"],
+   ans:1, exp:"作業能率を阻害する原因を掘り下げると大部分は事故や災害を起こす原因となる。両者には大きな関連性がある。"
+  },
+  // 問2 (31-32) 各5点
+  {no:31,pts:5,labels:L5,
+   text:"平日の定時間内にＡ販売会社からエンジン始動不良となった日野車のバッテリー交換（２個）の広域サービス対応依頼が入ったため、Ｂ販売会社のサービスエンジニアが１５ｋｍ先の故障車両までサービスカーで出動した。Ａ販売会社への請求金額を消費税１０％込みで計算した場合、適切なものはどれか。\n（注）答えは小数点以下第一位を四捨五入し、整数とする。\n\n部品代（純正ＰＢバッテリー原価）：１３，５００円（１個）\n標準作業時間（バッテリー交換）：０．５時間\nＡ販売会社の工賃レート：９，５００円\nＢ販売会社の工賃レート：９，０００円\n\n【計算式】\n①技術料：9,000×0.5×1.25（出張）×0.8（技術料控除）＝4,500円\n②部品代：13,500×2個×1.2（振替増し）＝32,400円\n③サービスカー：(8,000＋400×15km)×0.9（振替控除）＝12,600円\n合計：(4,500＋32,400＋12,600)×1.1（消費税）＝54,450円",
+   opts:["４６，５３０円","５２，４７０円","５４，４５０円","５９，５８３円","６２，０１０円"],
+   ans:2, exp:"①技術料4,500＋②部品代32,400＋③サービスカー12,600＝49,500円、税込：49,500×1.1＝54,450円"
+  },
+  {no:32,pts:5,labels:L5,
+   text:"保険による事故修理を実施販売会社が下記内容で行なった。元販売会社への請求金額を消費税１０％込みで計算した場合、適切なものはどれか。\n（注）答えは小数点以下第一位を四捨五入し、整数とする。\n\n実施販売会社の保険査定額（税抜き）\n技術料：３００，０００円\n部品代：１００，０００円\n外注作業技術料：９０，０００円\n外注作業部品代：１００，０００円\n\n【計算式】\n技術料：300,000×0.95（5%控除）＝285,000円\n部品代：100,000×0.90（10%控除）＝90,000円\n外注技術料：90,000×0.95（5%控除）＝85,500円\n外注部品代：100,000×0.95（5%控除）＝95,000円\n合計税抜：555,500円　税込：555,500×1.1＝611,050円",
+   opts:["５５７，５８０円","５８９，５５０円","６１１，０５０円","６３２，８００円","６５０，０００円"],
+   ans:2, exp:"技術料285,000＋部品代90,000＋外注技術料85,500＋外注部品代95,000＝555,500円、税込：555,500×1.1＝611,050円"
+  }
+];
+
+function norm(q) {
+  if (q.o !== undefined && Array.isArray(q.o)) {
+    var labs = q.o.length <= 3 ? L3 : q.o.length === 4 ? L4 : L5;
+    var ch = {};
+    q.o.forEach(function(v, i) { ch[labs[i]] = v; });
+    return {no:q.n, section:q.s||'', label:(q.s||'問'+q.n), points:q.p, answer:labs[q.a], stem:q.q, choices:ch, explanation:q.exp||'', invalid:false, multi:false, freeAnswer:false};
+  }
+  if (q.opts !== undefined && Array.isArray(q.opts)) {
+    var labs2 = q.labels || L4;
+    var ch2 = {};
+    q.opts.forEach(function(v, i) { if (labs2[i]) ch2[labs2[i]] = v; });
+    var sec = q.section || q.s || '';
+    var lbl = q.label || (sec ? sec + '(' + (q.no||q.n) + ')' : '問' + (q.no||q.n));
+    var ansVal = Array.isArray(q.ans) ? q.ans.map(function(i){return labs2[i];}).join(',') : labs2[q.ans];
+    return {no:q.no||q.n, section:sec, label:lbl, points:q.pts||q.points||1, answer:ansVal, stem:q.text||q.stem||q.q||'', choices:ch2, explanation:q.exp||q.explanation||'', invalid:false, multi:q.multi||false, freeAnswer:false};
+  }
+  return {no:q.no, section:q.section||q.s||'', label:q.label||('問'+q.no), points:q.points||q.pts||1, answer:q.answer, stem:q.stem||q.text||q.q||'', choices:q.choices||{}, explanation:q.explanation||q.exp||'', invalid:q.invalid||false, multi:false, freeAnswer:q.freeAnswer||false};
+}
+
+const totalQ = questions.length;
+let idx = 0;
+const ans = {};
+
+function updateProg() {
+  const answered = Object.keys(ans).length;
+  document.getElementById('barfill').style.width = (answered/totalQ*100)+'%';
+  document.getElementById('prog').textContent = (idx+1)+' / '+totalQ+' 問  （回答済み '+answered+' 問）';
+}
+
+function render() {
+  const _q = questions[idx];
+  const q = norm(_q);
+  const isCalc = q.section === '問2' || q.section === '問２';
+  const choiceKeys = Object.keys(q.choices);
+  let html = '';
+  if (q.section) html += '<div class="section-badge">'+q.section+'</div>';
+  html += '<div class="qtitle">'+q.label+'（'+q.points+'点）</div>';
+  if (q.invalid) html += '<div class="calc-note" style="background:#fff5f5;border-color:#fca5a5;color:#dc2626">⚠️ この問題は試験では無効問題でした（採点対象外）</div>';
+  if (q.freeAnswer) html += '<div class="calc-note" style="background:#eff6ff;border-color:#93c5fd;color:#1d4ed8">📝 記述問題 — 計算して答えを確認してください（採点対象外）</div>';
+  if (q.multi) html += '<div class="calc-note" style="background:#fff7ed;border-color:#fdba74;color:#c2410c">☑️ 複数選択問題（採点対象外）</div>';
+  if (isCalc && !q.freeAnswer) html += '<div class="calc-note">📝 計算問題 — 電卓使用可</div>';
+  html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
+  if (q.freeAnswer) {
+    html += '<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:12px;margin-top:10px">';
+    html += '<div style="font-weight:700;color:#1d4ed8;margin-bottom:6px">正解：'+q.answer+'</div>';
+    if (q.explanation) html += '<div style="color:#333;font-size:14px;line-height:1.6">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+    html += '</div>';
+  } else {
+    html += '<div class="choices">';
+    choiceKeys.forEach(function(c) {
+      if (!q.choices[c]) return;
+      const sel = ans[q.no] === c ? ' selected' : '';
+      html += '<button class="choice'+sel+'" onclick="selectAns('+q.no+',\'' + c + '\')"><span class="label">'+c+'</span><span>'+q.choices[c]+'</span></button>';
+    });
+    html += '</div>';
+  }
+  document.getElementById('quiz').innerHTML = html;
+  document.getElementById('nextBtn').textContent = idx === totalQ - 1 ? '採点する ✓' : '次へ ▶';
+  updateProg();
+  window.scrollTo(0, 0);
+}
+
+function selectAns(no, c) { ans[no] = c; updateProg(); render(); }
+function prevQ() { if (idx > 0) { idx--; render(); } }
+function nextQ() { if (idx < totalQ - 1) { idx++; render(); } else { showResult(); } }
+
+function showResult() {
+  let score = 0, max = 0;
+  const norms = questions.map(norm);
+  norms.forEach(function(q) {
+    if (q.invalid || q.freeAnswer || q.multi) return;
+    max += q.points;
+    if (ans[q.no] === q.answer) score += q.points;
+  });
+  let html = '<div class="result"><h2>📊 採点結果</h2><div class="score-big">'+score+' / '+max+' 点</div>';
+  const sections = {}, secOrder = [];
+  norms.forEach(function(q) {
+    if (q.invalid || q.freeAnswer || q.multi) return;
+    if (!sections[q.section]) { sections[q.section] = {score:0,max:0}; secOrder.push(q.section); }
+    sections[q.section].max += q.points;
+    if (ans[q.no] === q.answer) sections[q.section].score += q.points;
+  });
+  const vs = secOrder.filter(function(s) { return s; });
+  if (vs.length > 0) {
+    let sh = '<p style="font-size:14px;color:#555">';
+    vs.forEach(function(s) { sh += s+'：'+sections[s].score+'/'+sections[s].max+'点　'; });
+    html += sh + '</p>';
+  }
+  let hasMiss = false;
+  html += '<h3 style="margin:16px 0 8px;font-size:15px;color:#333">📝 全問解説</h3>';
+  norms.forEach(function(q) {
+    if (q.invalid) {
+      html += '<div style="border-left:5px solid #d1d5db;background:#f9fafb;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#6b7280">'+q.label+' ⚠️ 無効問題（採点対象外）</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    if (q.freeAnswer) {
+      html += '<div style="border-left:5px solid #93c5fd;background:#eff6ff;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#1d4ed8">'+q.label+' 📝 記述問題（採点対象外）</div>';
+      html += '<div style="color:#1d4ed8;font-weight:700;margin-bottom:4px">正解：'+q.answer+'</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    if (q.multi) {
+      html += '<div style="border-left:5px solid #fdba74;background:#fff7ed;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#c2410c">'+q.label+' ☑️ 複数選択（採点対象外）</div>';
+      html += '<div style="color:#c2410c;font-weight:700;margin-bottom:4px">正解：'+q.answer+'</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    const wrong = ans[q.no] !== q.answer;
+    if (wrong) hasMiss = true;
+    const bc = wrong ? '#dc2626' : '#d1d5db';
+    const bg = wrong ? '#fff5f5' : '#fff';
+    const correctText = q.choices[q.answer] || '';
+    html += '<div style="border-left:5px solid '+bc+';background:'+bg+';padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+    html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:'+(wrong?'#dc2626':'#111')+'">'+q.label+(wrong?' ❌':' ✅')+'</div>';
+    if (wrong) {
+      const myText = q.choices[ans[q.no]] || '';
+      html += '<div style="color:#dc2626;font-weight:700;margin-bottom:2px">あなたの答え：'+(ans[q.no]||'未回答')+(myText ? '　'+myText : '')+'</div>';
+      html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
+    } else {
+      html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
+    }
+    if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+    html += '</div>';
+  });
+  if (!hasMiss) html += '<p style="font-size:18px;font-weight:900;color:#16a34a">🎉 全問正解です！</p>';
+  html += '<div class="actions"><button onclick="reviewMistakes()" style="padding:14px;border:none;border-radius:12px;background:#dc2626;color:#fff;font-size:16px;font-weight:700;cursor:pointer">間違えた問題を復習</button><button onclick="resetQuiz()" style="padding:14px;border:none;border-radius:12px;background:#6b7280;color:#fff;font-size:16px;font-weight:700;cursor:pointer">最初からやり直す</button></div></div>';
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('nav').style.display = 'none';
+  const r = document.getElementById('result');
+  r.style.display = 'block';
+  r.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function reviewMistakes() {
+  const norms = questions.map(norm);
+  for (let i = 0; i < norms.length; i++) {
+    const q = norms[i];
+    if (q.invalid || q.freeAnswer || q.multi) continue;
+    if (ans[q.no] !== q.answer) {
+      idx = i;
+      document.getElementById('quiz').style.display = 'block';
+      document.getElementById('nav').style.display = 'flex';
+      document.getElementById('result').style.display = 'none';
+      render(); return;
+    }
+  }
+}
+
+function resetQuiz() {
+  Object.keys(ans).forEach(function(k) { delete ans[k]; });
+  idx = 0;
+  document.getElementById('quiz').style.display = 'block';
+  document.getElementById('nav').style.display = 'flex';
+  document.getElementById('result').style.display = 'none';
+  render();
+}
+
+render();
+</script>
+
+<script src="./firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, deleteDoc, collection, getDocs, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const SOURCE_KEY = document.title.replace(/[\s　]/g,'_').replace(/[^\w\u3040-\u9FFF]/g,'');
+
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async user => {
+    const badge = document.getElementById('fb-login-badge');
+    if (badge) {
+      if (user) {
+        const name = user.displayName || user.email.split('@')[0];
+        badge.innerHTML = `<a href="./index.html" style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;text-decoration:none">👤 ${name}</a>`;
+      } else {
+        badge.innerHTML = `<a href="./login.html" style="font-size:.72rem;background:rgba(255,255,255,.15);color:white;padding:3px 10px;border-radius:999px;text-decoration:none">ログイン</a>`;
+      }
+    }
+    window._fbUser = user;
+    window._fbDb = db;
+    window._fbSrc = SOURCE_KEY;
+  });
+
+  const _orig = window.selectAns;
+  if (typeof _orig === 'function') {
+    window.selectAns = function(no, choice) {
+      _orig(no, choice);
+      const user = window._fbUser; const db = window._fbDb;
+      if (!user || !db) return;
+      const q = (window.questions||[]).find(q2 => q2.no === no);
+      if (!q) return;
+      const isCorrect = choice === q.answer;
+      const key = window._fbSrc + '_q' + no;
+      if (isCorrect) {
+        deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
+      } else {
+        setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
+          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
+          stem:(q.stem||'').substring(0,120),timestamp:serverTimestamp()
+        },{merge:true}).catch(()=>{});
+      }
+    };
+  }
+
+  const _origResult = window.showResult;
+  if (typeof _origResult === 'function') {
+    window.showResult = function() {
+      _origResult();
+      const user = window._fbUser; const db = window._fbDb;
+      if (!user || !db) return;
+      const norms = (window.questions||[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
+      let correct=0,total=0;
+      norms.forEach(q=>{total+=q.points||3;if(window.ans&&window.ans[q.no]===q.answer)correct+=q.points||3;});
+      setDoc(doc(db,'users',user.uid,'stats',window._fbSrc),{
+        source:window._fbSrc,lastCorrect:correct,lastTotal:total,
+        lastDate:serverTimestamp(),totalAttempts:increment(1)
+      },{merge:true}).catch(()=>{});
+    };
+  }
+} catch(e){ console.warn('Firebase:',e.message); }
+</script>
+</body>
+</html>

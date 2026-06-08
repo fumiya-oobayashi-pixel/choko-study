@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ちょこスタ ログイン</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:linear-gradient(135deg,#1e3a5f 0%,#2d5a8e 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Hiragino Sans','Meiryo',sans-serif}
+.card{background:white;border-radius:20px;padding:36px 32px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.logo{text-align:center;margin-bottom:28px}
+.logo h1{font-size:1.8rem;font-weight:900;color:#1e3a5f}
+.logo p{color:#64748b;font-size:.85rem;margin-top:4px}
+label{display:block;font-size:.8rem;font-weight:700;color:#64748b;margin-bottom:4px;margin-top:16px}
+input{width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:1rem;outline:none;transition:.15s;font-family:inherit}
+input:focus{border-color:#2563eb;background:#eff6ff}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#1e3a5f,#2d5a8e);color:white;font-size:1rem;font-weight:700;cursor:pointer;margin-top:24px;font-family:inherit;transition:.15s}
+.btn:hover{opacity:.9;transform:translateY(-1px)}
+.error{background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:10px 12px;border-radius:8px;font-size:.85rem;margin-top:12px;display:none}
+.loading{text-align:center;color:#64748b;padding:10px;display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <h1>🚛 ちょこスタ</h1>
+    <p>愛知日野自動車　資格試験 問題集</p>
+  </div>
+  <div>
+    <label>メールアドレス</label>
+    <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
+    <label>パスワード</label>
+    <input type="password" id="password" placeholder="パスワード" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    <div class="error" id="err"></div>
+    <div class="loading" id="loading">ログイン中...</div>
+    <button class="btn" onclick="login()">ログイン</button>
+  </div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+const app = initializeApp(FIREBASE_CONFIG);
+const auth = getAuth(app);
+window._auth = auth;
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    location.href = 'index.html';
+  }
+});
+
+window.login = async function() {
+  const email = document.getElementById('email').value.trim();
+  const pw = document.getElementById('password').value;
+  const errEl = document.getElementById('err');
+  const loadEl = document.getElementById('loading');
+  errEl.style.display = 'none';
+  loadEl.style.display = 'block';
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+    // onAuthStateChanged will redirect
+  } catch(e) {
+    loadEl.style.display = 'none';
+    let msg = 'ログインに失敗しました';
+    if (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password') msg = 'メールアドレスまたはパスワードが違います';
+    else if (e.code === 'auth/user-not-found') msg = 'ユーザーが見つかりません';
+    else if (e.code === 'auth/too-many-requests') msg = 'ログイン試行が多すぎます。しばらく待ってください';
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+  }
+};
+</script>
+</body>
+</html>

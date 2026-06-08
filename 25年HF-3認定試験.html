@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>25年HF-3認定試験 スマホ問題集</title>
+<style>
+body{margin:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Yu Gothic',Meiryo,sans-serif;color:#111}
+header{position:relative;position:sticky;top:0;background:#fff;padding:10px 14px;border-bottom:1px solid #ddd;z-index:10}
+header .title{font-weight:900;font-size:15px;margin-bottom:6px}
+.wrap{max-width:900px;margin:auto;padding:10px 10px 90px}
+.card{background:#fff;border-radius:14px;padding:16px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:10px}
+.qtitle{font-size:13px;color:#666;font-weight:700;margin-bottom:4px}
+.qstem{font-size:16px;font-weight:700;line-height:1.6;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #eee}
+.choices{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.choice{padding:14px 16px;font-size:15px;font-weight:700;border-radius:12px;border:2px solid #c7d2fe;background:#ffffff;color:#111;text-align:left;line-height:1.5;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.choice .label{min-width:24px;font-size:18px;font-weight:900;color:#6366f1}
+.choice.selected{background:#e8f0ff;border-color:#2563eb}
+.choice.selected .label{color:#2563eb}
+.nav{position:fixed;left:0;right:0;bottom:0;max-width:900px;margin:auto;display:flex;gap:10px;padding:10px 14px;background:#f3f4f6ee;border-top:1px solid #ddd}
+.nav button{flex:1;padding:14px;border:none;border-radius:12px;background:#2563eb;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.nav button.secondary{background:#6b7280}
+.result{background:#fff;border-radius:14px;padding:18px;border:1px solid #ddd}
+.bar{height:8px;background:#ddd;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar div{height:100%;background:#2563eb;transition:width 0.3s;width:0%}
+.small{font-size:12px;color:#666;margin-top:3px}
+.actions{display:grid;gap:10px;margin-top:16px}
+.score-big{font-size:32px;font-weight:900;color:#2563eb;margin:10px 0}
+.section-badge{display:inline-block;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-bottom:8px}
+.calc-note{background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px;font-size:13px;margin-bottom:12px;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <div class="title">2025年度 HF-3 資格認定試験</div>
+  <div class="bar"><div id="barfill"></div></div>
+  <div class="small" id="prog"></div>
+<div id="fb-login-badge" style="position:absolute;top:14px;right:14px"></div></header>
+
+<div class="wrap">
+  <div class="card" id="quiz"></div>
+  <div id="result" style="display:none"></div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="secondary" onclick="prevQ()">◀ 前へ</button>
+  <button onclick="nextQ()" id="nextBtn">次へ ▶</button>
+</div>
+
+<script>
+const L3=['A','B','C'];
+const L4=['A','B','C','D'];
+const L5=['A','B','C','D','E'];
+const LABELS3=L3;
+const LABELS4=L4;
+const LABELS5=L5;
+const questions = [
+  {no:1,pts:3,labels:L3,
+   text:"日野サービスの基本として、適切なものはどれか。",
+   opts:["お客様の期待通りの仕事を提供することが必要である。","お客様が支払う料金には整備代金と接客対応が含まれる。","整備代金などを通常よりも安くお客様に提供することが必要である。"],
+   ans:1, exp:"日野サービスの基本は、無償の行動や価格を安くすることではなく、お客様に信頼・満足していただいて期待を上回る仕事を提供することが最良のサービスと考えている。"
+  },
+  {no:2,pts:3,labels:L3,
+   text:"接客対話の基本に関する記述として、不適切なものはどれか。",
+   opts:["点検・整備を依頼すれば安心だと思われるように正確な仕事を行う必要がある。","対応が良く気持ちいいと思われるように挨拶、態度など言動に対する気配りが必要である。","お客様の立場になって考え、お客様の都合を全て承諾する必要がある。"],
+   ans:2, exp:"お客様の立場になって考え、真剣に対応する必要はあるが、全てそのまま承諾は行き過ぎである。"
+  },
+  {no:3,pts:3,labels:L3,
+   text:"接客対話の基本に関する記述として、適切なものはどれか。",
+   opts:["お客様の要望が理解できない場合は、整理して質問し、意向を確認する。","内容をよく分かってもらうために、専門用語をなるべく使って説明する。","お客様の話しや、言い分をじっくり最後まで聞き、こちらの意見は述べない。"],
+   ans:0, exp:"専門用語ではなく一般的な用語で話し、こちらの意見を述べることも大切。お客様の要望が理解できない場合は整理して質問し確認するのが適切。"
+  },
+  {no:4,pts:3,labels:L3,
+   text:"お客様対応における「お辞儀」に関する記述として、不適切なものはどれか。",
+   opts:["会釈の角度は１５度とされており、一般的にお客様とのすれ違い時に適している。","敬礼の角度は３０度とされており、お客様へのお詫びの際に適している。","最敬礼の角度は４５度とされており、初対面の人への挨拶に適している。"],
+   ans:1, exp:"会釈（15度）＝すれ違い時、敬礼（30度）＝お客様の送迎時、最敬礼（45度）＝お詫びや初対面の挨拶。敬礼はお詫びではなく送迎時に適している。"
+  },
+  {no:5,pts:3,labels:L3,
+   text:"お客様対応に関する記述として、不適切なものはどれか。",
+   opts:["お客様の期待に応えることで、信頼関係を構築することが重要である。","口うるさいお客様には十分な対応を行い、親しいお客様にはそうでない対応を行うような柔軟性が信頼関係を構築する。","サービスに対する期待と結果にギャップが生じると、お客様は不満を持つようになる。"],
+   ans:1, exp:"公平な対応が重要。口うるさいお客様に手厚く、親しいお客様には軽い対応をするのは不公平であり、信頼関係を損なう。"
+  },
+  {no:6,pts:3,labels:L3,
+   text:"お客様への説明方法として、適切なものはどれか。",
+   opts:["完成時間や整備料金について見通しがつかない場合は、具体的な表現は避ける。","分解してみなければ正確なことが分からない場合は、誤解を与えないようにあいまいな表現をしておく。","お客様に技術説明をする場合は、現物や資料を示して説明をする。"],
+   ans:2, exp:"お客様には、あいまいな表現は避け、具体的に現物や資料を見せて説明をする。"
+  },
+  {no:7,pts:3,labels:L3,
+   text:"苦情対応に関する記述として、不適切なものはどれか。",
+   opts:["お客様の話を親身になってよく聞き、その場で対応できることは迅速に実施する。","自分で対応できない時は上司へ相談するまでの間に、その場しのぎの回答を行う。","苦情受付後は、速やかに上司に報告する。"],
+   ans:1, exp:"対応しきれないことは、すぐに上司へ相談する必要はあるが、その場しのぎの回答は避ける。"
+  },
+  {no:8,pts:3,labels:L3,
+   text:"身だしなみに関する記述として、適切なものはどれか。",
+   opts:["フロントスタッフで、Yシャツなどを着用の場合は、裾をズボンに入れる。","メカニックで、つなぎを着用の場合は、安全と通気性のために胸元ファスナーは大きく開けておく。","クールビズで、Yシャツの場合は、肌着が見える程度にボタンを開けると良い。"],
+   ans:0, exp:"どのような立場でも服装が乱れていないかなどの清潔感ある身だしなみが必要。フロントスタッフはYシャツの裾をズボンに入れるのが適切。"
+  },
+  {no:9,pts:3,labels:L3,
+   text:"電話でのお客様対応に関する記述として、不適切なものはどれか。",
+   opts:["かかってきた電話を受けた場合は、まずこちらから会社名と個人名を名乗る。","こちらから電話した場合は、まず相手を確認して、こちらの会社名と個人名を名乗る。","相手に与える印象は大きく、この対応だけで会社全体を判断されてしまう。"],
+   ans:1, exp:"電話をかけた場合でも最初に会社名と個人名を名乗る。相手確認が先という手順は不適切。"
+  },
+  {no:10,pts:3,labels:L3,
+   text:"電話でのお客様対応に関する記述として、不適切なものはどれか。",
+   opts:["電話は相手の都合を一方的に拘束することがあるので、相手のことをよく考える必要がある。","電話では声の調子で印象が決まってしまうので、明るく歯切れの良い話し方をする必要がある。","相手が話している途中で結論が判断できた場合は、相手の都合を考えて話を遮ってでも返答する必要がある。"],
+   ans:2, exp:"早とちりの原因になるので、相手の話は最後まで聞き取る必要がある。話を遮るのは不適切。"
+  },
+  {no:11,pts:3,labels:L3,
+   text:"名刺の受け渡しマナーとして、不適切なものはどれか。",
+   opts:["名刺は、相手より先に立って両手で差し出す。","名前の読みがわからない場合、その名刺にメモ書きする。","名刺の受取は両手で行うが、同時交換の場合は互いに片手で受け渡しする。"],
+   ans:1, exp:"名刺にメモをしてはならない。名刺を受け取ってもすぐにしまわず、丁寧に扱う。名刺は相手より先に出すことを心がける。"
+  },
+  {no:12,pts:3,labels:L3,
+   text:"ビジネス文書に関する記述として、不適切なものはどれか。",
+   opts:["社外宛てで、宛先が会社名のみであれば「各位」を使用し、「○○会社 各位」のように表現する。","敬語を正しく使う必要があり、例として「自分から話す」の場合は「申し上げる」と表現する。","人や会社の呼び方は、自社が「弊社」、相手の会社が「貴社」または「御社」となる。"],
+   ans:0, exp:"会社名のみ宛先であれば「御中」と表現する（「各位」ではない）。「各位」は複数の個人に宛てる場合に使用する。"
+  },
+  {no:13,pts:3,labels:L3,
+   text:"お客様対応に関する記述として、不適切なものはどれか。",
+   opts:["お客様の話は最後までよく聞く必要があり、そのうえでこちらの意見を述べることも大切である。","会話の始めにお客様との距離を縮めるために話題が豊富な政治、宗教、思想に関する話をすると良い。","人は「オットリ型」など、ある程度タイプ別に分かれており、それぞれの対応が必要になる。"],
+   ans:1, exp:"政治・宗教・思想などの話題は対立・摩擦を生む可能性があるため、接客の場では避けるべきである。"
+  },
+  {no:14,pts:3,labels:L3,
+   text:"事故を受け付ける際の対応に関する記述として、適切なものはどれか。",
+   opts:["お客様は事故の処理について心配することが多いので、まず最初に事故の状況を詳しく聞き取る必要がある。","お客様は興奮して当事者と揉めることがあるので、お客様の言い分を理解して整理したうえで、こちらから当事者に伝達する必要がある。","事故処理は当事者間で行ってもらい、保険適用の場合はお客様に保険内容の適切な助言を行うにとどめる。"],
+   ans:2, exp:"事故処理は当事者間で行ってもらい、販売会社はお客様への保険内容の助言にとどめる。直接介入は不適切。"
+  },
+  {no:15,pts:3,labels:L3,
+   text:"受付対応に関する記述として、不適切なものはどれか。",
+   opts:["お客様の出迎えは、大きくハッキリした言葉で挨拶する。","ご用命事項を聞き取る際には、重要な情報だけでなく、ささいなことでもメモをとる。","車両確認時に貴重品があった場合は、フロントの金庫などで一時預かりする。"],
+   ans:2, exp:"貴重品は預からない（トラブル防止のため）。"
+  },
+  {no:16,pts:3,labels:L3,
+   text:"整備料金の説明と回収に関する記述として、不適切なものはどれか。",
+   opts:["有償と無償の作業を同時に行う場合、請求時点で「有償、無償の区別」「料金」を明確に「お客様に説明」しておくことが、「整備料金」の円滑な回収につながる。","サービス部門で販売する商品は点検、整備という機能的サービスすなわち、点検整備作業における「技術の提供」である。","提供する点検、整備の価値を十分理解していただけるよう、わかりやすく「お客様に説明」することも機能的サービスの一環である。"],
+   ans:0, exp:"料金と有償・無償の説明は受注時点（請求時点ではなく）で行う。"
+  },
+  {no:17,pts:3,labels:L3,
+   text:"引渡し、納車時の対応に関する記述として、不適切なものはどれか。",
+   opts:["作業指示書通りの作業が完了しているか、車両は清掃されているか、傷が付かなかったか、搭載物は受付時の通りかなど、お客様の車両を確認する必要がある。","どの部品がどのように不具合があったかを、お客様に分かりやすく説明できるように、取り替えた部品の損傷状態を自分で確認してから廃却する必要がある。","納車時の説明は、お客様からの申し出内容に対する説明のみならず、使用上の注意、この先必要になる整備等のアドバイスをする必要がある。"],
+   ans:1, exp:"交換部品はお客様へ提示し分かりやすく説明した後、お客様の廃却意思の確認後に廃却する。自分で確認後に廃却するのは不適切。"
+  },
+  {no:18,pts:3,labels:L3,
+   text:"見積書に関する記述として、不適切なものはどれか。",
+   opts:["分解しないと追加作業が発生するかどうかがわからないものに関しては、見積れないので請求の段階で金額を伝える。","見積りとは、費用、修理内容、日数などをお客様に理解しやすいように提示するもので、出来る限り正確に見積りを提示し、お客様に納得していただくものである。","見積りを正確なものにするには、受け入れ時のチェックや問診が必要になる。"],
+   ans:0, exp:"わからない作業でも概算であることを伝えて、判明した時点で中間の連絡を行う。請求の段階まで金額を伝えないのは不適切。"
+  },
+  {no:19,pts:3,labels:L3,
+   text:"通過車両の業務処理規定に関する記述として、不適切なものはどれか。",
+   opts:["営業時間外でも出動できるように幹線道路を中心に全国に対応拠点を配置している。","営業時間外での出動では特別対応料を請求できることになっており、他メーカー車でも金額は同じである。","出動は作業の安全確保や連絡のため２名体制を原則としている。"],
+   ans:1, exp:"他メーカー車両の場合は10,000円の割増し請求ができる（他メーカーでも金額は同じという記述は不適切）。"
+  },
+  {no:20,pts:3,labels:L3,
+   text:"通過車両の業務処理規定に関する記述として、不適切なものはどれか。",
+   opts:["元販売会社とは、通過車両を修理対応する際、その車両を販売した販売会社や主幹販売会社など、現在取引のある販売会社を総称していう。","実施販売会社とは、通過車両を修理対応する販売会社をいう。","通過車両とは、自社以外の販売会社が販売した車両や、自社の他拠店が販売した車両を総称していう。"],
+   ans:2, exp:"通過車両とは、自社以外の販売会社が販売した車両をいう。自社の他拠店が販売した車両は含まない。"
+  },
+  {no:21,pts:3,labels:L3,
+   text:"保証制度に関する記述として、不適切なものはどれか。",
+   opts:["販売会社はお客様との売買契約で、保証書に記載されている期間と条件に従って保証修理することを約束している。","販売会社は、お客様より保証に該当する修理を申し受けた場合、一定の要件を満たす時に限り保証修理を断ることができる。","販売会社は日野販売会社基本契約書に基づき、日野自動車に代わって保証修理を実施することを約束している。"],
+   ans:1, exp:"保証に該当する場合、修理は断ることができない。保証修理を断れる例外規定はない。"
+  },
+  {no:22,pts:3,labels:L3,
+   text:"自動車損害賠償責任保険（自賠責保険）に関する記述として、不適切なものはどれか。",
+   opts:["対人と対物への賠償として入る保険。","保険の契約が締結されている車両でなければ運行してはならない。","保険の契約期間は、車検の有効期間を完全にカバーしている必要がある。"],
+   ans:0, exp:"自動車損害賠償保障法により、強制的につけなくてはならない対人賠償のみを担保するもの。対物賠償は含まれない。"
+  },
+  {no:23,pts:3,labels:L3,
+   text:"２＊Ｇ付プロフィア（２０２４年モデル）の安全装置に関する記述として、不適切なものはどれか。",
+   opts:["出会い頭警報（ＦＣＴＡ）は、交差する移動物を検知した場合、ドライバーへ警報を出し、さらに自車前面に衝突する危険性が高まると自動でブレーキを作動させる。","左折巻込み警報（ＢＳＩＳ）は、自車左側方の移動物を検知した場合や左折時に衝突の危険性がある場合にブザー音や表示灯でドライバーへ警報する。","車線変更警報（ＢＳＤ）は、自車左右側方の移動物を検知した場合や車線変更時に衝突の危険性がある場合にブザー音や表示灯でドライバーへ警報する。"],
+   ans:0, exp:"FCTA・BSIS・BSDなどをまとめてSAMSと呼称している。SAMSはいずれも警報のみであり、自動ブレーキは作動しない。"
+  },
+  {no:24,pts:3,labels:L3,
+   text:"排出ガス浄化装置に関する記述として、不適切なものはどれか。",
+   opts:["DPRは、装置内に排出ガス中のPMを捕集し、溜まったPMはフィルター内で燃焼処理を行う。","SCRは、装置内に尿素水を噴射し、排出ガス中のNoｘを分解し、無害なものに変化させる。","EGRは、排気ガスの一部を吸入空気側に戻すことでNoｘとPMを減少させている。"],
+   ans:2, exp:"EGRは、排ガスを戻すことでNOxを減少させる（エンジン内の燃焼温度を下げる）が、PMを減少させるものではない。"
+  },
+  {no:25,pts:3,labels:L3,
+   text:"下請法で定義している親事業者の４つの義務として、不適切なものはどれか。",
+   opts:["発注書面交付の義務","支払日を定める義務","商品受領の義務"],
+   ans:2, exp:"4つの義務は①発注書面の交付義務 ②支払日を定める義務 ③遅延利息を支払う義務 ④書類作成の義務。「商品受領の義務」は含まれない。"
+  },
+  {no:26,pts:3,labels:L3,
+   text:"道路運送車両法に照らし、自動車の整備事業に関する記述として、適切なものはどれか。",
+   opts:["点検または整備の作業を行う事業場は、依頼者に対し、整備の内容と必要性を説明し、料金の概算見積りを交付、または見積もりの電磁的記録を提供しなければならない。","依頼者に対し、行っていない点検／整備の料金を不当に請求してはならないが、依頼されない点検／整備であれば、その料金を請求できる。","点検または整備の作業を行う事業場は、作業に係る料金については見積書にて提示するため、事業場に料金の掲示はしない。"],
+   ans:0, exp:"作業料金は、依頼者の見やすい位置に掲示しなければならない。概算見積りの提供義務はBCとも不適切であり、Aが正しい規定。"
+  },
+  {no:27,pts:3,labels:L3,
+   text:"品質改善に関する記述として、不適切なものはどれか。",
+   opts:["「サービスキャンペーン」とは、リコールや改善対策に該当しない車両の構造・装置の不具合への無償修理処置である。","「改善対策」とは、車両が保安基準に適合しないものの安全確保、公害防止には問題がないと判断した場合に無償修理を実施するものである。","「リコール」とは、車両が保安基準に適合しなくなる場合に、無償修理を実施するものである。"],
+   ans:1, exp:"リコール：保安基準に適合しなくなるおそれがある場合に無料で修理。サービスキャンペーン：リコール・改善対策に該当しない不具合への無償処置。Bの「改善対策」の説明は不適切。"
+  },
+  {no:28,pts:3,labels:L3,
+   text:"職場内の５Ｓに関する記述として、適切なものはどれか。",
+   opts:["整理とは、必要なものがいつでも取り出せて、戻せること。","整頓とは、いるものといらないものを分けて、いらないものを捨てること。","躾（しつけ）とは、決められたことを正しく守る習慣のこと。"],
+   ans:2, exp:"整理とは、いるものといらないものを分けて、いらないものを捨てること。整頓とは、必要なものがいつでも取り出せて戻せること。AとBが逆になっている。躾（C）が正しい。"
+  },
+  {no:29,pts:3,labels:L3,
+   text:"フロント受付時の安全に関する記述について、不適切なものはどれか。",
+   opts:["受付後の車両移動は、自社従業員が行う。","お客様に提示する用事があるなど、すぐに使用する部品はフロントのカウンター内に置くようにしてお待たせしないようにする。","お客様車両入庫時には、積荷の安全確認やフレーム腐食など作業の安全に支障がないか確認する。"],
+   ans:1, exp:"フロントのカウンター内には部品などを置かない（安全のため）。"
+  },
+  {no:30,pts:3,labels:L3,
+   text:"安全の心構えに関する記述として、不適切なものはどれか。",
+   opts:["作業能率を阻害する原因と事故や災害を起こす原因は関連性がない。","作業の洗い出しと改善、異常処置時の安全のルール作りを行う。","自分自身が主体となり自ら考えなければならない。"],
+   ans:0, exp:"作業能率を阻害する原因を掘り下げると大部分は事故や災害を起こす原因となる。「関連性がない」は誤り。"
+  },
+  // 問2
+  {no:31,pts:5,labels:L3,
+   text:"【問２(1)】平日の営業時間内に通過車両のバッテリ交換を下記内容で行った。消費税１０％込みの元販売会社への振替料金として、適切なものはどれか。\n\n技術料：１０，０００円（税抜）\n純正ＰＢバッテリ（原価）：３０，０００円（２個分合計税抜）\nその他部品代（定価）：５，０００円（税抜）\n\n（注）答えは小数点以下第一位を四捨五入し、整数とする。",
+   opts:["４８，２００円","５０，８００円","５２，８００円"],
+   ans:2, exp:"【計算】\n技術料振替（20%控除）：10,000×0.8＝8,000円\n純正PBバッテリ（原価×1.2）：30,000×1.2＝36,000円\nその他部品（定価×0.8）：5,000×0.8＝4,000円\n小計：48,000円\n消費税込：48,000×1.1＝52,800円 → C"
+  },
+  {no:32,pts:5,labels:L3,
+   text:"【問２(2)】通過車両の業務処理規定に照らし、サービスカーを使用して片道２０ｋｍ離れた場所での出張作業を行った。元販売会社へのサービスカー使用料金の振り替え請求額を消費税１０％込みで計算した場合、適切なものはどれか。\n\n（注）答えは小数点以下第一位を四捨五入し、整数とする。",
+   opts:["１４，９００円","１５，８４０円","１６，８６０円"],
+   ans:1, exp:"【計算】\n基本料金：8,000円\n距離料金：400円×20km＝8,000円\n小計：16,000円\n10%控除：16,000×0.9＝14,400円\n消費税込：14,400×1.1＝15,840円 → B"
+  }
+];
+
+function norm(q) {
+  if (q.o !== undefined && Array.isArray(q.o)) {
+    var labs = q.o.length <= 3 ? L3 : q.o.length === 4 ? L4 : L5;
+    var ch = {};
+    q.o.forEach(function(v, i) { ch[labs[i]] = v; });
+    return {no:q.n, section:q.s||'', label:(q.s||'問'+q.n), points:q.p, answer:labs[q.a], stem:q.q, choices:ch, explanation:q.exp||'', invalid:false, multi:false, freeAnswer:false};
+  }
+  if (q.opts !== undefined && Array.isArray(q.opts)) {
+    var labs2 = q.labels || L4;
+    var ch2 = {};
+    q.opts.forEach(function(v, i) { if (labs2[i]) ch2[labs2[i]] = v; });
+    var sec = q.section || q.s || '';
+    var lbl = q.label || (sec ? sec + '(' + (q.no||q.n) + ')' : '問' + (q.no||q.n));
+    var ansVal = Array.isArray(q.ans) ? q.ans.map(function(i){return labs2[i];}).join(',') : labs2[q.ans];
+    return {no:q.no||q.n, section:sec, label:lbl, points:q.pts||q.points||1, answer:ansVal, stem:q.text||q.stem||q.q||'', choices:ch2, explanation:q.exp||q.explanation||'', invalid:false, multi:q.multi||false, freeAnswer:false};
+  }
+  return {no:q.no, section:q.section||q.s||'', label:q.label||('問'+q.no), points:q.points||q.pts||1, answer:q.answer, stem:q.stem||q.text||q.q||'', choices:q.choices||{}, explanation:q.explanation||q.exp||'', invalid:q.invalid||false, multi:false, freeAnswer:q.freeAnswer||false};
+}
+
+const totalQ = questions.length;
+let idx = 0;
+const ans = {};
+
+function updateProg() {
+  const answered = Object.keys(ans).length;
+  document.getElementById('barfill').style.width = (answered/totalQ*100)+'%';
+  document.getElementById('prog').textContent = (idx+1)+' / '+totalQ+' 問  （回答済み '+answered+' 問）';
+}
+
+function render() {
+  const _q = questions[idx];
+  const q = norm(_q);
+  const isCalc = q.section === '問2' || q.section === '問２';
+  const choiceKeys = Object.keys(q.choices);
+  let html = '';
+  if (q.section) html += '<div class="section-badge">'+q.section+'</div>';
+  html += '<div class="qtitle">'+q.label+'（'+q.points+'点）</div>';
+  if (q.invalid) html += '<div class="calc-note" style="background:#fff5f5;border-color:#fca5a5;color:#dc2626">⚠️ この問題は試験では無効問題でした（採点対象外）</div>';
+  if (q.freeAnswer) html += '<div class="calc-note" style="background:#eff6ff;border-color:#93c5fd;color:#1d4ed8">📝 記述問題 — 計算して答えを確認してください（採点対象外）</div>';
+  if (q.multi) html += '<div class="calc-note" style="background:#fff7ed;border-color:#fdba74;color:#c2410c">☑️ 複数選択問題（採点対象外）</div>';
+  if (isCalc && !q.freeAnswer) html += '<div class="calc-note">📝 計算問題 — 電卓使用可</div>';
+  html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
+  if (q.freeAnswer) {
+    html += '<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:12px;margin-top:10px">';
+    html += '<div style="font-weight:700;color:#1d4ed8;margin-bottom:6px">正解：'+q.answer+'</div>';
+    if (q.explanation) html += '<div style="color:#333;font-size:14px;line-height:1.6">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+    html += '</div>';
+  } else {
+    html += '<div class="choices">';
+    choiceKeys.forEach(function(c) {
+      if (!q.choices[c]) return;
+      const sel = ans[q.no] === c ? ' selected' : '';
+      html += '<button class="choice'+sel+'" onclick="selectAns('+q.no+',\'' + c + '\')"><span class="label">'+c+'</span><span>'+q.choices[c]+'</span></button>';
+    });
+    html += '</div>';
+  }
+  document.getElementById('quiz').innerHTML = html;
+  document.getElementById('nextBtn').textContent = idx === totalQ - 1 ? '採点する ✓' : '次へ ▶';
+  updateProg();
+  window.scrollTo(0, 0);
+}
+
+function selectAns(no, c) { ans[no] = c; updateProg(); render(); }
+function prevQ() { if (idx > 0) { idx--; render(); } }
+function nextQ() { if (idx < totalQ - 1) { idx++; render(); } else { showResult(); } }
+
+function showResult() {
+  let score = 0, max = 0;
+  const norms = questions.map(norm);
+  norms.forEach(function(q) {
+    if (q.invalid || q.freeAnswer || q.multi) return;
+    max += q.points;
+    if (ans[q.no] === q.answer) score += q.points;
+  });
+  let html = '<div class="result"><h2>📊 採点結果</h2><div class="score-big">'+score+' / '+max+' 点</div>';
+  const sections = {}, secOrder = [];
+  norms.forEach(function(q) {
+    if (q.invalid || q.freeAnswer || q.multi) return;
+    if (!sections[q.section]) { sections[q.section] = {score:0,max:0}; secOrder.push(q.section); }
+    sections[q.section].max += q.points;
+    if (ans[q.no] === q.answer) sections[q.section].score += q.points;
+  });
+  const vs = secOrder.filter(function(s) { return s; });
+  if (vs.length > 0) {
+    let sh = '<p style="font-size:14px;color:#555">';
+    vs.forEach(function(s) { sh += s+'：'+sections[s].score+'/'+sections[s].max+'点　'; });
+    html += sh + '</p>';
+  }
+  let hasMiss = false;
+  html += '<h3 style="margin:16px 0 8px;font-size:15px;color:#333">📝 全問解説</h3>';
+  norms.forEach(function(q) {
+    if (q.invalid) {
+      html += '<div style="border-left:5px solid #d1d5db;background:#f9fafb;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#6b7280">'+q.label+' ⚠️ 無効問題（採点対象外）</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    if (q.freeAnswer) {
+      html += '<div style="border-left:5px solid #93c5fd;background:#eff6ff;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#1d4ed8">'+q.label+' 📝 記述問題（採点対象外）</div>';
+      html += '<div style="color:#1d4ed8;font-weight:700;margin-bottom:4px">正解：'+q.answer+'</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    if (q.multi) {
+      html += '<div style="border-left:5px solid #fdba74;background:#fff7ed;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#c2410c">'+q.label+' ☑️ 複数選択（採点対象外）</div>';
+      html += '<div style="color:#c2410c;font-weight:700;margin-bottom:4px">正解：'+q.answer+'</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    const wrong = ans[q.no] !== q.answer;
+    if (wrong) hasMiss = true;
+    const bc = wrong ? '#dc2626' : '#d1d5db';
+    const bg = wrong ? '#fff5f5' : '#fff';
+    const correctText = q.choices[q.answer] || '';
+    html += '<div style="border-left:5px solid '+bc+';background:'+bg+';padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+    html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:'+(wrong?'#dc2626':'#111')+'">'+q.label+(wrong?' ❌':' ✅')+'</div>';
+    if (wrong) {
+      const myText = q.choices[ans[q.no]] || '';
+      html += '<div style="color:#dc2626;font-weight:700;margin-bottom:2px">あなたの答え：'+(ans[q.no]||'未回答')+(myText ? '　'+myText : '')+'</div>';
+      html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
+    } else {
+      html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
+    }
+    if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+    html += '</div>';
+  });
+  if (!hasMiss) html += '<p style="font-size:18px;font-weight:900;color:#16a34a">🎉 全問正解です！</p>';
+  html += '<div class="actions"><button onclick="reviewMistakes()" style="padding:14px;border:none;border-radius:12px;background:#dc2626;color:#fff;font-size:16px;font-weight:700;cursor:pointer">間違えた問題を復習</button><button onclick="resetQuiz()" style="padding:14px;border:none;border-radius:12px;background:#6b7280;color:#fff;font-size:16px;font-weight:700;cursor:pointer">最初からやり直す</button></div></div>';
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('nav').style.display = 'none';
+  const r = document.getElementById('result');
+  r.style.display = 'block';
+  r.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function reviewMistakes() {
+  const norms = questions.map(norm);
+  for (let i = 0; i < norms.length; i++) {
+    const q = norms[i];
+    if (q.invalid || q.freeAnswer || q.multi) continue;
+    if (ans[q.no] !== q.answer) {
+      idx = i;
+      document.getElementById('quiz').style.display = 'block';
+      document.getElementById('nav').style.display = 'flex';
+      document.getElementById('result').style.display = 'none';
+      render(); return;
+    }
+  }
+}
+
+function resetQuiz() {
+  Object.keys(ans).forEach(function(k) { delete ans[k]; });
+  idx = 0;
+  document.getElementById('quiz').style.display = 'block';
+  document.getElementById('nav').style.display = 'flex';
+  document.getElementById('result').style.display = 'none';
+  render();
+}
+
+render();
+</script>
+
+<script src="./firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, deleteDoc, collection, getDocs, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const SOURCE_KEY = document.title.replace(/[\s　]/g,'_').replace(/[^\w\u3040-\u9FFF]/g,'');
+
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async user => {
+    const badge = document.getElementById('fb-login-badge');
+    if (badge) {
+      if (user) {
+        const name = user.displayName || user.email.split('@')[0];
+        badge.innerHTML = `<a href="./index.html" style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;text-decoration:none">👤 ${name}</a>`;
+      } else {
+        badge.innerHTML = `<a href="./login.html" style="font-size:.72rem;background:rgba(255,255,255,.15);color:white;padding:3px 10px;border-radius:999px;text-decoration:none">ログイン</a>`;
+      }
+    }
+    window._fbUser = user;
+    window._fbDb = db;
+    window._fbSrc = SOURCE_KEY;
+  });
+
+  const _orig = window.selectAns;
+  if (typeof _orig === 'function') {
+    window.selectAns = function(no, choice) {
+      _orig(no, choice);
+      const user = window._fbUser; const db = window._fbDb;
+      if (!user || !db) return;
+      const q = (window.questions||[]).find(q2 => q2.no === no);
+      if (!q) return;
+      const isCorrect = choice === q.answer;
+      const key = window._fbSrc + '_q' + no;
+      if (isCorrect) {
+        deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
+      } else {
+        setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
+          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
+          stem:(q.stem||'').substring(0,120),timestamp:serverTimestamp()
+        },{merge:true}).catch(()=>{});
+      }
+    };
+  }
+
+  const _origResult = window.showResult;
+  if (typeof _origResult === 'function') {
+    window.showResult = function() {
+      _origResult();
+      const user = window._fbUser; const db = window._fbDb;
+      if (!user || !db) return;
+      const norms = (window.questions||[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
+      let correct=0,total=0;
+      norms.forEach(q=>{total+=q.points||3;if(window.ans&&window.ans[q.no]===q.answer)correct+=q.points||3;});
+      setDoc(doc(db,'users',user.uid,'stats',window._fbSrc),{
+        source:window._fbSrc,lastCorrect:correct,lastTotal:total,
+        lastDate:serverTimestamp(),totalAttempts:increment(1)
+      },{merge:true}).catch(()=>{});
+    };
+  }
+} catch(e){ console.warn('Firebase:',e.message); }
+</script>
+</body>
+</html>
