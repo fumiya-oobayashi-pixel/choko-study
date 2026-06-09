@@ -75,13 +75,19 @@ main{max-width:900px;margin:0 auto;padding:16px}
         <button class="tab-btn active" onclick="showTab('wrong')">🔄 復習フォルダ</button>
         <button class="tab-btn" onclick="showTab('history')">📚 全履歴フォルダ</button>
         <button class="tab-btn" onclick="showTab('stats')">取り組み履歴</button>
+        <button class="tab-btn" onclick="showTab('chart')">📊 チャートリセット</button>
       </div>
       <div id="tab-wrong">
+        <div id="wrong-reset-area" style="margin-bottom:10px"></div>
         <div class="wrong-list" id="wrong-list"></div>
       </div>
       <div id="tab-history" style="display:none">
         <div id="history-reset-area" style="margin-bottom:10px"></div>
         <div class="wrong-list" id="history-list"></div>
+      </div>
+      <div id="tab-chart" style="display:none">
+        <div id="chart-reset-area" style="margin-bottom:10px"></div>
+        <div id="chart-stats-list"></div>
       </div>
       <div id="tab-stats" style="display:none">
         <table class="stats-table" id="stats-table">
@@ -141,13 +147,15 @@ async function loadAllData() {
       const wrongSnap = await getDocs(collection(db, 'users', uid, 'wrongAnswers'));
       const historySnap = await getDocs(collection(db, 'users', uid, 'wrongHistory'));
       const statsSnap = await getDocs(collection(db, 'users', uid, 'stats'));
+      const catSnap = await getDocs(collection(db, 'users', uid, 'catStats'));
 
       const wrongList = wrongSnap.docs.map(d => ({id: d.id, ...d.data()}));
       const historyList = historySnap.docs.map(d => ({id: d.id, ...d.data()}));
       const statsList = statsSnap.docs.map(d => ({id: d.id, ...d.data()}));
+      const catStats = catSnap.docs.map(d => ({id: d.id, ...d.data()}));
       totalWrong += wrongList.length;
 
-      allUsersData[uid] = { uid, email: userData.email || uid, displayName: userData.displayName || userData.email || uid, wrongList, historyList, statsList };
+      allUsersData[uid] = { uid, email: userData.email || uid, displayName: userData.displayName || userData.email || uid, wrongList, historyList, statsList, catStats };
 
       const totalAttempts = statsList.reduce((s,x) => s + (x.totalAttempts||0), 0);
 
@@ -198,20 +206,23 @@ window.showUser = function(uid) {
   document.getElementById('user-detail').style.display = 'block';
   document.getElementById('user-detail-title').textContent = `📋 ${data.displayName || data.email} の詳細`;
 
-  renderWrongList(data.wrongList);
+  renderWrongList(data.wrongList, uid);
   renderHistoryList(data.historyList, uid);
   renderStatsList(data.statsList);
+  renderChartStats(data.catStats||[], uid);
   showTab('wrong');
   document.getElementById('user-detail').scrollIntoView({ behavior: 'smooth' });
 };
 
-function renderWrongList(wrongList) {
+function renderWrongList(wrongList, uid) {
   const el = document.getElementById('wrong-list');
+  const resetArea = document.getElementById('wrong-reset-area');
   if (!wrongList.length) {
     el.innerHTML = '<div class="empty">✅ 間違い問題なし！</div>';
+    if (resetArea) resetArea.innerHTML = '';
     return;
   }
-  // Sort by timestamp desc
+  if (resetArea) resetArea.innerHTML = `<button onclick="resetWrong('${uid}')" style="padding:8px 16px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">🗑️ このユーザーの復習フォルダをリセット</button>`;
   wrongList.sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
   el.innerHTML = wrongList.map(w => `
     <div class="wrong-item">
@@ -271,10 +282,71 @@ window.resetHistory = async function(uid) {
     }
     data.historyList = [];
     renderHistoryList([], uid);
-    alert('リセット完了しました');
+    // カードのバッジも更新
+    const card = document.getElementById('ucard-' + uid);
+    if (card) {
+      const badges = card.querySelectorAll('.stat-badge');
+      badges.forEach(b => {
+        if (b.style.background === 'rgb(250, 245, 255)' || b.textContent.includes('全履歴')) {
+          b.textContent = '📚 全履歴 0問';
+        }
+      });
+    }
+    alert('リセット完了しました（' + data.historyList.length + '問削除）');
   } catch(e) {
     alert('エラー: ' + e.message);
   }
+};
+
+window.resetWrong = async function(uid) {
+  if (!confirm('このユーザーの復習フォルダをリセットしますか？')) return;
+  const data = allUsersData[uid];
+  if (!data || !data.wrongList) return;
+  try {
+    for (const item of data.wrongList) {
+      await deleteDoc(doc(db, 'users', uid, 'wrongAnswers', item.id));
+    }
+    data.wrongList = [];
+    renderWrongList([], uid);
+    // カードバッジ更新
+    const card = document.getElementById('ucard-' + uid);
+    if (card) {
+      const badges = card.querySelectorAll('.stat-badge');
+      badges.forEach(b => { if (b.textContent.includes('復習')) b.textContent = '❌ 復習 0問'; });
+    }
+    alert('復習フォルダをリセットしました');
+  } catch(e) { alert('エラー: ' + e.message); }
+};
+
+function renderChartStats(catStats, uid) {
+  const el = document.getElementById('chart-stats-list');
+  const resetArea = document.getElementById('chart-reset-area');
+  if (!catStats || !catStats.length) {
+    if (el) el.innerHTML = '<div class="empty">チャートデータなし</div>';
+    if (resetArea) resetArea.innerHTML = '';
+    return;
+  }
+  if (resetArea) resetArea.innerHTML = `<button onclick="resetChart('${uid}')" style="padding:8px 16px;background:#7e22ce;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">📊 このユーザーのチャートデータをリセット</button>`;
+  const sorted = [...catStats].sort((a,b) => a.id.localeCompare(b.id, 'ja'));
+  el.innerHTML = '<table class="stats-table"><thead><tr><th>カテゴリ</th><th>解答数</th><th>正解</th><th>正答率</th></tr></thead><tbody>'
+    + sorted.map(s => {
+      const pct = s.total ? Math.round(s.correct/s.total*100) : 0;
+      return `<tr><td>${s.id}</td><td>${s.total||0}</td><td>${s.correct||0}</td><td style="color:${pct>=70?'#059669':'#dc2626'};font-weight:700">${pct}%</td></tr>`;
+    }).join('') + '</tbody></table>';
+}
+
+window.resetChart = async function(uid) {
+  if (!confirm('このユーザーのチャートデータ（カテゴリ別正答率）をリセットしますか？')) return;
+  const data = allUsersData[uid];
+  if (!data || !data.catStats) return;
+  try {
+    for (const item of data.catStats) {
+      await deleteDoc(doc(db, 'users', uid, 'catStats', item.id));
+    }
+    data.catStats = [];
+    renderChartStats([], uid);
+    alert('チャートデータをリセットしました');
+  } catch(e) { alert('エラー: ' + e.message); }
 };
 
 window.showTab = function(tab) {
@@ -283,9 +355,4 @@ window.showTab = function(tab) {
     b.classList.toggle('active', tabs[i] === tab);
   });
   document.getElementById('tab-wrong').style.display = tab === 'wrong' ? '' : 'none';
-  document.getElementById('tab-history').style.display = tab === 'history' ? '' : 'none';
-  document.getElementById('tab-stats').style.display = tab === 'stats' ? '' : 'none';
-};
-</script>
-</body>
-</html>
+  document.getElementById('tab-history').style.display =

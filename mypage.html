@@ -118,6 +118,56 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 let allStats=[], allWrong=[], allHistory=[], allCatStats=[], radarChart=null;
 
+
+const SOURCE_TO_URL = {
+  '18年HF1認定1次試験_スマホ問題集':'/choko-study/18年HF-1認定1次試験.html',
+  '18年HF1認定2次試験_スマホ問題集':'/choko-study/18年HF-1認定2次試験.html',
+  '19年HF1認定1次試験_スマホ問題集':'/choko-study/19年HF-1認定1次試験.html',
+  '19年HF1認定2次試験_スマホ問題集':'/choko-study/19年HF-1認定2次試験.html',
+  '19年HF2認定試験_スマホ問題集':'/choko-study/19年HF-2認定試験.html',
+  '19年HF3認定試験_スマホ問題集':'/choko-study/19年HF-3認定試験.html',
+  '19年HS1認定1次試験_スマホ問題集':'/choko-study/19年HS-1認定1次試験.html',
+  '19年HS1認定2次試験_スマホ問題集':'/choko-study/19年HS-1認定2次試験.html',
+  '2023新人試験_スマホ問題集':'/choko-study/2023新人試験.html',
+  '2024年度フロント資格試験_スマホ問題集':'/choko-study/2024年度フロント資格試験.html',
+  '2024年度メカニック_スマホ問題集':'/choko-study/2024年度メカニック.html',
+  '2025年度フロント資格試験_スマホ問題集':'/choko-study/2025年度フロント資格試験.html',
+  '2025年度メカニック_スマホ問題集':'/choko-study/2025年度メカニック.html',
+  '2025新人試験_スマホ問題集':'/choko-study/2025新人試験.html',
+  '20年HF1認定1次試験_スマホ問題集':'/choko-study/20年HF-1認定1次試験.html',
+  '20年HF2認定試験_スマホ問題集':'/choko-study/20年HF-2認定試験.html',
+  '20年HF3認定試験_スマホ問題集':'/choko-study/20年HF-3認定試験.html',
+  '20年HS1認定1次試験_スマホ問題集':'/choko-study/20年HS-1認定1次試験.html',
+  '20年HS1認定2次試験_スマホ問題集':'/choko-study/20年HS-1認定2次試験.html',
+  '21年HF1認定1次試験_スマホ問題集':'/choko-study/21年HF-1認定1次試験.html',
+  '21年HF2認定試験_スマホ問題集':'/choko-study/21年HF-2認定試験.html',
+  '21年HF3認定試験_スマホ問題集':'/choko-study/21年HF-3認定試験.html',
+  '21年HS1認定1次試験_スマホ問題集':'/choko-study/21年HS-1認定1次試験.html',
+  '21年HS1認定2次試験_スマホ問題集':'/choko-study/21年HS-1認定2次試験.html',
+  '22年HF1認定1次試験_スマホ問題集':'/choko-study/22年HF-1認定1次試験.html',
+  '22年HF2認定試験_スマホ問題集':'/choko-study/22年HF-2認定試験.html',
+  '22年HF3認定試験_スマホ問題集':'/choko-study/22年HF-3認定試験.html',
+  '22年HS1認定1次試験_スマホ問題集':'/choko-study/22年HS-1認定1次試験.html',
+  '22年HS1認定2次試験_スマホ問題集':'/choko-study/22年HS-1認定2次試験.html',
+  '23年HF1認定1次試験_スマホ問題集':'/choko-study/23年HF-1認定1次試験.html',
+  '23年HF2認定試験_スマホ問題集':'/choko-study/23年HF-2認定試験.html',
+  '23年HF3認定試験_スマホ問題集':'/choko-study/23年HF-3認定試験.html',
+  '23年HS1認定1次試験_スマホ問題集':'/choko-study/23年HS-1認定1次試験.html',
+  '23年HS1認定2次試験_スマホ問題集':'/choko-study/23年HS-1認定2次試験.html',
+  '24年HF1認定1次試験_スマホ問題集':'/choko-study/24年HF-1認定1次試験.html',
+  '24年HF2認定試験_スマホ問題集':'/choko-study/24年HF-2認定試験.html',
+  '24年HF3認定試験_スマホ問題集':'/choko-study/24年HF-3認定試験.html',
+  '24年HS1認定1次試験_スマホ問題集':'/choko-study/24年HS-1認定1次試験.html',
+  '24年HS1認定2次試験_スマホ問題集':'/choko-study/24年HS-1認定2次試験.html',
+  '25年HF1認定1次試験_スマホ問題集':'/choko-study/25年HF-1認定1次試験.html',
+  '25年HF2認定試験_スマホ問題集':'/choko-study/25年HF-2認定試験.html',
+  '25年HF3認定試験_スマホ問題集':'/choko-study/25年HF-3認定試験.html',
+  '25年HS1認定1次試験_スマホ問題集':'/choko-study/25年HS-1認定1次試験.html',
+  '第49回全国エンジニア_スマホ問題集':'/choko-study/第49回全国エンジニア.html',
+  '第49回全国フロント資格試験_スマホ問題集':'/choko-study/第49回全国フロント資格試験.html',
+  '第49回支部エンジニア_スマホ問題集':'/choko-study/第49回支部エンジニア.html',
+  '第49回支部フロント資格試験_スマホ問題集':'/choko-study/第49回支部フロント資格試験.html',
+};
 // メカニック 9カテゴリ
 const MECH_CATS = ["エンジン","HV","T/M","ブレーキ","シャシ・フレーム","電気装置","法令","一般関連","計算"];
 // フロント 12カテゴリ
@@ -166,11 +216,12 @@ function renderWrongList(elId, list, type){
   }
   const sorted=[...list].sort((a,b)=>(b.timestamp?.seconds||b.firstWrong?.seconds||0)-(a.timestamp?.seconds||a.firstWrong?.seconds||0));
   el.innerHTML=sorted.map(w=>{
-    const href=w.url?`${w.url}?q=${w.qNo}`:'#';
-    const isLink=type==='review'&&w.url;
+    const baseUrl=w.url||(w.source&&SOURCE_TO_URL[w.source])||null;
+    const href=baseUrl?`${baseUrl}?q=${w.qNo}`:'#';
+    const isLink=type==='review'&&!!baseUrl;
     const tag=isLink?`<a href="${href}" style="display:block;text-decoration:none;color:inherit">`:'<div>';
     const endTag=isLink?'</a>':'</div>';
-    return `${tag}<div class="wrong-item ${type}">
+    return `${tag}<div class="wrong-item ${type}" style="${isLink?'':'cursor:default'}">
       <div class="wi-label ${type}">
         <span>${type==='review'?'❌':'📚'} ${w.label||'Q'+w.qNo}</span>
         ${isLink?'<span class="wi-go">▶ 問題へ</span>':''}
@@ -219,45 +270,4 @@ function showChartData(type){
     return;
   }
 
-  if(!document.getElementById('radarChart')){
-    const c=document.createElement('canvas');c.id='radarChart';wrap.innerHTML='';wrap.appendChild(c);
-  }
-  const ctx=document.getElementById('radarChart');
-
-  const data=cats.map(c=>{
-    const s=catMap[c];
-    if(!s||!s.total) return 0;
-    return Math.round(s.correct/s.total*100);
-  });
-
-  radarChart=new Chart(ctx,{
-    type:'radar',
-    data:{
-      labels:cats,
-      datasets:[{
-        label:'正答率（%）',
-        data,
-        backgroundColor:'rgba(29,78,216,0.15)',
-        borderColor:'#1d4ed8',
-        borderWidth:2,
-        pointBackgroundColor:'#1d4ed8',
-        pointRadius:4
-      }]
-    },
-    options:{
-      responsive:true,
-      scales:{r:{min:0,max:100,ticks:{stepSize:20},pointLabels:{font:{size:11}}}},
-      plugins:{legend:{position:'bottom'}}
-    }
-  });
-}
-
-window.showFolder=function(btn, type){
-  document.querySelectorAll('.folder-tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('folder-review').style.display=type==='review'?'':'none';
-  document.getElementById('folder-history').style.display=type==='history'?'':'none';
-};
-</script>
-</body>
-</html>
+  if(!document.getElementById('radarChar
