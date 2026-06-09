@@ -43,7 +43,10 @@ main{max-width:900px;margin:0 auto;padding:16px}
 <body>
 <header>
   <h1>🔐 ちょこスタ 管理者ダッシュボード</h1>
-  <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+  <div style="display:flex;gap:8px">
+    <a href="./mypage.html" class="logout-btn" style="text-decoration:none">📊 マイページ</a>
+    <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+  </div>
 </header>
 
 <main id="main">

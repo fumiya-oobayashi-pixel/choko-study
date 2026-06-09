@@ -655,11 +655,28 @@ try {
       if (!user || !db) return;
       const q = (typeof questions!=="undefined"?questions:[]).find(q2 => q2.no === no);
       if (!q) return;
-      const isCorrect = choice === q.answer;
+      const _L = q.labels || ['A','B','C','D'];
+      const isCorrect = choice === (q.answer !== undefined ? q.answer : _L[q.ans]);
       const key = window._fbSrc + '_q' + no;
       if (isCorrect) {
         deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
       } else {
+        setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
+          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
+          stem:(q.text||q.stem||'').substring(0,120),timestamp:serverTimestamp(),
+          url:window.location.pathname
+        },{merge:true}).catch(()=>{});
+        setDoc(doc(db,'users',user.uid,'wrongHistory',key),{
+          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
+          stem:(q.text||q.stem||'').substring(0,120),firstWrong:serverTimestamp(),
+          url:window.location.pathname
+        },{merge:true}).catch(()=>{});
+      }
+      // カテゴリ別累計
+      const cat = q.cat || "一般/保険";
+      setDoc(doc(db,'users',user.uid,'catStats',cat),{total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
+    };
+  } else {
         setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
           source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
           stem:(q.stem||'').substring(0,120),timestamp:serverTimestamp()
@@ -688,6 +705,16 @@ try {
     };
   }
 } catch(e){ console.warn('Firebase:',e.message); }
+</script>
+
+<script>
+// ?q=N で特定問題から開始
+window.addEventListener('load', function() {
+  var qParam = new URLSearchParams(location.search).get('q');
+  if (!qParam || typeof questions === 'undefined' || typeof render !== 'function') return;
+  var qi = questions.findIndex(function(x){ return x.no === parseInt(qParam); });
+  if (qi >= 0) { idx = qi; render(); }
+});
 </script>
 </body>
 </html>

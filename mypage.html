@@ -20,7 +20,7 @@ main{max-width:900px;margin:0 auto;padding:16px}
 .stat-label{font-size:.75rem;color:#64748b;margin-top:2px}
 .stat-num.red{color:#dc2626}
 .stat-num.green{color:#059669}
-.chart-wrap{position:relative;max-width:500px;margin:0 auto}
+.chart-wrap{position:relative;max-width:520px;margin:0 auto}
 .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
 .tab{padding:6px 14px;border:2px solid #e2e8f0;border-radius:20px;font-size:.8rem;font-weight:700;cursor:pointer;background:white;color:#64748b;font-family:inherit;transition:.15s}
 .tab.active{border-color:#1e3a5f;background:#eff6ff;color:#1e3a5f}
@@ -29,12 +29,14 @@ main{max-width:900px;margin:0 auto;padding:16px}
 .folder-tab.active.review{background:#fef3c7;color:#b45309;border-bottom:3px solid #f59e0b}
 .folder-tab.active.history{background:#fdf2f8;color:#7e22ce;border-bottom:3px solid #9333ea}
 .wrong-list{display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto}
-.wrong-item{border-radius:8px;padding:10px 12px}
+.wrong-item{border-radius:8px;padding:10px 12px;cursor:pointer;transition:.12s}
 .wrong-item.review{background:#fff5f5;border:1px solid #fecaca}
-.wrong-item.history{background:#faf5ff;border:1px solid #e9d5ff}
-.wi-label{font-size:.75rem;font-weight:700;margin-bottom:2px}
+.wrong-item.review:hover{background:#fee2e2;border-color:#f87171}
+.wrong-item.history{background:#faf5ff;border:1px solid #e9d5ff;cursor:default}
+.wi-label{font-size:.75rem;font-weight:700;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center}
 .wi-label.review{color:#dc2626}
 .wi-label.history{color:#7e22ce}
+.wi-go{font-size:.7rem;background:#1e3a5f;color:white;padding:2px 7px;border-radius:999px}
 .wi-stem{font-size:.85rem;color:#374151;line-height:1.5}
 .wi-src{font-size:.7rem;color:#64748b;margin-top:3px}
 .perf-list{display:flex;flex-direction:column;gap:6px}
@@ -70,17 +72,15 @@ main{max-width:900px;margin:0 auto;padding:16px}
         <div class="stat-box"><div class="stat-num" id="total-attempts">0</div><div class="stat-label">総受験回数</div></div>
         <div class="stat-box"><div class="stat-num red" id="wrong-count">0</div><div class="stat-label">復習フォルダ</div></div>
         <div class="stat-box"><div class="stat-num" style="color:#7e22ce" id="history-count">0</div><div class="stat-label">全履歴フォルダ</div></div>
-        <div class="stat-box"><div class="stat-num green" id="best-pct">-</div><div class="stat-label">最高正答率</div></div>
+        <div class="stat-box"><div class="stat-num green" id="total-q">0</div><div class="stat-label">累計解答問数</div></div>
       </div>
     </div>
 
     <div class="card">
-      <h2>📉 試験別 正答率</h2>
+      <h2>📉 カテゴリ別 正答率</h2>
       <div class="tabs">
-        <button class="tab active" onclick="showChart(this,'hs1')">HS-1</button>
-        <button class="tab" onclick="showChart(this,'mechanic')">メカニック</button>
-        <button class="tab" onclick="showChart(this,'front')">フロント</button>
-        <button class="tab" onclick="showChart(this,'all')">すべて</button>
+        <button class="tab active" onclick="showChart(this,'mech')">🔧 メカニック</button>
+        <button class="tab" onclick="showChart(this,'front')">🪟 フロント</button>
       </div>
       <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
     </div>
@@ -116,55 +116,69 @@ import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/fireb
 const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
 const db = getFirestore(app);
-let allStats=[], allWrong=[], allHistory=[], radarChart=null;
+let allStats=[], allWrong=[], allHistory=[], allCatStats=[], radarChart=null;
 
-const CAT = {
-  hs1:{keys:['HS-1','HS1','HS_1']},
-  mechanic:{keys:['メカニック','Mechanic','新人','エンジニア']},
-  front:{keys:['HF','フロント','Front','フロント']},
-};
+// メカニック 9カテゴリ
+const MECH_CATS = ["エンジン","HV","T/M","ブレーキ","シャシ・フレーム","電気装置","法令","一般関連","計算"];
+// フロント 12カテゴリ
+const FRONT_CATS = ["保証制度","外注（下請法含む）","見積り（事故見積含む）","受付/苦情/電話対応",
+                    "ハイトス系/ICT","引渡対応/売上/回収","手形/小切手/領収書/売掛",
+                    "通過車両関連","商品知識・車両知識","一般/保険","安全/法令","計算"];
 
 onAuthStateChanged(auth, async user => {
   document.getElementById('loading').style.display='none';
   if(!user){document.getElementById('no-login').style.display='block';return;}
   document.getElementById('content').style.display='block';
-  const [ws,hs,ss]=await Promise.all([
+  const [ws,hs,ss,cs]=await Promise.all([
     getDocs(collection(db,'users',user.uid,'wrongAnswers')),
     getDocs(collection(db,'users',user.uid,'wrongHistory')),
     getDocs(collection(db,'users',user.uid,'stats')),
-  ]).catch(()=>[{docs:[]},{docs:[]},{docs:[]}]);
+    getDocs(collection(db,'users',user.uid,'catStats')),
+  ]).catch(()=>[{docs:[]},{docs:[]},{docs:[]},{docs:[]}]);
   allWrong=(ws.docs||[]).map(d=>({id:d.id,...d.data()}));
   allHistory=(hs.docs||[]).map(d=>({id:d.id,...d.data()}));
   allStats=(ss.docs||[]).map(d=>({id:d.id,...d.data()}));
+  allCatStats=(cs.docs||[]).map(d=>({id:d.id,...d.data()}));
   render();
 });
 
 function render(){
   const tot=allStats.reduce((s,x)=>s+(x.totalAttempts||0),0);
-  const best=allStats.length?Math.max(...allStats.map(s=>s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0)):0;
+  const totalQ=allCatStats.reduce((s,x)=>s+(x.total||0),0);
   document.getElementById('total-attempts').textContent=tot;
   document.getElementById('wrong-count').textContent=allWrong.length;
   document.getElementById('history-count').textContent=allHistory.length;
-  document.getElementById('best-pct').textContent=best?best+'%':'-';
+  document.getElementById('total-q').textContent=totalQ;
   document.getElementById('review-badge').textContent=' ('+allWrong.length+'問)';
   document.getElementById('history-badge').textContent=' ('+allHistory.length+'問)';
 
   renderWrongList('wrong-list-review', allWrong, 'review');
   renderWrongList('wrong-list-history', allHistory, 'history');
   renderPerfList();
-  showChartData('hs1');
+  showChartData('mech');
 }
 
 function renderWrongList(elId, list, type){
   const el=document.getElementById(elId);
-  if(!list.length){el.innerHTML='<div class="empty">'+(type==='review'?'✅ 間違い問題なし！':'まだ履歴なし')+'</div>';return;}
+  if(!list.length){
+    el.innerHTML='<div class="empty">'+(type==='review'?'✅ 間違い問題なし！':'まだ履歴なし')+'</div>';
+    return;
+  }
   const sorted=[...list].sort((a,b)=>(b.timestamp?.seconds||b.firstWrong?.seconds||0)-(a.timestamp?.seconds||a.firstWrong?.seconds||0));
-  el.innerHTML=sorted.map(w=>`
-    <div class="wrong-item ${type}">
-      <div class="wi-label ${type}">${type==='review'?'❌':'📚'} ${w.label||'Q'+w.qNo}</div>
+  el.innerHTML=sorted.map(w=>{
+    const href=w.url?`${w.url}?q=${w.qNo}`:'#';
+    const isLink=type==='review'&&w.url;
+    const tag=isLink?`<a href="${href}" style="display:block;text-decoration:none;color:inherit">`:'<div>';
+    const endTag=isLink?'</a>':'</div>';
+    return `${tag}<div class="wrong-item ${type}">
+      <div class="wi-label ${type}">
+        <span>${type==='review'?'❌':'📚'} ${w.label||'Q'+w.qNo}</span>
+        ${isLink?'<span class="wi-go">▶ 問題へ</span>':''}
+      </div>
       <div class="wi-stem">${w.stem||''}</div>
-      <div class="wi-src">📁 ${w.source||''}</div>
-    </div>`).join('');
+      <div class="wi-src">📁 ${(w.source||'').replace(/_/g,' ')}</div>
+    </div>${endTag}`;
+  }).join('');
 }
 
 function renderPerfList(){
@@ -175,7 +189,7 @@ function renderPerfList(){
     const pct=s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0;
     const color=pct>=70?'#059669':pct>=50?'#f59e0b':'#dc2626';
     return `<div class="perf-item">
-      <div class="perf-source">${s.source||s.id}</div>
+      <div class="perf-source">${(s.source||s.id).replace(/_/g,' ')}</div>
       <div class="perf-bar-wrap"><div class="perf-bar" style="width:${pct}%;background:${color}"></div></div>
       <div class="perf-pct" style="color:${color}">${pct}%</div>
     </div>`;
@@ -189,26 +203,52 @@ window.showChart=function(btn, type){
 };
 
 function showChartData(type){
-  let filtered=allStats;
-  if(type!=='all'){
-    const cat=CAT[type];
-    if(cat) filtered=allStats.filter(s=>cat.keys.some(k=>(s.source||s.id).includes(k)));
-  }
   if(radarChart){radarChart.destroy();radarChart=null;}
-  const wrap=document.getElementById('radarChart')?.parentElement||document.querySelector('.chart-wrap');
+  const wrap=document.querySelector('.chart-wrap');
   if(!wrap) return;
-  if(!filtered.length){wrap.innerHTML='<div class="empty">データなし</div>';return;}
-  // canvasを再生成（消えている場合に備えて）
+
+  const cats=type==='mech'?MECH_CATS:FRONT_CATS;
+  const catMap={};
+  allCatStats.forEach(c=>{catMap[c.id]=c;});
+
+  // データが1つでもあるか確認
+  const hasData=cats.some(c=>catMap[c]&&catMap[c].total>0);
+  if(!hasData){
+    wrap.innerHTML='<canvas id="radarChart"></canvas>';
+    wrap.innerHTML='<div class="empty">まだデータなし<br><small>問題を解くと反映されます</small></div>';
+    return;
+  }
+
   if(!document.getElementById('radarChart')){
     const c=document.createElement('canvas');c.id='radarChart';wrap.innerHTML='';wrap.appendChild(c);
   }
   const ctx=document.getElementById('radarChart');
-  const labels=filtered.map(s=>(s.source||s.id).replace(/_/g,' ').substring(0,12));
-  const data=filtered.map(s=>s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0);
+
+  const data=cats.map(c=>{
+    const s=catMap[c];
+    if(!s||!s.total) return 0;
+    return Math.round(s.correct/s.total*100);
+  });
+
   radarChart=new Chart(ctx,{
     type:'radar',
-    data:{labels,datasets:[{label:'正答率（%）',data,backgroundColor:'rgba(29,78,216,0.15)',borderColor:'#1d4ed8',borderWidth:2,pointBackgroundColor:'#1d4ed8',pointRadius:4}]},
-    options:{responsive:true,scales:{r:{min:0,max:100,ticks:{stepSize:20}}},plugins:{legend:{position:'bottom'}}}
+    data:{
+      labels:cats,
+      datasets:[{
+        label:'正答率（%）',
+        data,
+        backgroundColor:'rgba(29,78,216,0.15)',
+        borderColor:'#1d4ed8',
+        borderWidth:2,
+        pointBackgroundColor:'#1d4ed8',
+        pointRadius:4
+      }]
+    },
+    options:{
+      responsive:true,
+      scales:{r:{min:0,max:100,ticks:{stepSize:20},pointLabels:{font:{size:11}}}},
+      plugins:{legend:{position:'bottom'}}
+    }
   });
 }
 
