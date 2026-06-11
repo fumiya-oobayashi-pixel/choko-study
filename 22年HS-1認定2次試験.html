@@ -491,7 +491,7 @@ try {
       }, {merge:true}).catch(()=>{});
     }
     // カテゴリ別累計
-    const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般関連");
+    const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "新装置・一般");
     setDoc(doc(db,'users',user.uid,'catStats',cat),{total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
   };
 
