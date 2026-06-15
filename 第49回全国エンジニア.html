@@ -233,9 +233,9 @@ function norm(q) {
     var sec = q.section || q.s || '';
     var lbl = q.label || (sec ? sec + '(' + (q.no||q.n) + ')' : '問' + (q.no||q.n));
     var ansVal = Array.isArray(q.ans) ? q.ans.map(function(i){return labs2[i];}).join(',') : labs2[q.ans];
-    return {no:q.no||q.n, section:sec, label:lbl, points:q.pts||q.points||1, answer:ansVal, stem:q.text||q.stem||q.q||'', choices:ch2, explanation:q.exp||q.explanation||'', invalid:false, multi:q.multi||false, freeAnswer:false};
+    return {no:q.no||q.n, section:sec, label:lbl, points:q.pts||q.points||1, answer:ansVal, stem:q.text||q.stem||q.q||'', choices:ch2, explanation:q.exp||q.explanation||'', invalid:false, multi:q.multi||false, freeAnswer:false, fig:q.fig||''};
   }
-  return {no:q.no, section:q.section||q.s||'', label:q.label||('問'+q.no), points:q.points||q.pts||1, answer:q.answer, stem:q.stem||q.text||q.q||'', choices:q.choices||{}, explanation:q.explanation||q.exp||'', invalid:q.invalid||false, multi:false, freeAnswer:q.freeAnswer||false};
+  return {no:q.no, section:q.section||q.s||'', label:q.label||('問'+q.no), points:q.points||q.pts||1, answer:q.answer, stem:q.stem||q.text||q.q||'', choices:q.choices||{}, explanation:q.explanation||q.exp||'', invalid:q.invalid||false, multi:false, freeAnswer:q.freeAnswer||false, fig:q.fig||''};
 }
 
 const totalQ = questions.length;
@@ -247,6 +247,26 @@ function updateProg() {
   const answered = Object.keys(ans).length;
   document.getElementById('barfill').style.width = (answered/totalQ*100)+'%';
   document.getElementById('prog').textContent = (idx+1)+' / '+totalQ+' 問  （回答済み '+answered+' 問）';
+}
+
+function checkFree() {
+  const q = norm(questions[idx]);
+  const input = document.getElementById('freeInput').value.trim();
+  const result = document.getElementById('freeResult');
+  const correct = String(q.answer).replace(/[,，　 ]/g,'');
+  const inputClean = input.replace(/[,，　 ]/g,'');
+  result.style.display = 'block';
+  if (inputClean === correct || input === String(q.answer)) {
+    result.style.background = '#f0fdf4';
+    result.style.border = '1px solid #86efac';
+    result.style.color = '#166534';
+    result.innerHTML = '✅ 正解！ 正解：'+q.answer+(q.explanation?'<br><span style="font-size:13px;color:#333">'+q.explanation.replace(/\n/g,'<br>')+'</span>':'');
+  } else {
+    result.style.background = '#fef2f2';
+    result.style.border = '1px solid #fca5a5';
+    result.style.color = '#991b1b';
+    result.innerHTML = '❌ 不正解 正解：'+q.answer+(q.explanation?'<br><span style="font-size:13px;color:#333">'+q.explanation.replace(/\n/g,'<br>')+'</span>':'');
+  }
 }
 
 function render() {
@@ -261,11 +281,13 @@ function render() {
   if (q.freeAnswer) html += '<div class="calc-note" style="background:#eff6ff;border-color:#93c5fd;color:#1d4ed8">📝 記述問題 — 計算して答えを確認してください（採点対象外）</div>';
   if (q.multi) html += '<div class="calc-note" style="background:#fff7ed;border-color:#fdba74;color:#c2410c">☑️ 複数選択問題（採点対象外）</div>';
   if (isCalc && !q.freeAnswer) html += '<div class="calc-note">📝 計算問題 — 電卓使用可</div>';
+  if (q.fig) html += '<div style="text-align:center;margin-bottom:12px">'+q.fig+'</div>';
   html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
   if (q.freeAnswer) {
-    html += '<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:12px;margin-top:10px">';
-    html += '<div style="font-weight:700;color:#1d4ed8;margin-bottom:6px">正解：'+q.answer+'</div>';
-    if (q.explanation) html += '<div style="color:#333;font-size:14px;line-height:1.6">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+    html += '<div style="margin-top:12px">';
+    html += '<input type="text" id="freeInput" placeholder="答えを入力..." style="width:100%;padding:12px;font-size:16px;border:2px solid #93c5fd;border-radius:10px;box-sizing:border-box;margin-bottom:10px">';
+    html += '<button onclick="checkFree()" style="width:100%;padding:12px;background:#3b82f6;color:#fff;font-size:16px;font-weight:700;border:none;border-radius:10px;cursor:pointer">答え合わせ</button>';
+    html += '<div id="freeResult" style="display:none;margin-top:10px;padding:12px;border-radius:10px"></div>';
     html += '</div>';
   } else {
     html += '<div class="choices">';

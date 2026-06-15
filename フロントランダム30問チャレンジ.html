@@ -81,13 +81,15 @@ function render() {
   html += '<div class="qtitle">問'+(idx+1)+'（'+q.points+'点）</div>';
   if (q.freeAnswer) {
     html += '<div class="calc-note">📝 記述計算問題 — 電卓使用可（採点対象外）</div>';
-    html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
+    if (q.fig) html += '<div style="text-align:center;margin-bottom:12px">'+q.fig+'</div>';
+  html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
     html += '<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:12px;margin-top:10px">';
     html += '<div style="font-weight:700;color:#1d4ed8;margin-bottom:6px">正解：'+q.answer+'</div>';
     if (q.explanation) html += '<div style="color:#333;font-size:14px;line-height:1.6">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
     html += '</div>';
   } else {
-    html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
+    if (q.fig) html += '<div style="text-align:center;margin-bottom:12px">'+q.fig+'</div>';
+  html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
     html += '<div class="choices">';
     choiceKeys.forEach(function(c) {
       if (!q.choices[c]) return;
