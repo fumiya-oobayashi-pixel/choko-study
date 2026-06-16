@@ -613,18 +613,7 @@ try {
       const key = window._fbSrc + '_q' + no;
       if (isCorrect) {
         deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
-      } else {
-        setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
-          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
-          stem:(q.stem||'').substring(0,120),timestamp:serverTimestamp()
-        },{merge:true}).catch(()=>{});
-        setDoc(doc(db,'users',user.uid,'wrongHistory',key),{
-          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
-          stem:(q.stem||'').substring(0,120),firstWrong:serverTimestamp()
-        },{merge:true}).catch(()=>{});
       }
-    };
-  }
 
   const _origResult = window.showResult;
   if (typeof _origResult === 'function') {
@@ -692,8 +681,7 @@ function _updateReviewBadge() {
       ? '<div style="margin:8px 0;font-size:.9rem;color:#1d4ed8;font-weight:700">正解: ' + correctAns + '</div>' : '';
     var expHtml = q.explanation
       ? '<div style="margin-top:12px;text-align:left;background:#f8fafc;border-radius:8px;padding:12px;font-size:.82rem;line-height:1.7;color:#374151;max-height:220px;overflow-y:auto">'
-        + (q.explanation||'').replace(/
-/g,'<br>') + '</div>' : '';
+        + (q.explanation||'').replace(/\n/g,'<br>') + '</div>' : '';
     var ov = document.createElement('div');
     ov.id = '_review_overlay';
     ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
