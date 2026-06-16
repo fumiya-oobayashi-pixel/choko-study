@@ -68,6 +68,7 @@ main{padding:14px;max-width:640px;margin:0 auto;}
 .qcard.shin{border-left-color:#9333ea;}
 .qcard.shin:hover{border-left-color:#7e22ce;}
 .qcard.eng{border-left-color:#0891b2;}
+.sub-tab.active.mcat{border-color:#16a34a;background:#f0fdf4;color:#15803d;}
 .sub-tab.active.cat{border-color:#a855f7;background:#faf5ff;color:#7e22ce;}
 .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
 .cat-card{display:flex;flex-direction:column;background:white;border-radius:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.07);border:2px solid #e2e8f0;cursor:pointer;text-decoration:none;color:inherit;transition:all .15s;border-left:4px solid #a855f7;}
@@ -103,6 +104,7 @@ main{padding:14px;max-width:640px;margin:0 auto;}
     <button class="sub-tab mec active" onclick="showMecSub('mzenkoku')">全国</button>
     <button class="sub-tab shin" onclick="showMecSub('mshin')">新人選</button>
     <button class="sub-tab hs1" onclick="showMecSub('mhs1')">HS-1</button>
+    <button class="sub-tab mcat" onclick="showMecSub('mcat')">📚 カテゴリ別</button>
   </div>
   <!-- 全国 -->
   <div class="sub-panel active" id="panel-mzenkoku">
@@ -146,6 +148,21 @@ main{padding:14px;max-width:640px;margin:0 auto;}
       <a class="qcard shin" href="./2025新人試験.html" target="_blank"><span class="qcard-icon">🌱</span><div class="qcard-body"><div class="qcard-title">2025年度　新人エンジニア試験</div><div class="qcard-meta">60問 ／ 150点満点</div></div><span class="qcard-arr">›</span></a>
       <a class="qcard shin" href="./2023新人試験.html" target="_blank"><span class="qcard-icon">🌱</span><div class="qcard-body"><div class="qcard-title">2023年度　新人エンジニア試験</div><div class="qcard-meta">60問 ／ 150点満点</div></div><span class="qcard-arr">›</span></a>
     </div>
+  <div class="sub-panel" id="panel-mcat">
+    <div class="sec-label">📚 カテゴリ別 10問チャレンジ</div>
+    <div class="cat-grid">
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%B3" target="_blank"><div class="cat-card-name">⚙️ エンジン</div><div class="cat-card-count">71問のプールから10問</div></a>
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=%E9%9B%BB%E6%B0%97%E8%A3%85%E7%BD%AE" target="_blank"><div class="cat-card-name">⚡ 電気装置</div><div class="cat-card-count">51問のプールから10問</div></a>
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=%E6%96%B0%E8%A3%85%E7%BD%AE%E3%83%BB%E4%B8%80%E8%88%AC" target="_blank"><div class="cat-card-name">🔩 新装置・一般</div><div class="cat-card-count">57問のプールから10問</div></a>
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=%E3%82%B7%E3%83%A3%E3%82%B7%E3%83%BB%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0" target="_blank"><div class="cat-card-name">🚛 シャシ・フレーム</div><div class="cat-card-count">46問のプールから10問</div></a>
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=T%2FM" target="_blank"><div class="cat-card-name">⚙️ T/M</div><div class="cat-card-count">43問のプールから10問</div></a>
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=%E6%B3%95%E4%BB%A4" target="_blank"><div class="cat-card-name">📋 法令</div><div class="cat-card-count">41問のプールから10問</div></a>
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=%E3%83%96%E3%83%AC%E3%83%BC%E3%82%AD" target="_blank"><div class="cat-card-name">🛑 ブレーキ</div><div class="cat-card-count">36問のプールから10問</div></a>
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=HV" target="_blank"><div class="cat-card-name">🔋 HV（ハイブリッド）</div><div class="cat-card-count">25問のプールから10問</div></a>
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=%E8%A8%88%E7%AE%97" target="_blank"><div class="cat-card-name">🔢 計算</div><div class="cat-card-count">27問のプールから10問</div></a>
+      <a class="cat-card" href="./メカニックカテゴリ別チャレンジ.html?cat=%E6%96%B0%E6%A9%9F%E8%83%BD%E3%83%BB%E4%B8%80%E8%88%AC" target="_blank"><div class="cat-card-name">✨ 新機能・一般</div><div class="cat-card-count">6問のプールから全問</div></a>
+    </div>
+  </div>
   </div>
 </div>
 <div class="section" id="section-front">
@@ -248,7 +265,7 @@ function showMecSub(id){
   document.querySelectorAll('#section-mechanic .sub-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('#section-mechanic .sub-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  var map={mhs1:'hs1',mshin:'shin',mzenkoku:'mec'};
+  var map={mhs1:'hs1',mshin:'shin',mzenkoku:'mec',mcat:'mcat'};
   document.querySelector('#section-mechanic .sub-tab.'+map[id]).classList.add('active');
 }
 document.addEventListener('click',function(e){
