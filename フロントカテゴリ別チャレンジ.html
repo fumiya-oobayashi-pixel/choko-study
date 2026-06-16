@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title id="page-title">カテゴリ別チャレンジ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f1f5f9;font-family:'Hiragino Sans','Meiryo',sans-serif;color:#1e293b;min-height:100vh}
+header{background:linear-gradient(135deg,#1e3a5f,#2d5a8e);color:white;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+.back-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:5px 12px;border-radius:8px;text-decoration:none;font-size:.78rem;font-weight:700;white-space:nowrap}
+header h1{font-size:1rem;font-weight:800;flex:1}
+.progress-bar{height:4px;background:#e2e8f0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#d97706);transition:width .3s}
+main{max-width:680px;margin:0 auto;padding:14px}
+/* スタート画面 */
+#start-screen{text-align:center;padding:40px 20px}
+.cat-title{font-size:1.4rem;font-weight:900;color:#1e3a5f;margin-bottom:8px}
+.cat-count{font-size:.9rem;color:#64748b;margin-bottom:32px}
+.start-btn{display:inline-block;padding:14px 40px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(245,158,11,.4)}
+/* 問題画面 */
+#quiz-screen{display:none}
+.q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.q-num{font-size:.8rem;font-weight:700;color:#64748b}
+.q-pts{font-size:.75rem;background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:999px;font-weight:700}
+.q-stem{background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);font-size:.92rem;line-height:1.7;margin-bottom:12px;font-weight:700;color:#1e293b}
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.choice-btn{background:white;border:2px solid #e2e8f0;border-radius:10px;padding:12px 14px;text-align:left;font-size:.88rem;font-family:inherit;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:10px;color:#1e293b;line-height:1.5}
+.choice-btn:hover:not(:disabled){border-color:#94a3b8;background:#f8fafc}
+.choice-label{font-weight:800;font-size:.85rem;min-width:20px;color:#475569}
+.choice-btn.correct{border-color:#10b981;background:#ecfdf5;color:#065f46}
+.choice-btn.correct .choice-label{color:#059669}
+.choice-btn.wrong{border-color:#ef4444;background:#fef2f2;color:#991b1b}
+.choice-btn.wrong .choice-label{color:#dc2626}
+.choice-btn.reveal{border-color:#10b981;background:#ecfdf5;opacity:.7}
+.choice-btn:disabled{cursor:default}
+/* フィードバック */
+.feedback{border-radius:12px;padding:14px;margin-bottom:12px;display:none;font-size:.85rem;line-height:1.6}
+.feedback.correct{background:#ecfdf5;border:2px solid #10b981;color:#065f46}
+.feedback.wrong{background:#fef2f2;border:2px solid #ef4444;color:#991b1b}
+.feedback-title{font-weight:800;font-size:.95rem;margin-bottom:4px}
+.explanation{margin-top:8px;font-size:.82rem;color:#374151;background:#f8fafc;border-radius:8px;padding:10px;line-height:1.7}
+.next-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1e3a5f,#2d5a8e);color:white;border:none;border-radius:12px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;display:none}
+/* 結果画面 */
+#result-screen{display:none;text-align:center;padding:20px 0}
+.result-card{background:white;border-radius:16px;padding:28px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:14px}
+.result-score{font-size:3rem;font-weight:900;margin-bottom:4px}
+.result-label{font-size:.85rem;color:#64748b;margin-bottom:16px}
+.result-bar-wrap{background:#e2e8f0;border-radius:999px;height:12px;margin:0 20px 16px;overflow:hidden}
+.result-bar{height:100%;border-radius:999px;transition:width 1s}
+.result-list{text-align:left;display:flex;flex-direction:column;gap:6px;margin-top:16px}
+.result-item{padding:10px 12px;border-radius:8px;font-size:.83rem;line-height:1.5}
+.result-item.ok{background:#ecfdf5;border:1px solid #6ee7b7}
+.result-item.ng{background:#fef2f2;border:1px solid #fca5a5}
+.result-item-q{font-weight:700;margin-bottom:2px;color:#1e293b}
+.result-item-a{font-size:.78rem;color:#64748b}
+.retry-btn{display:inline-block;margin:8px;padding:12px 28px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:10px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit}
+.home-btn2{display:inline-block;margin:8px;padding:12px 28px;background:#e2e8f0;color:#475569;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none}
+/* ローディング */
+#loading{text-align:center;padding:60px 20px;color:#64748b}
+</style>
+</head>
+<body>
+<header>
+  <a href="./index.html" class="back-btn">← ホーム</a>
+  <h1 id="header-title">カテゴリ別チャレンジ</h1>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+<main>
+  <div id="loading">📚 問題を読み込み中...</div>
+
+  <div id="start-screen" style="display:none">
+    <div class="cat-title" id="cat-display"></div>
+    <div class="cat-count" id="cat-count-display"></div>
+    <button class="start-btn" onclick="startQuiz()">🎯 チャレンジ開始！</button>
+  </div>
+
+  <div id="quiz-screen">
+    <div class="q-header">
+      <div class="q-num" id="q-num">問題 1 / 10</div>
+    </div>
+    <div class="q-stem" id="q-stem"></div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback">
+      <div class="feedback-title" id="feedback-title"></div>
+      <div class="explanation" id="explanation" style="display:none"></div>
+    </div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">次の問題へ →</button>
+  </div>
+
+  <div id="result-screen">
+    <div class="result-card">
+      <div class="result-score" id="result-score"></div>
+      <div class="result-label" id="result-label"></div>
+      <div class="result-bar-wrap"><div class="result-bar" id="result-bar"></div></div>
+      <div class="result-list" id="result-list"></div>
+    </div>
+    <button class="retry-btn" onclick="retryQuiz()">🔄 もう一度</button>
+    <a href="./index.html" class="home-btn2">🏠 ホームへ</a>
+  </div>
+</main>
+
+<script src="./firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  onAuthStateChanged(auth, user => { window._fbUser=user; window._fbDb=db; });
+} catch(e){}
+</script>
+
+<script>
+const params = new URLSearchParams(location.search);
+const CAT = decodeURIComponent(params.get('cat') || '');
+const N = parseInt(params.get('n') || '10', 10);
+
+let pool = [], quiz = [], current = 0, correct = 0, answers = [];
+
+// 初期化
+document.getElementById('header-title').textContent = CAT + ' チャレンジ';
+document.getElementById('page-title').textContent = CAT + ' チャレンジ';
+document.getElementById('cat-display').textContent = '📚 ' + CAT;
+
+// JSONプール読み込み
+fetch('./front-pool.json')
+  .then(r => r.json())
+  .then(data => {
+    pool = data.filter(q => q.cat === CAT);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('start-screen').style.display = 'block';
+    const n = Math.min(N, pool.length);
+    document.getElementById('cat-count-display').textContent =
+      `プール ${pool.length}問 から ${n}問 ランダム出題`;
+  })
+  .catch(() => {
+    document.getElementById('loading').textContent = '読み込みエラー。再読み込みしてください。';
+  });
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  const n = Math.min(N, pool.length);
+  quiz = shuffle(pool).slice(0, n);
+  current = 0; correct = 0; answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = quiz[current];
+  const total = quiz.length;
+  document.getElementById('q-num').textContent = `問題 ${current + 1} / ${total}`;
+  document.getElementById('progress-fill').style.width = (current / total * 100) + '%';
+  document.getElementById('q-stem').textContent = q.stem;
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const choicesEl = document.getElementById('choices');
+  choicesEl.innerHTML = '';
+  const keys = Object.keys(q.choices);
+  keys.forEach(k => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `<span class="choice-label">${k}</span><span>${q.choices[k]}</span>`;
+    btn.onclick = () => selectAnswer(k, btn, keys);
+    choicesEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(chosen, btn, keys) {
+  const q = quiz[current];
+  const isCorrect = chosen === q.answer;
+  if (isCorrect) correct++;
+  answers.push({ q, chosen, isCorrect });
+
+  // ボタン色変え
+  document.querySelectorAll('.choice-btn').forEach(b => {
+    b.disabled = true;
+    const label = b.querySelector('.choice-label').textContent;
+    if (label === q.answer) b.classList.add(isCorrect && label === chosen ? 'correct' : 'reveal');
+  });
+  if (!isCorrect) btn.classList.add('wrong');
+
+  // フィードバック
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+  fb.style.display = 'block';
+  document.getElementById('feedback-title').textContent = isCorrect ? '✅ 正解！' : `❌ 不正解　正解：${q.answer}`;
+  const expEl = document.getElementById('explanation');
+  if (q.explanation) {
+    expEl.textContent = q.explanation;
+    expEl.style.display = 'block';
+  } else {
+    expEl.style.display = 'none';
+  }
+
+  // Firebaseカテゴリ統計
+  try {
+    const user = window._fbUser, db = window._fbDb;
+    if (user && db) {
+      setDoc(doc(db,'users',user.uid,'catStats',q.cat),
+        {total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
+    }
+  } catch(e){}
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = current + 1 < quiz.length ? '次の問題へ →' : '結果を見る';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < quiz.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('progress-fill').style.width = '100%';
+  const rs = document.getElementById('result-screen');
+  rs.style.display = 'block';
+  const pct = Math.round(correct / quiz.length * 100);
+  const color = pct >= 70 ? '#059669' : pct >= 50 ? '#f59e0b' : '#dc2626';
+  document.getElementById('result-score').textContent = `${correct} / ${quiz.length}`;
+  document.getElementById('result-score').style.color = color;
+  document.getElementById('result-label').textContent = `正答率 ${pct}%`;
+  const bar = document.getElementById('result-bar');
+  bar.style.background = color;
+  setTimeout(() => { bar.style.width = pct + '%'; }, 100);
+
+  document.getElementById('result-list').innerHTML = answers.map((a, i) => `
+    <div class="result-item ${a.isCorrect ? 'ok' : 'ng'}">
+      <div class="result-item-q">Q${i+1}. ${a.q.stem.substring(0, 50)}${a.q.stem.length > 50 ? '…' : ''}</div>
+      <div class="result-item-a">${a.isCorrect ? '✅ 正解' : `❌ ${a.chosen} → 正解 ${a.q.answer}`}</div>
+    </div>`).join('');
+
+  // statsに保存
+  try {
+    const user = window._fbUser, db = window._fbDb;
+    if (user && db) {
+      const src = 'フロントカテゴリ別_' + CAT;
+      setDoc(doc(db,'users',user.uid,'stats',src),{
+        source:src,lastCorrect:correct,lastTotal:quiz.length,
+        lastDate:{seconds:Math.floor(Date.now()/1000)},totalAttempts:increment(1)
+      },{merge:true}).catch(()=>{});
+    }
+  } catch(e){}
+}
+
+function retryQuiz() {
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  startQuiz();
+}
+</script>
+</body>
+</html>
