@@ -202,19 +202,22 @@ function render(){
   document.getElementById('review-badge').textContent=' ('+allWrong.length+'問)';
   document.getElementById('history-badge').textContent=' ('+allHistory.length+'問)';
 
-  renderWrongList('wrong-list-review', allWrong, 'review');
-  renderWrongList('wrong-list-history', allHistory, 'history');
+  renderWrongList('wrong-list-review', allWrong, 'review', 'mech');
+  renderWrongList('wrong-list-history', allHistory, 'history', 'mech');
   renderPerfList('mech');
   showChartData('mech');
 }
 
-function renderWrongList(elId, list, type){
+function renderWrongList(elId, list, type, tabType){
   const el=document.getElementById(elId);
-  if(!list.length){
+  let filtered=list;
+  if(tabType==='front') filtered=list.filter(w=>isFrontSource(w.source||w.id||''));
+  else if(tabType==='mech') filtered=list.filter(w=>isMechSource(w.source||w.id||''));
+  if(!filtered.length){
     el.innerHTML='<div class="empty">'+(type==='review'?'✅ 間違い問題なし！':'まだ履歴なし')+'</div>';
     return;
   }
-  const sorted=[...list].sort((a,b)=>(b.timestamp?.seconds||b.firstWrong?.seconds||0)-(a.timestamp?.seconds||a.firstWrong?.seconds||0));
+  const sorted=[...filtered].sort((a,b)=>(b.timestamp?.seconds||b.firstWrong?.seconds||0)-(a.timestamp?.seconds||a.firstWrong?.seconds||0));
   el.innerHTML=sorted.map(w=>{
     const baseUrl=w.url||(w.source&&SOURCE_TO_URL[w.source])||null;
     const href=baseUrl?`${baseUrl}?q=${w.qNo}`:'#';
@@ -275,6 +278,12 @@ function showChartData(type){
 
   const hasData=cats.some(c=>catMap[c]&&catMap[c].total>0);
   renderPerfList(type);
+  renderWrongList('wrong-list-review', allWrong, 'review', type);
+  renderWrongList('wrong-list-history', allHistory, 'history', type);
+  const fw=allWrong.filter(w=>type==='front'?isFrontSource(w.source||w.id||''):isMechSource(w.source||w.id||''));
+  const fh=allHistory.filter(w=>type==='front'?isFrontSource(w.source||w.id||''):isMechSource(w.source||w.id||''));
+  document.getElementById('review-badge').textContent=' ('+fw.length+'問)';
+  document.getElementById('history-badge').textContent=' ('+fh.length+'問)';
   if(!hasData){
     wrap.innerHTML='<canvas id="radarChart"></canvas>';
     wrap.innerHTML='<div class="empty">まだデータなし<br><small>問題を解くと反映されます</small></div>';
