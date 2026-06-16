@@ -232,11 +232,11 @@ function renderWrongList(elId, list, type){
   }).join('');
 }
 
-function isFrontSource(src){
-  return /HF|HS|フロント|49回/.test(src);
-}
 function isMechSource(src){
   return /メカニック|エンジニア|新人/.test(src);
+}
+function isFrontSource(src){
+  return !isMechSource(src) && /HF|HS|フロント|49回/.test(src);
 }
 
 function renderPerfList(type){
