@@ -233,10 +233,10 @@ function renderWrongList(elId, list, type){
 }
 
 function isMechSource(src){
-  return /メカニック|エンジニア|新人/.test(src);
+  return /メカニック|エンジニア|新人|HS/.test(src);
 }
 function isFrontSource(src){
-  return !isMechSource(src) && /HF|HS|フロント|49回/.test(src);
+  return !isMechSource(src) && /HF|フロント|49回/.test(src);
 }
 
 function renderPerfList(type){
