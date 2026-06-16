@@ -283,7 +283,7 @@ function norm(q) {
     var labs = q.o.length <= 3 ? L3 : q.o.length === 4 ? L4 : L5;
     var ch = {};
     q.o.forEach(function(v, i) { ch[labs[i]] = v; });
-    return {no:q.n, section:q.s||'', label:(q.s||'問'+q.n), points:q.p, answer:labs[q.a], stem:q.q, choices:ch, explanation:q.exp||'', invalid:false, multi:false, freeAnswer:false, cat:q.cat||\'\'};
+    return {no:q.n, section:q.s||'', label:(q.s||'問'+q.n), points:q.p, answer:labs[q.a], stem:q.q, choices:ch, explanation:q.exp||'', invalid:false, multi:false, freeAnswer:false, cat:q.cat||''};
   }
   if (q.opts !== undefined && Array.isArray(q.opts)) {
     var labs2 = q.labels || L4;
