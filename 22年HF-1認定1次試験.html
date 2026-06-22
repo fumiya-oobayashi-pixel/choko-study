@@ -538,21 +538,6 @@ try {
       if (!q) return;
       const _L = q.labels || ['A','B','C','D'];
       const isCorrect = choice === (q.answer !== undefined ? q.answer : _L[q.ans]);
-      const key = window._fbSrc + '_q' + no;
-      if (isCorrect) {
-        deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
-      } else {
-        setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
-          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
-          stem:(q.text||q.stem||'').substring(0,120),timestamp:serverTimestamp(),
-          url:window.location.pathname
-        },{merge:true}).catch(()=>{});
-        setDoc(doc(db,'users',user.uid,'wrongHistory',key),{
-          source:window._fbSrc,qNo:no,label:q.label||('Q'+no),
-          stem:(q.text||q.stem||'').substring(0,120),firstWrong:serverTimestamp(),
-          url:window.location.pathname
-        },{merge:true}).catch(()=>{});
-      }
       // カテゴリ別累計
       const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険");
       setDoc(doc(db,'users',user.uid,'catStats',cat),{total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
@@ -566,8 +551,30 @@ try {
       const user = window._fbUser; const db = window._fbDb;
       if (!user || !db) return;
       const norms = (typeof questions!=="undefined"?questions:[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
+      const ansObj = (typeof ans!=="undefined"?ans:{});
       let correct=0,total=0;
-      norms.forEach(q=>{total+=q.points||3;if((typeof ans!=="undefined"?ans:{})[q.no]===q.answer)correct+=q.points||3;});
+      norms.forEach(q=>{
+        total+=q.points||3;
+        const _L2 = q.labels || ['A','B','C','D'];
+        const correctAns = q.answer !== undefined ? q.answer : _L2[q.ans];
+        const isCorrect2 = ansObj[q.no] === correctAns;
+        if(isCorrect2) correct+=q.points||3;
+        const key = window._fbSrc + '_q' + q.no;
+        if(isCorrect2) {
+          deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
+        } else if(ansObj[q.no] !== undefined) {
+          setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
+            source:window._fbSrc,qNo:q.no,label:q.label||('Q'+q.no),
+            stem:(q.text||q.stem||'').substring(0,120),timestamp:serverTimestamp(),
+            url:window.location.pathname
+          },{merge:true}).catch(()=>{});
+          setDoc(doc(db,'users',user.uid,'wrongHistory',key),{
+            source:window._fbSrc,qNo:q.no,label:q.label||('Q'+q.no),
+            stem:(q.text||q.stem||'').substring(0,120),firstWrong:serverTimestamp(),
+            url:window.location.pathname
+          },{merge:true}).catch(()=>{});
+        }
+      });
       setDoc(doc(db,'users',user.uid,'stats',window._fbSrc),{
         source:window._fbSrc,lastCorrect:correct,lastTotal:total,
         lastDate:serverTimestamp(),totalAttempts:increment(1)

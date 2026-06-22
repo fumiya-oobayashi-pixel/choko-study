@@ -622,8 +622,30 @@ try {
       const user = window._fbUser; const db = window._fbDb;
       if (!user || !db) return;
       const norms = (typeof questions!=="undefined"?questions:[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
+      const ansObj = (typeof ans!=="undefined"?ans:{});
       let correct=0,total=0;
-      norms.forEach(q=>{total+=q.points||3;if((typeof ans!=="undefined"?ans:{})[q.no]===q.answer)correct+=q.points||3;});
+      norms.forEach(q=>{
+        total+=q.points||3;
+        const _L2 = q.labels || ['A','B','C','D'];
+        const correctAns = q.answer !== undefined ? q.answer : _L2[q.ans];
+        const isCorrect2 = ansObj[q.no] === correctAns;
+        if(isCorrect2) correct+=q.points||3;
+        const key = window._fbSrc + '_q' + q.no;
+        if(isCorrect2) {
+          deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
+        } else if(ansObj[q.no] !== undefined) {
+          setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
+            source:window._fbSrc,qNo:q.no,label:q.label||('Q'+q.no),
+            stem:(q.text||q.stem||'').substring(0,120),timestamp:serverTimestamp(),
+            url:window.location.pathname
+          },{merge:true}).catch(()=>{});
+          setDoc(doc(db,'users',user.uid,'wrongHistory',key),{
+            source:window._fbSrc,qNo:q.no,label:q.label||('Q'+q.no),
+            stem:(q.text||q.stem||'').substring(0,120),firstWrong:serverTimestamp(),
+            url:window.location.pathname
+          },{merge:true}).catch(()=>{});
+        }
+      });
       setDoc(doc(db,'users',user.uid,'stats',window._fbSrc),{
         source:window._fbSrc,lastCorrect:correct,lastTotal:total,
         lastDate:serverTimestamp(),totalAttempts:increment(1)
