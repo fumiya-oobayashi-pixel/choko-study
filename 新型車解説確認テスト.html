@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新型車解説確認テスト</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+    padding: 20px;
+    color: #1a202c;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    color: #2d3748;
+    margin-bottom: 8px;
+    padding: 20px 0 10px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #718096;
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+  }
+  .filter-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .filter-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .filter-group {
+    flex: 1;
+    min-width: 180px;
+  }
+  .filter-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23718096' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+  select:focus { outline: none; border-color: #4299e1; }
+  .btn-start {
+    padding: 10px 28px;
+    background: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn-start:hover { background: #2b6cb0; transform: translateY(-1px); }
+  .btn-start:active { transform: translateY(0); }
+
+  /* Stats bar */
+  .stats-bar {
+    background: white;
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    font-size: 0.9rem;
+  }
+  .stats-bar .progress-text { color: #4a5568; }
+  .stats-bar .score-text { font-weight: 600; color: #2d3748; }
+  .progress-bar-wrap { width: 200px; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: #3182ce; border-radius: 4px; transition: width 0.4s; }
+
+  /* Quiz card */
+  .quiz-card {
+    background: white;
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 16px;
+  }
+  .question-meta {
+    font-size: 0.78rem;
+    color: #a0aec0;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 8px;
+  }
+  .tag {
+    background: #ebf8ff;
+    color: #2b6cb0;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .tag.engine { background: #fff5f0; color: #c05621; }
+  .tag.chassis { background: #f0fff4; color: #276749; }
+  .tag.electric { background: #fffff0; color: #975a16; }
+  .tag.safety { background: #faf5ff; color: #6b46c1; }
+  .tag.body { background: #f7fafc; color: #4a5568; }
+
+  .question-text {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #2d3748;
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    padding: 13px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background: white;
+    text-align: left;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: #4299e1; background: #ebf8ff; }
+  .choice-btn .num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
+    color: #4a5568;
+  }
+  .choice-btn.correct { border-color: #48bb78; background: #f0fff4; }
+  .choice-btn.correct .num { background: #48bb78; color: white; }
+  .choice-btn.wrong { border-color: #fc8181; background: #fff5f5; }
+  .choice-btn.wrong .num { background: #fc8181; color: white; }
+  .choice-btn.show-answer { border-color: #48bb78; background: #f0fff4; opacity: 0.6; }
+  .choice-btn.show-answer .num { background: #48bb78; color: white; }
+  .choice-btn:disabled { cursor: default; }
+
+  .explanation {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: #fffbeb;
+    border-left: 4px solid #f6ad55;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.88rem;
+    color: #744210;
+    line-height: 1.6;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: #c05621; }
+
+  .btn-next {
+    margin-top: 20px;
+    width: 100%;
+    padding: 14px;
+    background: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: none;
+  }
+  .btn-next:hover { background: #2b6cb0; }
+  .btn-next.show { display: block; }
+
+  /* Result screen */
+  .result-card {
+    background: white;
+    border-radius: 14px;
+    padding: 40px 28px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .result-score {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #3182ce;
+    margin: 10px 0;
+  }
+  .result-label { color: #718096; font-size: 0.9rem; }
+  .result-msg { font-size: 1.2rem; font-weight: 600; color: #2d3748; margin: 16px 0 28px; }
+  .btn-retry {
+    padding: 12px 36px;
+    background: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-retry:hover { background: #2b6cb0; }
+
+  .hidden { display: none; }
+  #no-questions {
+    text-align: center;
+    padding: 40px;
+    color: #a0aec0;
+    font-size: 1rem;
+  }
+</style>
+</head>
+<header style="background:linear-gradient(135deg,#166534,#16a34a);color:white;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.2)">
+  <a href="./index.html" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:5px 12px;border-radius:8px;text-decoration:none;font-size:.78rem;font-weight:700">← ホーム</a>
+  <h1 style="font-size:1rem;font-weight:800;flex:1">🚗 新型車解説確認テスト</h1>
+</header>
+<div class="container">
+  <h1>🚛 新型車解説書 確認テスト</h1>
+  <p class="subtitle">日野デュトロ・レンジャー・プロフィアZ FCV 新型車解説書</p>
+
+  <!-- フィルター -->
+  <div class="filter-card">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>車種</label>
+        <select id="sel-vehicle">
+          <option value="all">すべて</option>
+          <option value="小型">小型（デュトロ）</option>
+          <option value="中型">中型（レンジャー）</option>
+          <option value="大型">大型（プロフィアZ FCV）</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>装置</label>
+        <select id="sel-category">
+          <option value="all">すべて</option>
+          <option value="安全装置">安全装置</option>
+          <option value="電気">電気</option>
+          <option value="シャシ">シャシ</option>
+          <option value="エンジン">エンジン</option>
+          <option value="ボデー">ボデー</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>出題数</label>
+        <select id="sel-count">
+          <option value="5">5問</option>
+          <option value="10" selected>10問</option>
+          <option value="20">20問</option>
+          <option value="all">全問</option>
+        </select>
+      </div>
+      <button class="btn-start" onclick="startQuiz()">▶ スタート</button>
+    </div>
+  </div>
+
+  <!-- 進捗バー -->
+  <div class="stats-bar hidden" id="stats-bar">
+    <span class="progress-text" id="progress-text">問題 1 / 10</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <span class="score-text" id="score-text">正解: 0</span>
+  </div>
+
+  <!-- 問題エリア -->
+  <div id="quiz-area"></div>
+  <div id="no-questions" class="hidden">選択した条件に問題がありません。条件を変更してください。</div>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ---- 安全装置 ----
+  {
+    id:1, vehicle:"小型", category:"安全装置", topic:"車線逸脱警報", type:"構造",
+    q:"車線逸脱警報システムを制御するセンサーはどれですか？",
+    choices:["超音波センサー","画像センサー","ミリ波レーダー","赤外線センサー"],
+    answer:1,
+    exp:"車線逸脱警報は<strong>画像センサー</strong>からの情報をECUが処理し、車線からの逸脱を検知します。"
+  },
+  {
+    id:2, vehicle:"小型", category:"安全装置", topic:"車線逸脱警報", type:"構造",
+    q:"車線逸脱警報OFFスイッチが取り付けられている場所はどれですか？",
+    choices:["ステアリングコラム","ドアパネル","インストルメントパネル中央部","センターコンソール"],
+    answer:2,
+    exp:"車線逸脱警報OFFスイッチは<strong>インストルメントパネルの中央部</strong>に取り付けられています。"
+  },
+  {
+    id:3, vehicle:"小型", category:"安全装置", topic:"車線逸脱警報", type:"作動",
+    q:"車線逸脱警報が作動する自車速度の条件はどれですか？",
+    choices:["約40km/h以上","約50km/h以上","約60km/h以上","約80km/h以上"],
+    answer:2,
+    exp:"車線逸脱警報は<strong>約60km/h以上</strong>で走行中に車線逸脱を検知すると警報を出します。"
+  },
+  {
+    id:4, vehicle:"小型", category:"安全装置", topic:"車線逸脱警報", type:"作動",
+    q:"車線逸脱警報の警報音はどれですか？",
+    choices:["ピーッ（連続音）","ピッピッピッ","ピピピピッ（連続）","ブーッ"],
+    answer:1,
+    exp:"車線を逸脱したときは<strong>「ピッピッピッ」</strong>という断続音で警報します。"
+  },
+  {
+    id:5, vehicle:"小型", category:"安全装置", topic:"PCS", type:"作動",
+    q:"PCS OFFスイッチを長押しして一時無効化した場合、約何分後に自動復帰しますか？",
+    choices:["約5分","約10分","約15分","約30分"],
+    answer:2,
+    exp:"PCS OFFスイッチの長押しで一時無効化できますが、<strong>約15分後に自動的に復帰</strong>します。"
+  },
+  {
+    id:6, vehicle:"小型", category:"安全装置", topic:"PCS", type:"作動",
+    q:"衝突被害軽減ブレーキシステム(PCS)が作動する自車速度の条件はどれですか？",
+    choices:["約5km/h以上","約10km/h以上","約15km/h以上","約20km/h以上"],
+    answer:1,
+    exp:"PCSは<strong>自車速度が約10km/h以上</strong>のときに作動条件を満たします。"
+  },
+  {
+    id:7, vehicle:"小型", category:"安全装置", topic:"サイトアラウンドモニター", type:"構造",
+    q:"サイトアラウンドモニターシステムを制御するECUはどれですか？",
+    choices:["ABS ECU","エンジンECU","DSS ECU","ボデーECU"],
+    answer:2,
+    exp:"サイトアラウンドモニターシステムは<strong>DSS ECU</strong>によって制御されます。"
+  },
+  {
+    id:8, vehicle:"小型", category:"安全装置", topic:"サイトアラウンドモニター", type:"構造",
+    q:"コーナーレーダーセンサーはどの技術を使用していますか？",
+    choices:["超音波","赤外線","レーザー","ミリ波"],
+    answer:3,
+    exp:"コーナーレーダーセンサーは<strong>ミリ波</strong>を使用して対象物を検知します。"
+  },
+  {
+    id:9, vehicle:"小型", category:"安全装置", topic:"サイトアラウンドモニター", type:"作動",
+    q:"サイトアラウンドモニターシステムが作動する自車速度の範囲はどれですか？",
+    choices:["約1～5km/h","約3～10km/h","約5～20km/h","約10～30km/h"],
+    answer:1,
+    exp:"サイトアラウンドモニターは<strong>自車速度が約3～10km/h</strong>のときに作動します。"
+  },
+  {
+    id:10, vehicle:"小型", category:"安全装置", topic:"サイトアラウンドモニター", type:"作動",
+    q:"サイトアラウンドモニターシステムが不作動になる条件はどれですか？",
+    choices:["車速が5km/h以下","ウインカー操作中","シフトがRレンジのとき","車幅灯点灯中"],
+    answer:2,
+    exp:"シフトを<strong>Rレンジ</strong>に入れると、サイトアラウンドモニターは不作動となります。"
+  },
+  {
+    id:11, vehicle:"小型", category:"安全装置", topic:"誤発進抑制機能・クリアランスソナー", type:"概要",
+    q:"誤発進抑制機能（クリアランスソナー）は何で障害物を検知しますか？",
+    choices:["カメラ","ミリ波レーダー","ソナーセンサー","赤外線センサー"],
+    answer:2,
+    exp:"誤発進抑制機能は<strong>ソナーセンサー</strong>で近距離の障害物を検知し、エンジン出力抑制と自動ブレーキを行います。"
+  },
+  {
+    id:12, vehicle:"小型", category:"安全装置", topic:"AHB", type:"作動",
+    q:"オートマチックハイビーム（AHB）が自動点灯する車速条件はどれですか？",
+    choices:["約20km/hを超える","約25km/hを超える","約30km/hを超える","約40km/hを超える"],
+    answer:2,
+    exp:"AHBは<strong>約30km/hを超えると</strong>自動的にハイビームに切り替わります（前方が暗く対向車/先行車がない場合）。"
+  },
+  {
+    id:13, vehicle:"小型", category:"安全装置", topic:"AHB", type:"作動",
+    q:"オートマチックハイビームがハイビームからロービームに切り替わる（消灯する）車速条件はどれですか？",
+    choices:["約15km/h以下","約20km/h以下","約25km/h以下","約30km/h以下"],
+    answer:2,
+    exp:"AHBは<strong>約25km/h以下</strong>になるとロービームに自動的に切り替わります。"
+  },
+  {
+    id:14, vehicle:"小型", category:"安全装置", topic:"バックブザー", type:"作動",
+    q:"バックブザーの減音スイッチを押したとき、車両側ではどのような変化がありますか？",
+    choices:["バックランプが点滅する","ハザードランプが点灯する","スイッチのインジケーターランプが点灯する","音が完全にOFFになる"],
+    answer:2,
+    exp:"減音スイッチを押すと<strong>スイッチのインジケーターランプが点灯</strong>し、減音モードになったことを知らせます。"
+  },
+  {
+    id:15, vehicle:"小型", category:"安全装置", topic:"バックブザー", type:"作動",
+    q:"イグニッションスイッチをOFFにするとバックブザーのモードはどうなりますか？",
+    choices:["減音モードのまま","完全にOFF","通常音モードに切り替わる","自動的に音量が上がる"],
+    answer:2,
+    exp:"イグニッションOFFで<strong>通常音モードに自動的に切り替わります</strong>（減音設定はリセットされます）。"
+  },
+
+  // ---- シャシ ----
+  {
+    id:16, vehicle:"小型", category:"シャシ", topic:"ブレーキコントロール", type:"作動",
+    q:"ABS（アンチロックブレーキシステム）が制御するのはどれですか？",
+    choices:["前輪のみ","後輪のみ","左前輪と右後輪","4輪すべて"],
+    answer:3,
+    exp:"ABSは<strong>4輪すべての油圧</strong>を個別に制御し、制動時の車輪ロックを防止します。"
+  },
+  {
+    id:17, vehicle:"小型", category:"シャシ", topic:"ブレーキコントロール", type:"作動",
+    q:"EBD（電子制動力配分）が制御するものはどれですか？",
+    choices:["エンジンブレーキのみ","後輪制動力のみ","前後・左右の制動力配分","ハンドブレーキのみ"],
+    answer:2,
+    exp:"EBDは<strong>前後輪および左右輪の制動力を最適に配分</strong>し、車輪のロックを防ぎながら制動性能を高めます。"
+  },
+  {
+    id:18, vehicle:"小型", category:"シャシ", topic:"ブレーキコントロール", type:"構造",
+    q:"スキッドコントロールコンピュータはどこに搭載されていますか？",
+    choices:["エンジンルーム左側","ダッシュパネル裏","ブレーキアクチュエータASSYと一体","センターコンソール下"],
+    answer:2,
+    exp:"スキッドコントロールコンピュータは<strong>ブレーキアクチュエータASSYと一体化</strong>されて搭載されています。"
+  },
+  {
+    id:19, vehicle:"小型", category:"シャシ", topic:"電動パーキングブレーキ", type:"構造",
+    q:"電動パーキングブレーキECUの搭載位置はどこですか？",
+    choices:["運転席下部","エンジンルーム内","センターコンソール","助手席側キャブバックパネル"],
+    answer:3,
+    exp:"電動パーキングブレーキECUは<strong>助手席側のキャブバックパネル</strong>に搭載されています。"
+  },
+  {
+    id:20, vehicle:"小型", category:"シャシ", topic:"電動パーキングブレーキ", type:"作動",
+    q:"電動パーキングブレーキをかけるにはどうしますか？",
+    choices:["スイッチを押す","スイッチを引く","ペダルを踏む","レバーを引く"],
+    answer:1,
+    exp:"電動パーキングブレーキは<strong>スイッチを引く</strong>ことで作動し、<strong>引き下げる</strong>と解除されます。"
+  },
+  {
+    id:21, vehicle:"小型", category:"シャシ", topic:"ブレーキロック", type:"作動",
+    q:"ブレーキロック（作業用補助制動装置）を作動させるために最初に必要な操作はどれですか？",
+    choices:["ブレーキロックスイッチを押す","エンジンを切る","パーキングブレーキをかける","ギアをニュートラルにする"],
+    answer:2,
+    exp:"ブレーキロックは、まず<strong>パーキングブレーキをかけた状態</strong>でブレーキペダルを踏み、さらにスイッチを操作して制動力を保持します。"
+  },
+  {
+    id:22, vehicle:"小型", category:"シャシ", topic:"メカニカルトランスミッション", type:"構造",
+    q:"A862Eトランスミッションに搭載されている電動オイルポンプの特徴はどれですか？",
+    choices:["A862Fにも同様に搭載","A862Eのみに搭載","エンジン停止時は作動しない","機械式と電動式の両方がある"],
+    answer:1,
+    exp:"電動オイルポンプは<strong>A862Eのみに搭載</strong>され、アイドリングストップ中もATFを循環させます。"
+  },
+  {
+    id:23, vehicle:"小型", category:"シャシ", topic:"メカニカルトランスミッション", type:"構造",
+    q:"A862Eのトルクコンバーターはどのタイプのトルクコンバーターですか？",
+    choices:["スーパーフロー型","ハイパワー型","フルフロー型","ウルトラフロー型"],
+    answer:0,
+    exp:"A862Eのトルクコンバーターは<strong>スーパーフロー型</strong>です。"
+  },
+  {
+    id:24, vehicle:"小型", category:"シャシ", topic:"フレーム", type:"構造",
+    q:"新型フレームのデッキマウントで改良された点はどれですか？",
+    choices:["材質をアルミに変更","ワッシャーとナットを一体化","溶接構造に変更","マウント数を削減"],
+    answer:1,
+    exp:"デッキマウントは<strong>ワッシャーとナットが一体化</strong>されており、ナット締結の作業性が向上しています。"
+  },
+
+  // ---- 電気 ----
+  {
+    id:25, vehicle:"小型", category:"電気", topic:"オルタネーター", type:"構造",
+    q:"新型のオルタネーターの出力電流は何Aに変更されましたか？",
+    choices:["60A","80A","90A","100A"],
+    answer:2,
+    exp:"新型オルタネーターの出力電流は<strong>90A</strong>です。"
+  },
+  {
+    id:26, vehicle:"小型", category:"電気", topic:"オルタネーター", type:"作動",
+    q:"オルタネーターの発電電圧の調整範囲はどれですか？",
+    choices:["12V～24V","18V～28V","22V～31V","24V～36V"],
+    answer:2,
+    exp:"オルタネーターは<strong>22V～31V</strong>の範囲で発電電圧を調整します。"
+  },
+  {
+    id:27, vehicle:"小型", category:"電気", topic:"バッテリーセンサー", type:"作動",
+    q:"バッテリーセンサーが検知する項目として正しいものはどれですか？",
+    choices:["電圧のみ","電圧と温度のみ","充電電流のみ","電圧・充放電電流・温度・内部抵抗"],
+    answer:3,
+    exp:"バッテリーセンサーは<strong>電圧・充放電電流・温度・内部抵抗</strong>の4つを検知し、LIN通信で統合電源ユニットへ送信します。"
+  },
+  {
+    id:28, vehicle:"小型", category:"電気", topic:"統合電源ユニット", type:"作動",
+    q:"統合電源ユニットはバッテリー電圧を何Vに降圧しますか？",
+    choices:["6V","8V","12V","16V"],
+    answer:2,
+    exp:"統合電源ユニットは<strong>24V→12V</strong>に降圧して12V機器に電力を供給します。"
+  },
+  {
+    id:29, vehicle:"小型", category:"電気", topic:"FMSコネクタ", type:"作動",
+    q:"FMSコネクタから出力されるデータとして正しいものはどれですか？",
+    choices:["エアコン制御情報","燃料消費量・エンジン回転数・連続稼働時間・累積走行距離","ドアの開閉履歴","ライトのON/OFF履歴"],
+    answer:1,
+    exp:"FMSコネクタは<strong>燃料消費量・エンジン回転数・連続稼働時間・累積走行距離</strong>などのフリート管理用データを出力します。"
+  },
+  {
+    id:30, vehicle:"小型", category:"電気", topic:"オートライティング", type:"作動",
+    q:"オートライティングはどのスイッチポジションで有効になりますか？",
+    choices:["ONポジション","AUTOポジション","マニュアルポジション","HIポジション"],
+    answer:1,
+    exp:"オートライティングは<strong>AUTOポジション</strong>にセットしたとき、周囲の明るさに応じて自動でランプを点灯します。"
+  },
+  {
+    id:31, vehicle:"小型", category:"電気", topic:"パワーウィンドウ", type:"構造",
+    q:"ウインドウレギュレーターの作動電圧は何Vに変更されましたか？",
+    choices:["6V","12V","24V","48V"],
+    answer:1,
+    exp:"ウインドウレギュレーターの作動電圧は<strong>12V</strong>に変更されました（従来は24V）。"
+  },
+
+  // ---- エンジン ----
+  {
+    id:32, vehicle:"小型", category:"エンジン", topic:"サーモスタット", type:"構造",
+    q:"新型（N04C-YEエンジン）のサーモスタット開弁温度は何℃ですか？",
+    choices:["82℃","85℃","88℃","90℃"],
+    answer:2,
+    exp:"N04C-YEエンジンのサーモスタット開弁温度は前型の82℃から<strong>88℃</strong>に変更されました。"
+  },
+  {
+    id:33, vehicle:"小型", category:"エンジン", topic:"尿素SCRシステム", type:"構造",
+    q:"尿素水タンクの素材はどれですか？",
+    choices:["ステンレス製","アルミ製","厚手の樹脂製","繊維強化プラスチック製"],
+    answer:2,
+    exp:"尿素水タンクは尿素水の腐食性に対応するため<strong>厚手の樹脂製</strong>で製造されています。"
+  },
+  {
+    id:34, vehicle:"小型", category:"エンジン", topic:"尿素SCRシステム", type:"構造",
+    q:"尿素水ポンプに内蔵されているものはどれですか？",
+    choices:["ヒーターのみ","フィルターと温度センサーのみ","ヒーター・フィルター・温度センサー・圧力センサー","電動モーターのみ"],
+    answer:2,
+    exp:"尿素水ポンプには<strong>ヒーター・フィルター・温度センサー・圧力センサー</strong>が一体で内蔵されています。"
+  },
+
+  // ---- ボデー ----
+  {
+    id:35, vehicle:"小型", category:"ボデー", topic:"ドア", type:"構造",
+    q:"新型のドアキーはキー山が何山に変更されましたか？",
+    choices:["6山","8山","10山","12山"],
+    answer:2,
+    exp:"新型ではキー山が<strong>8山から10山</strong>に増えてセキュリティが向上しました。"
+  },
+  {
+    id:36, vehicle:"小型", category:"ボデー", topic:"スマートエントリー", type:"構造",
+    q:"室内スマートアンテナの搭載位置はどこに変更されましたか？",
+    choices:["ドアパネル内","センターコンソール","キャブ裏","インストルメントパネル内"],
+    answer:3,
+    exp:"室内スマートアンテナは<strong>キャブ裏からインストルメントパネル内</strong>に変更されました。"
+  },
+  {
+    id:37, vehicle:"小型", category:"ボデー", topic:"窓ガラス", type:"構造",
+    q:"ドアガラスは何ガラスに変更されましたか？",
+    choices:["強化ガラス","熱反射ガラス","UVカットガラス","合わせガラス"],
+    answer:2,
+    exp:"ドアガラスは<strong>UVカットガラス</strong>に変更され、紫外線カット効果が向上しました。"
+  },
+  {
+    id:38, vehicle:"小型", category:"ボデー", topic:"アクセサリー", type:"構造",
+    q:"バンパー回りの変更点として正しいものはどれですか？",
+    choices:["バンパーがバリ前方移動","FCTAカバーとPCSカバーが追加・変更","バンパーが樹脂製に変更","フォグランプが廃止"],
+    answer:1,
+    exp:"フロントバンパーの意匠が変更され、<strong>FCTAカバーの追加とPCSカバーの変更</strong>が行われました。"
+  },
+
+  // ==== 中型（日野レンジャー）====
+  {
+    id:39, vehicle:"中型", category:"シャシ", topic:"ABSコントロールバルブ", type:"機能",
+    q:"ABSコントロールバルブはABS作動時にチャンバーのエア圧を何種類のモードに調整しますか？",
+    choices:["2種類（昇圧・減圧）","3種類（昇圧・減圧・圧力保持）","4種類（昇圧・減圧・保持・開放）","5種類"],
+    answer:1,
+    exp:"ABSコントロールバルブはABS作動時にECUからの信号により、チャンバーのエア圧を<strong>昇圧・減圧・圧力保持の3つのモード</strong>に調整します。"
+  },
+  {
+    id:40, vehicle:"中型", category:"シャシ", topic:"EBS", type:"機能",
+    q:"EBS ECUに内蔵されている機能はどれですか？",
+    choices:["エンジン制御機能","ABS/ASR機能","エアコン制御機能","バッテリー管理機能"],
+    answer:1,
+    exp:"EBS ECUは<strong>ABS/ASR機能を内蔵</strong>しており、EBSシステム全体を制御します。"
+  },
+  {
+    id:41, vehicle:"中型", category:"シャシ", topic:"ESスタート", type:"作動",
+    q:"ESスタートのブレーキ力を解除する操作として正しくないものはどれですか？",
+    choices:["発進操作（クラッチを離す等）","メインスイッチ操作","パーキングブレーキ操作","ブレーキペダルを踏み増す"],
+    answer:3,
+    exp:"ESスタートの解除は<strong>発進操作・メインスイッチ・パーキングブレーキ操作</strong>の3通りです。ブレーキを踏み増しても解除されません。"
+  },
+  {
+    id:42, vehicle:"中型", category:"安全装置", topic:"SAMS（レンジャー）", type:"作動",
+    q:"SAMSが不作動になるシフトポジションはどれですか？",
+    choices:["Nレンジ","Dレンジ","Rレンジ","Sレンジ"],
+    answer:2,
+    exp:"SAMSはシフトポジションが<strong>Rレンジ</strong>のときは不作動となります。"
+  },
+  {
+    id:43, vehicle:"中型", category:"安全装置", topic:"SAMS（レンジャー）", type:"作動",
+    q:"SAMSが警報を出すときの手段はどれですか？",
+    choices:["クラクション","マルチインフォメーション表示とブザー","ヘッドランプ点滅","スピーカーから音声"],
+    answer:1,
+    exp:"SAMSは<strong>マルチインフォメーションへの注意喚起表示とブザー</strong>により運転者に注意を促します。"
+  },
+  {
+    id:44, vehicle:"中型", category:"安全装置", topic:"EDSS", type:"作動",
+    q:"EDSSが作動してから車内外報知とブレーキ作動が開始するまでの時間はどれですか？",
+    choices:["約1秒","約3秒","約5秒","約10秒"],
+    answer:1,
+    exp:"EDSSはシステム作動から<strong>約3秒経過後</strong>に車内報知・車外報知を行うとともにブレーキが作動して停車します。"
+  },
+  {
+    id:45, vehicle:"中型", category:"安全装置", topic:"EDSS", type:"構造",
+    q:"EDSS解除スイッチを操作してシステムを解除するにはどうしますか？",
+    choices:["スイッチを長押し","スイッチを1回押す","スイッチを2回押す","スイッチを3秒以上押す"],
+    answer:2,
+    exp:"EDSS解除スイッチを<strong>2回押す</strong>ことでシステム作動を解除し、通常走行を継続できます。"
+  },
+  {
+    id:46, vehicle:"中型", category:"シャシ", topic:"プロシフト", type:"構造",
+    q:"21年モデルよりプロシフトECUおよびI/Oコンバーターはどこに搭載されましたか？",
+    choices:["ダッシュボード下","エンジンルーム内","シフトコンソール下","助手席シート下"],
+    answer:2,
+    exp:"21年モデルより<strong>プロシフトECUおよびI/Oコンバーターはシフトコンソール下</strong>に変更されました。"
+  },
+  {
+    id:47, vehicle:"中型", category:"エンジン", topic:"ターボチャージャー", type:"構造",
+    q:"ターボインシュレーターの内側に追加された吸音材の素材はどれですか？",
+    choices:["ウレタンフォーム","セラミック繊維","グラスウール","フェルト"],
+    answer:2,
+    exp:"ターボインシュレーター内側に<strong>グラスウール</strong>をワッシャーとリベットにて固定した吸音材を追加しました（騒音規制対応）。"
+  },
+  {
+    id:48, vehicle:"中型", category:"シャシ", topic:"ドラムブレーキ", type:"構造",
+    q:"ライニングが使用限度まで摩耗したとき、マルチインフォメーションにどのような表示が出ますか？",
+    choices:["「ブレーキ警告」","「ブレーキ摩耗」","「ブレーキ交換要」","「メンテナンス要」"],
+    answer:1,
+    exp:"ライニング摩耗センサーが使用限度を検知すると、マルチインフォメーションの<strong>「ブレーキ摩耗」</strong>が表示され警報します。"
+  },
+  {
+    id:49, vehicle:"中型", category:"ボデー", topic:"リヤランプ", type:"構造",
+    q:"21年レンジャーで新設されたリヤコンビネーションランプのタイプはどれですか？",
+    choices:["ハロゲン2連タイプ","2連/3連フルLEDタイプ","LEDとハロゲン混合","クリアレンズタイプ"],
+    answer:1,
+    exp:"<strong>2連/3連フルLEDタイプ</strong>を新設しました。フルLED化により長寿命化および被視認性・商品性が向上しました。"
+  },
+  {
+    id:50, vehicle:"中型", category:"ボデー", topic:"シート・シートベルト", type:"構造",
+    q:"21年モデルでシートベルトの巻取り性を向上させるために何を改良しましたか？",
+    choices:["ベルトの幅を広げた","バックルの形状を変更した","リトラクター内のリターンスプリングのトルクを上げた","ベルト素材をナイロンに変更した"],
+    answer:2,
+    exp:"高機能シート用ベルトリトラクター内の<strong>リターンスプリングのトルクを上げて</strong>シートベルトの巻取り性を向上させました。"
+  },
+  {
+    id:51, vehicle:"中型", category:"安全装置", topic:"PCS（レンジャー）", type:"作動",
+    q:"21年モデル以降のレンジャーのPCSが検出対象に追加されたものはどれですか？",
+    choices:["停止車両のみ","歩行者・自転車運転者","大型障害物","対向車"],
+    answer:1,
+    exp:"21年モデル以降は<strong>歩行者・自転車運転者</strong>も検出対象に含まれるようになりました（21年モデル以前は歩行者のみ）。"
+  },
+  {
+    id:52, vehicle:"中型", category:"シャシ", topic:"ブレーキシグナルトランスミッター", type:"機能",
+    q:"ブレーキシグナルトランスミッター（EBS車）の主な機能はどれですか？",
+    choices:["ブレーキ油圧を直接発生させる","ペダルストローク信号をEBS ECUに送信する","エア配管のリークを検知する","ブレーキランプを点灯させる"],
+    answer:1,
+    exp:"ブレーキシグナルトランスミッターは、ブレーキペダルの踏み込み量を<strong>ペダルストローク信号としてEBS ECUに送信</strong>し、ブレーキの効きを制御します。"
+  },
+  {
+    id:53, vehicle:"中型", category:"シャシ", topic:"フロントアクスルモジュレーター", type:"機能",
+    q:"フロントアクスルモジュレーター（EBS車）にバックアップバルブが内蔵されたことで何が改善されましたか？",
+    choices:["制動力が向上した","回路の簡素化と整備性が向上した","燃費が向上した","重量が軽減された"],
+    answer:1,
+    exp:"バックアップバルブをアクスルモジュレーターに内蔵させることにより、<strong>回路の簡素化および整備性が向上</strong>しました。"
+  },
+
+  // ==== 大型（日野プロフィアZ FCV）====
+  {
+    id:54, vehicle:"大型", category:"エンジン", topic:"FCEVシステム", type:"作動",
+    q:"FCEVシステムのDレンジで、アクセルを踏まない状態での走行はどれですか？",
+    choices:["停止する","クリープ走行（微速走行）","回生ブレーキがかかる","エンジンブレーキがかかる"],
+    answer:1,
+    exp:"Dレンジでは、<strong>アクセルを踏まない状態での微速走行（クリープ）</strong>が可能です。これはディーゼル車に相当する操作感です。"
+  },
+  {
+    id:55, vehicle:"大型", category:"エンジン", topic:"FCEVシステム", type:"構造",
+    q:"日野プロフィアZ FCVに搭載されている水素タンクの本数はどれですか？",
+    choices:["2本","4本","6本","8本"],
+    answer:2,
+    exp:"大型トラックに必要な航続距離を確保するため、<strong>大型の水素タンクを6本搭載</strong>しています。"
+  },
+  {
+    id:56, vehicle:"大型", category:"エンジン", topic:"水素タンク", type:"構造",
+    q:"水素タンクの最外層（タンク表面を保護する層）の素材はどれですか？",
+    choices:["炭素繊維強化プラスチック（CFRP）","ガラス繊維強化プラスチック（GFRP）","樹脂ライナー","ステンレス"],
+    answer:1,
+    exp:"水素タンクは三層構造で、内側から「樹脂ライナー」→「CFRP層（補強）」→最外層は<strong>GFRP（ガラス繊維強化プラスチック）層</strong>でタンク表面を保護しています。"
+  },
+  {
+    id:57, vehicle:"大型", category:"安全装置", topic:"水素タンク 溶栓弁", type:"作動",
+    q:"水素タンクの溶栓弁はどのように作動する安全装置ですか？",
+    choices:["電気信号で水素ガスを遮断する","手動で水素ガスを大気開放する","設定温度到達時に内部の水素ガスを大気開放する","圧力上昇時に自動で閉弁する"],
+    answer:2,
+    exp:"溶栓弁は水素タンクの破壊を防止する安全装置で、<strong>設定温度に到達すると内部の水素ガスを大気開放</strong>します。"
+  },
+  {
+    id:58, vehicle:"大型", category:"エンジン", topic:"水素タンク レギュレーター", type:"作動",
+    q:"水素タンクのレギュレーターはFCスタック側の水素ガス圧力を何MPaに調圧しますか？",
+    choices:["0.5～1MPa","1～1.5MPa","2～3MPa","5～7MPa"],
+    answer:1,
+    exp:"レギュレーターはバルブの開閉を繰り返すことで、FCスタック側の水素ガス圧力を<strong>1～1.5MPa</strong>に調圧しています。"
+  },
+  {
+    id:59, vehicle:"大型", category:"電気", topic:"ADB", type:"作動",
+    q:"ADB（Adaptive Driving Beam）ヘッドランプユニット内のLEDの個数はどれですか？",
+    choices:["7個","9個","11個","16個"],
+    answer:2,
+    exp:"ADBヘッドランプユニット内の<strong>11個のLED</strong>の明るさ・点消灯をコントロールして様々な配光制御を行います。"
+  },
+  {
+    id:60, vehicle:"大型", category:"電気", topic:"ADB", type:"作動",
+    q:"ADBの高速モードが開始される車速はどれですか？",
+    choices:["約30km/h以上","約35km/h以上","約40km/h以上","約45km/h以上"],
+    answer:3,
+    exp:"ADBの3段階配光モードのうち、<strong>高速モードは約45km/h以上</strong>で作動し、高速走行時の視野に最適な配光となります。"
+  },
+  {
+    id:61, vehicle:"大型", category:"電気", topic:"ADB", type:"作動",
+    q:"ADBで約何km/h以下になるとハイビームが自動消灯しますか？",
+    choices:["約10km/h以下","約15km/h以下","約20km/h以下","約25km/h以下"],
+    answer:1,
+    exp:"ADBは<strong>約15km/h以下</strong>になるとハイビームが自動消灯します。"
+  },
+  {
+    id:62, vehicle:"大型", category:"安全装置", topic:"ふらつき警報", type:"作動",
+    q:"ふらつき警報システムが作動する前提条件の車速はどれですか？",
+    choices:["約40km/h以上","約50km/h以上","約60km/h以上","約80km/h以上"],
+    answer:2,
+    exp:"ふらつき警報は<strong>約60km/h以上</strong>で走行中かつ直進状態のとき、ハンドル操作にふらつきがあると警報を発します。"
+  },
+  {
+    id:63, vehicle:"大型", category:"安全装置", topic:"スキャニングクルーズⅢ", type:"作動",
+    q:"スキャニングクルーズⅢの車間距離警報が発報する車速条件はどれですか？",
+    choices:["自車速度20km/h以上","自車速度30km/h以上","自車速度35km/h以上","自車速度40km/h以上"],
+    answer:2,
+    exp:"車間距離警報は<strong>自車速度が35km/h以上</strong>かつ車間距離が90m以下かつDr（安全車間距離）以下のとき発報します。"
+  },
+  {
+    id:64, vehicle:"大型", category:"安全装置", topic:"スキャニングクルーズⅢ", type:"作動",
+    q:"スキャニングクルーズⅢの車間距離警報が停止しない操作はどれですか？",
+    choices:["フットブレーキを踏んだとき","自車速度が30km/h以下になったとき","回生ブレーキなどの補助ブレーキ","車間距離Dが安全車間距離Drを上回ったとき"],
+    answer:2,
+    exp:"警報中に<strong>フットブレーキを踏むと警報は停止</strong>しますが、<strong>回生ブレーキなどの補助ブレーキでは停止しません</strong>。"
+  },
+  {
+    id:65, vehicle:"大型", category:"電気", topic:"24VDC/DCコンバーター", type:"作動",
+    q:"プロフィアZの24VDC/DCコンバーターはシステム起動後、何Vを出力しますか？",
+    choices:["DC24.0±0.1V","DC26.5±0.1V","DC28.5±0.1V","DC32.0±0.1V"],
+    answer:2,
+    exp:"システム起動スイッチ「ON」で起動が完了すると<strong>DC28.5±0.1V</strong>を出力します。"
+  },
+  {
+    id:66, vehicle:"大型", category:"電気", topic:"24VDC/DCコンバーター", type:"構造",
+    q:"車両1台に搭載されている24VDC/DCコンバーターの台数はどれですか？",
+    choices:["1台","2台","3台","4台"],
+    answer:2,
+    exp:"プロフィアZ FCVには<strong>24VDC/DCコンバーターが3台並列で搭載</strong>されています。"
+  },
+  {
+    id:67, vehicle:"大型", category:"エンジン", topic:"HVバッテリーシステム", type:"構造",
+    q:"HVバッテリーシステムを構成するHVバッテリーパックの台数はどれですか？",
+    choices:["3台","4台","5台","6台"],
+    answer:2,
+    exp:"HVバッテリーシステムは<strong>5台のHVバッテリーパック</strong>とHVバッテリー電装ボックスが直列に接続されて構成されています。"
+  },
+  {
+    id:68, vehicle:"大型", category:"ボデー", topic:"応答式キーレスエントリー", type:"作動",
+    q:"応答式キーレスエントリーシステムはキャブの中心から約何m以内で作動しますか？",
+    choices:["約5m以内","約10m以内","約15m以内","約20m以内"],
+    answer:1,
+    exp:"応答式キーレスエントリーは<strong>キャブの中心から約10m以内</strong>で作動します。"
+  },
+  {
+    id:69, vehicle:"大型", category:"ボデー", topic:"応答式キーレスエントリー", type:"作動",
+    q:"リモートキーでドアをロックしたとき、ハザードランプは何回点滅しますか？",
+    choices:["1回","2回","3回","点滅しない"],
+    answer:0,
+    exp:"ハザードランプはロック時には<strong>1回</strong>、アンロック時には<strong>2回</strong>点滅します。"
+  },
+  {
+    id:70, vehicle:"大型", category:"ボデー", topic:"応答式キーレスエントリー", type:"作動",
+    q:"アンロック信号受信後、ドアを開けない場合、何秒で自動ロックされますか？",
+    choices:["15秒","30秒","60秒","120秒"],
+    answer:1,
+    exp:"アンロック（解錠）信号受信後<strong>30秒経過</strong>してもドアを開けない場合、自動的にロック（施錠）します。"
+  },
+  {
+    id:71, vehicle:"大型", category:"シャシ", topic:"非常走行装置", type:"作動",
+    q:"非常走行装置が自動的に解除される条件はどれですか？",
+    choices:["車速10km/hを超えたとき","車速20km/hを超えるか、FCEVシステムをOFFにしたとき","FCEVシステムをONにしたとき","エアサス非常走行スイッチをOFFにしたとき"],
+    answer:1,
+    exp:"<strong>車速が20km/hを超えるか、FCEVシステムをOFF</strong>にすると非常走行装置の作動は自動的に解除されます。"
+  },
+  {
+    id:72, vehicle:"大型", category:"安全装置", topic:"PCS（大型）", type:"作動",
+    q:"プロフィアZ FCVのPCSが作動可能な自車速度の上限はどれですか？（歩行者以外）",
+    choices:["約60km/hまで","約70km/hまで","約80km/hまで","約90km/hまで"],
+    answer:3,
+    exp:"プロフィアZ FCVのPCSは<strong>自車速度が約10km/h～90km/h</strong>のときに作動可能です（歩行者検出時は約10km/h～80km/h）。"
+  },
+  {
+    id:73, vehicle:"大型", category:"安全装置", topic:"車線逸脱警報（大型）", type:"作動",
+    q:"大型車の車線逸脱警報で、警報音が出るスピーカーはどれですか？",
+    choices:["常に両スピーカーから出る","逸脱した方向のスピーカーから出る","前方スピーカーから出る","後方スピーカーから出る"],
+    answer:1,
+    exp:"車線を越えると<strong>逸脱した方向のスピーカー（運転席側または助手席側）</strong>から警報音「ピッピッピッ」を発します。"
+  },
+  {
+    id:74, vehicle:"大型", category:"安全装置", topic:"前方可倒式ステアリングコラム", type:"機能",
+    q:"前方可倒式ステアリングコラムで衝撃のエネルギーを吸収するのは何ですか？",
+    choices:["ステアリングシャフト","エアバッグのみ","サポートブラケット","タイロッド"],
+    answer:2,
+    exp:"衝突時にステアリングコラムが前方に移動する際、<strong>サポートブラケットが変形する</strong>ことで衝撃のエネルギーを吸収し、ドライバーの生存空間を確保します。"
+  },
+  {
+    id:75, vehicle:"大型", category:"安全装置", topic:"車両接近通報装置", type:"機能",
+    q:"車両接近通報スピーカーが搭載されている位置はどれですか？",
+    choices:["車両後部のみ","車両前部と車両側部","車両前部のみ","車両四方すべて"],
+    answer:1,
+    exp:"車両接近通報スピーカーは<strong>車両前部と車両側部</strong>に搭載され、周囲に車両の接近を通報します。"
+  },
+  {
+    id:76, vehicle:"大型", category:"エンジン", topic:"ブレーキレジスター", type:"作動",
+    q:"ブレーキレジスターはeAxleからの余剰電力をどのように処理しますか？",
+    choices:["水素タンクに貯蔵する","HVバッテリーに充電する","電力を熱に変換して消費する","外部に放電する"],
+    answer:2,
+    exp:"ブレーキレジスターは<strong>eAxleからの電力を熱に変換する</strong>ことで余剰電力を消費します。HVバッテリーの吸収限界を超えた電力をここで処理します。"
+  },
+  {
+    id:77, vehicle:"大型", category:"エンジン", topic:"FCEVシステム 回生", type:"作動",
+    q:"FCEVシステムでモーターブレーキスイッチの段数は何段ですか？",
+    choices:["2段","3段","4段","5段"],
+    answer:2,
+    exp:"走行中にアクセルを離したときの回生力（減速力）は、<strong>モーターブレーキスイッチの4段</strong>に応じて切り替えることができます。"
+  }
+];
+
+// --- State ---
+let currentQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let answered = false;
+
+function getCategoryClass(cat) {
+  const map = { "安全装置":"safety", "電気":"electric", "シャシ":"chassis", "エンジン":"engine", "ボデー":"body" };
+  return map[cat] || "";
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  const vehicle = document.getElementById('sel-vehicle').value;
+  const category = document.getElementById('sel-category').value;
+  const countVal = document.getElementById('sel-count').value;
+
+  let filtered = QUESTIONS.filter(q => {
+    const vMatch = vehicle === 'all' || q.vehicle === vehicle;
+    const cMatch = category === 'all' || q.category === category;
+    return vMatch && cMatch;
+  });
+
+  if (filtered.length === 0) {
+    document.getElementById('no-questions').classList.remove('hidden');
+    document.getElementById('quiz-area').innerHTML = '';
+    document.getElementById('stats-bar').classList.add('hidden');
+    return;
+  }
+
+  document.getElementById('no-questions').classList.add('hidden');
+
+  filtered = shuffle(filtered);
+  if (countVal !== 'all') {
+    filtered = filtered.slice(0, parseInt(countVal));
+  }
+
+  currentQuestions = filtered;
+  currentIndex = 0;
+  score = 0;
+
+  document.getElementById('stats-bar').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  if (currentIndex >= currentQuestions.length) {
+    renderResult();
+    return;
+  }
+  answered = false;
+  const q = currentQuestions[currentIndex];
+  const total = currentQuestions.length;
+  const pct = (currentIndex / total) * 100;
+
+  document.getElementById('progress-text').textContent = `問題 ${currentIndex + 1} / ${total}`;
+  document.getElementById('score-text').textContent = `正解: ${score}`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // Shuffle choices maintaining answer mapping
+  const indices = [0,1,2,3];
+  const shuffledIdx = shuffle(indices);
+  const newAnswer = shuffledIdx.indexOf(q.answer);
+
+  const choicesHTML = shuffledIdx.map((origIdx, newIdx) => `
+    <button class="choice-btn" onclick="selectAnswer(${newIdx}, ${newAnswer})" id="choice-${newIdx}">
+      <span class="num">${newIdx + 1}</span>
+      <span>${q.choices[origIdx]}</span>
+    </button>
+  `).join('');
+
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="quiz-card">
+      <div class="question-meta">
+        <span class="tag ${getCategoryClass(q.category)}">${q.category}</span>
+        <span>${q.topic}</span>
+        <span>【${q.type}】</span>
+      </div>
+      <div class="question-text">Q${currentIndex + 1}. ${q.q}</div>
+      <div class="choices">${choicesHTML}</div>
+      <div class="explanation" id="explanation">${q.exp}</div>
+    </div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">次の問題へ →</button>
+  `;
+}
+
+function selectAnswer(selected, correct) {
+  if (answered) return;
+  answered = true;
+
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach(b => b.disabled = true);
+
+  if (selected === correct) {
+    score++;
+    btns[selected].classList.add('correct');
+    document.getElementById('score-text').textContent = `正解: ${score}`;
+  } else {
+    btns[selected].classList.add('wrong');
+    btns[correct].classList.add('show-answer');
+  }
+
+  document.getElementById('explanation').classList.add('show');
+  const btn = document.getElementById('btn-next');
+  btn.classList.add('show');
+  if (currentIndex === currentQuestions.length - 1) {
+    btn.textContent = '結果を見る';
+  }
+}
+
+function nextQuestion() {
+  currentIndex++;
+  renderQuestion();
+}
+
+function renderResult() {
+  const total = currentQuestions.length;
+  const pct = Math.round((score / total) * 100);
+  let msg = '';
+  if (pct === 100) msg = '🎉 パーフェクト！素晴らしい！';
+  else if (pct >= 80) msg = '👍 よく解けています！';
+  else if (pct >= 60) msg = '📖 もう少し復習してみましょう';
+  else msg = '💪 解説書をよく読み直してみましょう';
+
+  document.getElementById('stats-bar').classList.add('hidden');
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="result-card">
+      <div class="result-label">最終スコア</div>
+      <div class="result-score">${score} / ${total}</div>
+      <div class="result-label">正解率 ${pct}%</div>
+      <div class="result-msg">${msg}</div>
+      <button class="btn-retry" onclick="startQuiz()">もう一度挑戦する</button>
+    </div>
+  `;
+}
+
+  // URLパラメータで初期値を設定
+  (function() {
+    const p = new URLSearchParams(location.search);
+    const v = p.get('vehicle');
+    const c = p.get('category');
+    if (v) {
+      const sel = document.getElementById('sel-vehicle');
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === v) { sel.selectedIndex = i; break; }
+      }
+    }
+    if (c) {
+      const sel = document.getElementById('sel-category');
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === c) { sel.selectedIndex = i; break; }
+      }
+    }
+    if (v || c) startQuiz();
+  })();
+
+</script>
+</body>
+</html>
