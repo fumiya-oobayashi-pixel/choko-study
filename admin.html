@@ -96,6 +96,7 @@ main{max-width:900px;margin:0 auto;padding:16px}
         <div id="chart-stats-list" style="margin-top:14px"></div>
       </div>
       <div id="tab-stats" style="display:none">
+        <div id="stats-reset-area" style="margin-bottom:10px"></div>
         <table class="stats-table" id="stats-table">
           <thead><tr><th>ファイル</th><th>正解</th><th>問題数</th><th>正答率</th><th>回数</th><th>最終日</th></tr></thead>
           <tbody id="stats-body"></tbody>
@@ -220,7 +221,7 @@ window.showUser = function(uid) {
 
   renderWrongList(data.wrongList, uid);
   renderHistoryList(data.historyList, uid);
-  renderStatsList(data.statsList);
+  renderStatsList(data.statsList, uid);
   renderChartStats(data.catStats||[], uid);
   showTab('wrong');
   document.getElementById('user-detail').scrollIntoView({ behavior: 'smooth' });
@@ -245,12 +246,15 @@ function renderWrongList(wrongList, uid) {
   `).join('');
 }
 
-function renderStatsList(statsList) {
+function renderStatsList(statsList, uid) {
   const tbody = document.getElementById('stats-body');
+  const resetArea = document.getElementById('stats-reset-area');
   if (!statsList.length) {
     tbody.innerHTML = '<tr><td colspan="6" class="empty">取り組み履歴なし</td></tr>';
+    if (resetArea) resetArea.innerHTML = '';
     return;
   }
+  if (resetArea) resetArea.innerHTML = `<button onclick="resetStats('${uid}')" style="padding:8px 16px;background:#b45309;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">🗑️ このユーザーの取り込み履歴をリセット</button>`;
   statsList.sort((a,b) => (b.lastDate?.seconds||0) - (a.lastDate?.seconds||0));
   tbody.innerHTML = statsList.map(s => {
     const pct = s.lastTotal ? Math.round(s.lastCorrect/s.lastTotal*100) : 0;
@@ -405,16 +409,5 @@ window.resetChart = async function(uid) {
   } catch(e) { alert('エラー: ' + e.message); }
 };
 
-window.showTab = function(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i) => {
-    const tabs = ['wrong','history','stats','chart'];
-    b.classList.toggle('active', tabs[i] === tab);
-  });
-  document.getElementById('tab-wrong').style.display = tab === 'wrong' ? '' : 'none';
-  document.getElementById('tab-history').style.display = tab === 'history' ? '' : 'none';
-  document.getElementById('tab-stats').style.display = tab === 'stats' ? '' : 'none';
-  document.getElementById('tab-chart').style.display = tab === 'chart' ? '' : 'none';
-};
-</script>
-</body>
-</html>
+window.resetStats = async function(uid) {
+  if (!confirm('このユーザーの取り込み履歴（試
