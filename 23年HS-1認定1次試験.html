@@ -463,6 +463,54 @@ function resetQuiz() {
 }
 
 render();
+
+// ?q=N で特定問題から開始（復習モード）
+(function(){
+  var qParam = new URLSearchParams(location.search).get('q');
+  if (!qParam || typeof questions === 'undefined' || typeof render !== 'function') return;
+  var qi = questions.findIndex(function(x){ return x.no === parseInt(qParam); });
+  if (qi < 0) return;
+  idx = qi;
+  render();
+
+  // 復習モード: 答えたら即フィードバックオーバーレイ
+  var _origSel = window.selectAns;
+  window.selectAns = function(no, choice) {
+    if (_origSel) _origSel(no, choice);
+    var q = questions.find(function(x){ return x.no === no; });
+    if (!q) return;
+    var _L = q.labels || ['A','B','C','D'];
+    var correctAns = q.answer !== undefined ? q.answer : _L[q.ans !== undefined ? q.ans : 0];
+    var isCorrect = (choice === correctAns);
+    _showReviewResult(q, isCorrect, correctAns);
+  };
+
+  function _showReviewResult(q, isCorrect, correctAns) {
+    var old = document.getElementById('_review_overlay');
+    if (old) old.remove();
+    var isSpecial = q.freeAnswer || q.multi;
+    var icon = isCorrect ? '✅' : (isSpecial ? '📝' : '❌');
+    var msg  = isCorrect ? '正解！'  : (isSpecial ? '記述・複数選択問題' : '不正解');
+    var col  = isCorrect ? '#059669' : (isSpecial ? '#1d4ed8' : '#dc2626');
+    var ansHtml = (!isCorrect && !isSpecial)
+      ? '<div style="margin:8px 0;font-size:.9rem;color:#1d4ed8;font-weight:700">正解: ' + correctAns + '</div>' : '';
+    var expHtml = q.explanation
+      ? '<div style="margin-top:12px;text-align:left;background:#f8fafc;border-radius:8px;padding:12px;font-size:.82rem;line-height:1.7;color:#374151;max-height:220px;overflow-y:auto">'
+        + (q.explanation||'').replace(/\n/g,'<br>') + '</div>' : '';
+    var ov = document.createElement('div');
+    ov.id = '_review_overlay';
+    ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
+    ov.innerHTML = '<div style="background:white;border-radius:16px;padding:24px;max-width:480px;width:100%;text-align:center;font-family:-apple-system,Meiryo,sans-serif">'
+      + '<div style="font-size:2.4rem">' + icon + '</div>'
+      + '<div style="font-size:1.25rem;font-weight:900;color:' + col + ';margin:8px 0">' + msg + '</div>'
+      + ansHtml + expHtml
+      + '<a href="./mypage.html" style="display:inline-block;margin-top:20px;padding:12px 28px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">📁 マイページへ戻る</a>'
+      + (function(){var _rq=JSON.parse(sessionStorage.getItem('reviewQueue')||'[]');var _rNext=_rq.length?_rq[0]:null;if(_rNext){_rq.shift();sessionStorage.setItem('reviewQueue',JSON.stringify(_rq));}var _rTotal=parseInt(sessionStorage.getItem('reviewTotal')||'0');var _rLeft=_rq.length;return _rNext?'<a href="'+_rNext+'" style="display:inline-block;margin-top:10px;margin-left:8px;padding:12px 28px;background:#059669;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">▶ 次の復習問題（残'+_rLeft+'問）</a>':'';})()
+      + '<br><button onclick="document.getElementById('_review_overlay').remove()" style="margin-top:10px;padding:8px 20px;background:transparent;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:.82rem;color:#64748b;font-family:inherit">✏️ 続けて解く</button>'
+      + '</div>';
+    document.body.appendChild(ov);
+  }
+})();
 </script>
 
 <script src="./firebase-config.js"></script>
@@ -570,55 +618,6 @@ function _updateReviewBadge() {
   }
   b.textContent = '❌ 間違い問題 ' + (reviewPos+1) + ' / ' + reviewList.length;
 }
-</script>
-<script>
-// ?q=N で特定問題から開始（復習モード）
-(function(){
-  var qParam = new URLSearchParams(location.search).get('q');
-  if (!qParam || typeof questions === 'undefined' || typeof render !== 'function') return;
-  var qi = questions.findIndex(function(x){ return x.no === parseInt(qParam); });
-  if (qi < 0) return;
-  idx = qi;
-  render();
-
-  // 復習モード: 答えたら即フィードバックオーバーレイ
-  var _origSel = window.selectAns;
-  window.selectAns = function(no, choice) {
-    if (_origSel) _origSel(no, choice);
-    var q = questions.find(function(x){ return x.no === no; });
-    if (!q) return;
-    var _L = q.labels || ['A','B','C','D'];
-    var correctAns = q.answer !== undefined ? q.answer : _L[q.ans !== undefined ? q.ans : 0];
-    var isCorrect = (choice === correctAns);
-    _showReviewResult(q, isCorrect, correctAns);
-  };
-
-  function _showReviewResult(q, isCorrect, correctAns) {
-    var old = document.getElementById('_review_overlay');
-    if (old) old.remove();
-    var isSpecial = q.freeAnswer || q.multi;
-    var icon = isCorrect ? '✅' : (isSpecial ? '📝' : '❌');
-    var msg  = isCorrect ? '正解！'  : (isSpecial ? '記述・複数選択問題' : '不正解');
-    var col  = isCorrect ? '#059669' : (isSpecial ? '#1d4ed8' : '#dc2626');
-    var ansHtml = (!isCorrect && !isSpecial)
-      ? '<div style="margin:8px 0;font-size:.9rem;color:#1d4ed8;font-weight:700">正解: ' + correctAns + '</div>' : '';
-    var expHtml = q.explanation
-      ? '<div style="margin-top:12px;text-align:left;background:#f8fafc;border-radius:8px;padding:12px;font-size:.82rem;line-height:1.7;color:#374151;max-height:220px;overflow-y:auto">'
-        + (q.explanation||'').replace(/\n/g,'<br>') + '</div>' : '';
-    var ov = document.createElement('div');
-    ov.id = '_review_overlay';
-    ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
-    ov.innerHTML = '<div style="background:white;border-radius:16px;padding:24px;max-width:480px;width:100%;text-align:center;font-family:-apple-system,Meiryo,sans-serif">'
-      + '<div style="font-size:2.4rem">' + icon + '</div>'
-      + '<div style="font-size:1.25rem;font-weight:900;color:' + col + ';margin:8px 0">' + msg + '</div>'
-      + ansHtml + expHtml
-      + '<a href="./mypage.html" style="display:inline-block;margin-top:20px;padding:12px 28px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">📁 マイページへ戻る</a>'
-      + (function(){var _rq=JSON.parse(sessionStorage.getItem('reviewQueue')||'[]');var _rNext=_rq.length?_rq[0]:null;if(_rNext){_rq.shift();sessionStorage.setItem('reviewQueue',JSON.stringify(_rq));}var _rTotal=parseInt(sessionStorage.getItem('reviewTotal')||'0');var _rLeft=_rq.length;return _rNext?'<a href="'+_rNext+'" style="display:inline-block;margin-top:10px;margin-left:8px;padding:12px 28px;background:#059669;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">▶ 次の復習問題（残'+_rLeft+'問）</a>':'';})()
-      + '<br><button onclick="document.getElementById('_review_overlay').remove()" style="margin-top:10px;padding:8px 20px;background:transparent;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:.82rem;color:#64748b;font-family:inherit">✏️ 続けて解く</button>'
-      + '</div>';
-    document.body.appendChild(ov);
-  }
-})();
 </script>
 </body>
 </html>
