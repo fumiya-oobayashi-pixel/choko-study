@@ -5,51 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>保安基準テスト</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Hiragino Sans','Yu Gothic',sans-serif; background:#f0f4f8; min-height:100vh; padding:20px; color:#1a202c; }
-  .container { max-width:800px; margin:0 auto; }
-  h1 { text-align:center; font-size:1.6rem; color:#2d3748; margin-bottom:8px; padding:20px 0 10px; }
-  .subtitle { text-align:center; color:#718096; font-size:0.85rem; margin-bottom:24px; }
-  .filter-card { background:white; border-radius:12px; padding:20px 24px; margin-bottom:20px; box-shadow:0 1px 4px rgba(0,0,0,0.08); }
-  .filter-row { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-end; }
-  .filter-group { flex:1; min-width:160px; }
-  .filter-group label { display:block; font-size:0.8rem; font-weight:600; color:#4a5568; margin-bottom:6px; }
-  select { width:100%; padding:8px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:0.9rem; color:#2d3748; background:#f7fafc; cursor:pointer; }
-  .start-btn { padding:10px 28px; background:#1e3a5f; color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:700; cursor:pointer; white-space:nowrap; }
-  .start-btn:hover { background:#2a4a7f; }
-  .stats-bar { display:flex; align-items:center; gap:12px; background:white; border-radius:10px; padding:10px 20px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
-  .stats-bar.hidden { display:none; }
-  .progress-bar { flex:1; height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden; }
-  .progress-fill { height:100%; background:#3b82f6; border-radius:4px; transition:width 0.3s ease; }
-  .stats-text { font-size:0.82rem; color:#4a5568; white-space:nowrap; }
-  .quiz-card { background:white; border-radius:16px; padding:28px; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:16px; }
-  .badges { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
-  .badge { display:inline-block; font-size:0.72rem; font-weight:700; padding:2px 9px; border-radius:20px; }
-  .badge-h { background:#ebf4ff; color:#2b6cb0; }
-  .badge-s { background:#f0fff4; color:#276749; }
-  .question-text { font-size:1.05rem; font-weight:600; line-height:1.7; color:#1a202c; margin-bottom:20px; }
-  .choice-btn { display:block; width:100%; text-align:left; padding:13px 18px; margin-bottom:10px; border:2px solid #e2e8f0; border-radius:10px; background:white; font-size:0.92rem; color:#2d3748; cursor:pointer; transition:all 0.15s; font-family:inherit; line-height:1.5; }
-  .choice-btn:hover:not(:disabled) { border-color:#3b82f6; background:#eff6ff; }
-  .choice-btn.correct { border-color:#38a169; background:#f0fff4; color:#276749; font-weight:700; }
-  .choice-btn.wrong { border-color:#e53e3e; background:#fff5f5; color:#c53030; }
-  .choice-btn.reveal { border-color:#38a169; background:#f0fff4; }
-  .explanation { margin-top:18px; padding:16px; background:#fffbeb; border-left:4px solid #f6ad55; border-radius:8px; font-size:0.88rem; line-height:1.7; color:#744210; display:none; }
-  .explanation.show { display:block; }
-  .next-btn { display:none; margin-top:16px; padding:12px 32px; background:#3b82f6; color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:700; cursor:pointer; }
-  .next-btn:hover { background:#2563eb; }
-  .next-btn.show { display:inline-block; }
-  .result-card { background:white; border-radius:16px; padding:36px 28px; box-shadow:0 2px 8px rgba(0,0,0,0.08); text-align:center; }
-  .result-score { font-size:3rem; font-weight:900; color:#1e3a5f; margin:16px 0; }
-  .result-pct { font-size:1.1rem; color:#4a5568; margin-bottom:24px; }
-  .retry-btn { padding:12px 32px; background:#1e3a5f; color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:700; cursor:pointer; margin:6px; }
-  .no-q { text-align:center; color:#718096; padding:40px 0; display:none; }
-  .no-q.show { display:block; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#f0f4f8;min-height:100vh;padding:20px;color:#1a202c;}
+  .container{max-width:800px;margin:0 auto;}
+  h1{text-align:center;font-size:1.6rem;color:#2d3748;margin-bottom:6px;padding:20px 0 8px;}
+  .subtitle{text-align:center;color:#718096;font-size:0.83rem;margin-bottom:20px;}
+  .filter-card{background:white;border-radius:12px;padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+  .filter-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;}
+  .filter-group{flex:1;min-width:140px;}
+  .filter-group label{display:block;font-size:0.78rem;font-weight:700;color:#4a5568;margin-bottom:5px;}
+  select{width:100%;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.88rem;color:#2d3748;background:#f7fafc;cursor:pointer;}
+  .start-btn{padding:10px 24px;background:#1e3a5f;color:white;border:none;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;white-space:nowrap;}
+  .start-btn:hover{background:#2a4a7f;}
+  .stats-bar{display:flex;align-items:center;gap:10px;background:white;border-radius:10px;padding:10px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+  .stats-bar.hidden{display:none;}
+  .progress-bar{flex:1;height:7px;background:#e2e8f0;border-radius:4px;overflow:hidden;}
+  .progress-fill{height:100%;background:#3b82f6;border-radius:4px;transition:width 0.3s;}
+  .stats-text{font-size:0.8rem;color:#4a5568;white-space:nowrap;}
+  .quiz-card{background:white;border-radius:14px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:14px;}
+  .badges{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
+  .badge{display:inline-block;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:20px;}
+  .badge-h{background:#ebf4ff;color:#2b6cb0;}
+  .badge-s{background:#f0fff4;color:#276749;}
+  .badge-b{background:#fff5f5;color:#c53030;}
+  .badge-t{background:#fffff0;color:#744210;}
+  .question-text{font-size:1.02rem;font-weight:600;line-height:1.7;color:#1a202c;margin-bottom:18px;}
+  .choice-btn{display:block;width:100%;text-align:left;padding:12px 16px;margin-bottom:9px;border:2px solid #e2e8f0;border-radius:10px;background:white;font-size:0.9rem;color:#2d3748;cursor:pointer;transition:all 0.15s;font-family:inherit;line-height:1.5;}
+  .choice-btn:hover:not(:disabled){border-color:#3b82f6;background:#eff6ff;}
+  .choice-btn.correct{border-color:#38a169;background:#f0fff4;color:#276749;font-weight:700;}
+  .choice-btn.wrong{border-color:#e53e3e;background:#fff5f5;color:#c53030;}
+  .choice-btn.reveal{border-color:#38a169;background:#f0fff4;}
+  .explanation{margin-top:16px;padding:14px;background:#fffbeb;border-left:4px solid #f6ad55;border-radius:8px;font-size:0.87rem;line-height:1.7;color:#744210;display:none;}
+  .explanation.show{display:block;}
+  .next-btn{display:none;margin-top:14px;padding:11px 28px;background:#3b82f6;color:white;border:none;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;}
+  .next-btn:hover{background:#2563eb;}
+  .next-btn.show{display:inline-block;}
+  .result-card{background:white;border-radius:14px;padding:32px 24px;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-align:center;}
+  .result-score{font-size:2.8rem;font-weight:900;color:#1e3a5f;margin:14px 0;}
+  .result-pct{font-size:1.05rem;color:#4a5568;margin-bottom:22px;}
+  .retry-btn{padding:11px 28px;background:#1e3a5f;color:white;border:none;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;margin:5px;}
+  .no-q{text-align:center;color:#718096;padding:40px 0;display:none;}
+  .no-q.show{display:block;}
 </style>
 </head>
 <body>
 <div class="container">
   <h1>⚖️ 保安基準テスト</h1>
-  <p class="subtitle">道路運送車両の保安基準 H系（本体）＋S系（細目告示）｜計602問収録</p>
+  <p class="subtitle">H系（本体）＋S系（細目告示）＋B系（別添）＋T系（適用関係）｜計921問収録</p>
 
   <div class="filter-card">
     <div class="filter-row">
@@ -59,18 +61,15 @@
           <option value="all">すべて</option>
           <option value="保安基準">H系（保安基準 本体）</option>
           <option value="保安基準細目">S系（細目告示）</option>
+          <option value="保安基準別添">B系（別添技術基準）</option>
+          <option value="保安基準適用関係">T系（適用関係告示）</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>条文</label>
+        <label>条文・別添</label>
         <select id="sel-label">
           <option value="all">全条文</option>
           <optgroup label="H系（保安基準本体）">
-<option value="第2条（長さ、幅及び高さ）">第2条（長さ、幅及び高さ）</option>
-<option value="第4条（車両総重量）">第4条（車両総重量）</option>
-<option value="第6条（最小回転半径）">第6条（最小回転半径）</option>
-<option value="第8条（原動機及び動力伝達装置）">第8条（原動機及び動力伝達装置）</option>
-<option value="第9条（走行装置等）">第9条（走行装置等）</option>
 <option value="第11条（かじ取装置）">第11条（かじ取装置）</option>
 <option value="第12条（制動装置）">第12条（制動装置）</option>
 <option value="第14条（緩衝装置）">第14条（緩衝装置）</option>
@@ -88,6 +87,7 @@
 <option value="第27条（物品積載装置）">第27条（物品積載装置）</option>
 <option value="第28条（高圧ガス運送装置）">第28条（高圧ガス運送装置）</option>
 <option value="第29条（窓ガラス）">第29条（窓ガラス）</option>
+<option value="第2条（長さ、幅及び高さ）">第2条（長さ、幅及び高さ）</option>
 <option value="第30条（騒音防止装置）">第30条（騒音防止装置）</option>
 <option value="第31条（ばい煙等の発散防止装置）">第31条（ばい煙等の発散防止装置）</option>
 <option value="第32条（前照灯等）">第32条（前照灯等）</option>
@@ -107,6 +107,7 @@
 <option value="第47条（消火器）">第47条（消火器）</option>
 <option value="第48条（自動運行装置）">第48条（自動運行装置）</option>
 <option value="第49条（緊急自動車）">第49条（緊急自動車）</option>
+<option value="第4条（車両総重量）">第4条（車両総重量）</option>
 <option value="第50条（旅客自動車運送事業用自動車）">第50条（旅客自動車運送事業用自動車）</option>
 <option value="第51条（火薬類を運送する自動車）">第51条（火薬類を運送する自動車）</option>
 <option value="第53条（乗車定員及び最大積載量）">第53条（乗車定員及び最大積載量）</option>
@@ -121,70 +122,14 @@
 <option value="第65条（後写鏡）">第65条（後写鏡）</option>
 <option value="第66条（乗車装置）">第66条（乗車装置）</option>
 <option value="第68条（軽車両の長さ、幅及び高さ）">第68条（軽車両の長さ、幅及び高さ）</option>
+<option value="第6条（最小回転半径）">第6条（最小回転半径）</option>
 <option value="第70条（軽車両の制動装置）">第70条（軽車両の制動装置）</option>
 <option value="第71条（軽車両の車体）">第71条（軽車両の車体）</option>
 <option value="第72条（軽車両の警音器）">第72条（軽車両の警音器）</option>
+<option value="第8条（原動機及び動力伝達装置）">第8条（原動機及び動力伝達装置）</option>
+<option value="第9条（走行装置等）">第9条（走行装置等）</option>
           </optgroup>
           <optgroup label="S系（細目告示）">
-<option value="第2条">第2条</option>
-<option value="第3条">第3条</option>
-<option value="第6条">第6条</option>
-<option value="第8条">第8条</option>
-<option value="第9条">第9条</option>
-<option value="第10条">第10条</option>
-<option value="第12条">第12条</option>
-<option value="第13条">第13条</option>
-<option value="第14条">第14条</option>
-<option value="第17条">第17条</option>
-<option value="第18条">第18条</option>
-<option value="第19条">第19条</option>
-<option value="第20条">第20条</option>
-<option value="第21条">第21条</option>
-<option value="第22条">第22条</option>
-<option value="第23条">第23条</option>
-<option value="第24条">第24条</option>
-<option value="第26条">第26条</option>
-<option value="第28条">第28条</option>
-<option value="第33条">第33条</option>
-<option value="第34条（立席）">第34条（立席）</option>
-<option value="第35条（乗降口）">第35条（乗降口）</option>
-<option value="第36条（非常口）">第36条（非常口）</option>
-<option value="第37条（物品積載装置）">第37条（物品積載装置）</option>
-<option value="第38条（高圧ガス運送装置）">第38条（高圧ガス運送装置）</option>
-<option value="第39条（窓ガラス）">第39条（窓ガラス）</option>
-<option value="第40条（自動車の騒音防止装置）">第40条（自動車の騒音防止装置）</option>
-<option value="第41条（排出ガス発散防止装置）">第41条（排出ガス発散防止装置）</option>
-<option value="第42条（前照灯等）">第42条（前照灯等）</option>
-<option value="第59条（方向指示器）">第59条（方向指示器）</option>
-<option value="第62条（その他の灯火等の制限）">第62条（その他の灯火等の制限）</option>
-<option value="第63条（警音器）">第63条（警音器）</option>
-<option value="第64条（非常信号用具）">第64条（非常信号用具）</option>
-<option value="第68条（後写鏡等）">第68条（後写鏡等）</option>
-<option value="第69条（窓ふき器等）">第69条（窓ふき器等）</option>
-<option value="第70条（速度計等）">第70条（速度計等）</option>
-<option value="第71条（消火器）">第71条（消火器）</option>
-<option value="第72条（内圧容器及びその附属装置）">第72条（内圧容器及びその附属装置）</option>
-<option value="第75条（緊急自動車）">第75条（緊急自動車）</option>
-<option value="第76条（道路維持作業用自動車）">第76条（道路維持作業用自動車）</option>
-<option value="第77条（旅客自動車運送事業用自動車）">第77条（旅客自動車運送事業用自動車）</option>
-<option value="第78条（ガス運送容器を備える自動車等）">第78条（ガス運送容器を備える自動車等）</option>
-<option value="第79条（火薬類を運送する自動車）">第79条（火薬類を運送する自動車）</option>
-<option value="第80条（危険物を運送する自動車）">第80条（危険物を運送する自動車）</option>
-<option value="第81条（乗車定員及び最大積載量）">第81条（乗車定員及び最大積載量）</option>
-<option value="第82条（臨時乗車定員）">第82条（臨時乗車定員）</option>
-<option value="第84条（長さ、幅及び高さ）">第84条（長さ、幅及び高さ）</option>
-<option value="第85条（最低地上高）">第85条（最低地上高）</option>
-<option value="第86条（安定性）">第86条（安定性）</option>
-<option value="第87条（接地部及び接地圧）">第87条（接地部及び接地圧）</option>
-<option value="第89条（走行装置）">第89条（走行装置）</option>
-<option value="第90条（操縦装置）">第90条（操縦装置）</option>
-<option value="第91条（かじ取装置）">第91条（かじ取装置）</option>
-<option value="第92条（施錠装置等）">第92条（施錠装置等）</option>
-<option value="第93条（制動装置）">第93条（制動装置）</option>
-<option value="第95条（緩衝装置）">第95条（緩衝装置）</option>
-<option value="第96条（燃料装置）">第96条（燃料装置）</option>
-<option value="第97条（発生炉ガスを燃料とする自動車の燃料装置）">第97条（発生炉ガスを燃料とする自動車の燃料装置）</option>
-<option value="第99条（電気装置）">第99条（電気装置）</option>
 <option value="第100条（車枠及び車体）">第100条（車枠及び車体）</option>
 <option value="第101条（巻込防止装置）">第101条（巻込防止装置）</option>
 <option value="第102条（突入防止装置）">第102条（突入防止装置）</option>
@@ -194,6 +139,7 @@
 <option value="第106条（座席）">第106条（座席）</option>
 <option value="第107条（補助座席定員）">第107条（補助座席定員）</option>
 <option value="第108条（座席ベルト等）">第108条（座席ベルト等）</option>
+<option value="第10条">第10条</option>
 <option value="第111条（通路）">第111条（通路）</option>
 <option value="第112条（立席）">第112条（立席）</option>
 <option value="第113条（乗降口）">第113条（乗降口）</option>
@@ -213,6 +159,7 @@
 <option value="第127条（番号灯）">第127条（番号灯）</option>
 <option value="第128条（尾灯）">第128条（尾灯）</option>
 <option value="第129条（後部霧灯）">第129条（後部霧灯）</option>
+<option value="第12条">第12条</option>
 <option value="第130条（駐車灯）">第130条（駐車灯）</option>
 <option value="第131条（後部上側端灯）">第131条（後部上側端灯）</option>
 <option value="第132条（後部反射器）">第132条（後部反射器）</option>
@@ -223,6 +170,7 @@
 <option value="第137条（方向指示器）">第137条（方向指示器）</option>
 <option value="第138条（補助方向指示器）">第138条（補助方向指示器）</option>
 <option value="第139条（非常点滅表示灯）">第139条（非常点滅表示灯）</option>
+<option value="第13条">第13条</option>
 <option value="第140条（その他の灯火等の制限）">第140条（その他の灯火等の制限）</option>
 <option value="第141条（警音器）">第141条（警音器）</option>
 <option value="第142条（非常信号用具）">第142条（非常信号用具）</option>
@@ -230,6 +178,7 @@
 <option value="第144条（停止表示器材）">第144条（停止表示器材）</option>
 <option value="第148条（速度計等）">第148条（速度計等）</option>
 <option value="第149条（消火器）">第149条（消火器）</option>
+<option value="第14条">第14条</option>
 <option value="第151条（運行記録計）">第151条（運行記録計）</option>
 <option value="第152条（速度表示装置）">第152条（速度表示装置）</option>
 <option value="第153条（緊急自動車）">第153条（緊急自動車）</option>
@@ -254,6 +203,7 @@
 <option value="第177条（電気装置）">第177条（電気装置）</option>
 <option value="第178条（車枠及び車体）">第178条（車枠及び車体）</option>
 <option value="第179条（巻込防止装置）">第179条（巻込防止装置）</option>
+<option value="第17条">第17条</option>
 <option value="第180条（突入防止装置）">第180条（突入防止装置）</option>
 <option value="第181条（連結装置）">第181条（連結装置）</option>
 <option value="第182条（乗車装置）">第182条（乗車装置）</option>
@@ -264,6 +214,7 @@
 <option value="第187条（頭部後傾抑止装置）">第187条（頭部後傾抑止装置）</option>
 <option value="第188条（年少者用補助乗車装置等）">第188条（年少者用補助乗車装置等）</option>
 <option value="第189条（通路）">第189条（通路）</option>
+<option value="第18条">第18条</option>
 <option value="第190条（立席）">第190条（立席）</option>
 <option value="第191条（乗降口）">第191条（乗降口）</option>
 <option value="第192条（非常口）">第192条（非常口）</option>
@@ -274,6 +225,7 @@
 <option value="第197条（自動車のばい煙、悪臭のあるガス、有害なガス等の発散防止装置）">第197条（自動車のばい煙、悪臭のあるガス、有害なガス等の発散防止装置）</option>
 <option value="第198条（前照灯等）">第198条（前照灯等）</option>
 <option value="第199条（前部霧灯）">第199条（前部霧灯）</option>
+<option value="第19条">第19条</option>
 <option value="第200条（側方照射灯）">第200条（側方照射灯）</option>
 <option value="第201条（車幅灯）">第201条（車幅灯）</option>
 <option value="第202条（前部上側端灯）">第202条（前部上側端灯）</option>
@@ -284,6 +236,7 @@
 <option value="第207条（後部霧灯）">第207条（後部霧灯）</option>
 <option value="第208条（駐車灯）">第208条（駐車灯）</option>
 <option value="第209条（後部上側端灯）">第209条（後部上側端灯）</option>
+<option value="第20条">第20条</option>
 <option value="第210条（後部反射器）">第210条（後部反射器）</option>
 <option value="第211条（大型後部反射器）">第211条（大型後部反射器）</option>
 <option value="第212条（制動灯）">第212条（制動灯）</option>
@@ -293,11 +246,13 @@
 <option value="第217条（非常点滅表示灯）">第217条（非常点滅表示灯）</option>
 <option value="第218条（その他の灯火等の制限）">第218条（その他の灯火等の制限）</option>
 <option value="第219条（警音器）">第219条（警音器）</option>
+<option value="第21条">第21条</option>
 <option value="第220条（非常信号用具）">第220条（非常信号用具）</option>
 <option value="第221条（警告反射板）">第221条（警告反射板）</option>
 <option value="第222条（停止表示器材）">第222条（停止表示器材）</option>
 <option value="第226条（速度計）">第226条（速度計）</option>
 <option value="第229条（運行記録計）">第229条（運行記録計）</option>
+<option value="第22条">第22条</option>
 <option value="第230条（速度表示装置）">第230条（速度表示装置）</option>
 <option value="第231条（緊急自動車）">第231条（緊急自動車）</option>
 <option value="第232条（道路維持作業用自動車）">第232条（道路維持作業用自動車）</option>
@@ -307,6 +262,7 @@
 <option value="第236条（危険物を運送する自動車）">第236条（危険物を運送する自動車）</option>
 <option value="第237条（乗車定員及び最大積載量）">第237条（乗車定員及び最大積載量）</option>
 <option value="第238条（臨時乗車定員）">第238条（臨時乗車定員）</option>
+<option value="第23条">第23条</option>
 <option value="第241条（接地部及び接地圧）">第241条（接地部及び接地圧）</option>
 <option value="第243条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）">第243条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）</option>
 <option value="第244条（前照灯）">第244条（前照灯）</option>
@@ -314,6 +270,7 @@
 <option value="第246条（尾灯）">第246条（尾灯）</option>
 <option value="第247条（制動灯）">第247条（制動灯）</option>
 <option value="第248条（後部反射器）">第248条（後部反射器）</option>
+<option value="第24条">第24条</option>
 <option value="第250条（警音器）">第250条（警音器）</option>
 <option value="第252条（消音器）">第252条（消音器）</option>
 <option value="第254条（乗車装置）">第254条（乗車装置）</option>
@@ -325,6 +282,7 @@
 <option value="第266条（警音器）">第266条（警音器）</option>
 <option value="第268条（消音器）">第268条（消音器）</option>
 <option value="第269条（速度計）">第269条（速度計）</option>
+<option value="第26条">第26条</option>
 <option value="第270条（乗車装置）">第270条（乗車装置）</option>
 <option value="第273条（接地部及び接地圧）">第273条（接地部及び接地圧）</option>
 <option value="第274条（制動装置）">第274条（制動装置）</option>
@@ -339,6 +297,7 @@
 <option value="第285条（速度計）">第285条（速度計）</option>
 <option value="第288条（接地部及び接地圧）">第288条（接地部及び接地圧）</option>
 <option value="第289条（制動装置）">第289条（制動装置）</option>
+<option value="第28条">第28条</option>
 <option value="第290条（車体）">第290条（車体）</option>
 <option value="第291条（前照灯）">第291条（前照灯）</option>
 <option value="第292条（尾灯）">第292条（尾灯）</option>
@@ -347,6 +306,7 @@
 <option value="第296条（方向指示器）">第296条（方向指示器）</option>
 <option value="第298条（電気装置）">第298条（電気装置）</option>
 <option value="第299条（乗車装置）">第299条（乗車装置）</option>
+<option value="第2条">第2条</option>
 <option value="第304条（前照灯）">第304条（前照灯）</option>
 <option value="第305条（尾灯）">第305条（尾灯）</option>
 <option value="第306条（制動灯）">第306条（制動灯）</option>
@@ -365,6 +325,210 @@
 <option value="第324条（電気装置）">第324条（電気装置）</option>
 <option value="第325条（乗車装置）">第325条（乗車装置）</option>
 <option value="第326条（最高速度表示灯）">第326条（最高速度表示灯）</option>
+<option value="第33条">第33条</option>
+<option value="第34条（立席）">第34条（立席）</option>
+<option value="第35条（乗降口）">第35条（乗降口）</option>
+<option value="第36条（非常口）">第36条（非常口）</option>
+<option value="第37条（物品積載装置）">第37条（物品積載装置）</option>
+<option value="第38条（高圧ガス運送装置）">第38条（高圧ガス運送装置）</option>
+<option value="第39条（窓ガラス）">第39条（窓ガラス）</option>
+<option value="第3条">第3条</option>
+<option value="第40条（自動車の騒音防止装置）">第40条（自動車の騒音防止装置）</option>
+<option value="第41条（排出ガス発散防止装置）">第41条（排出ガス発散防止装置）</option>
+<option value="第42条（前照灯等）">第42条（前照灯等）</option>
+<option value="第59条（方向指示器）">第59条（方向指示器）</option>
+<option value="第62条（その他の灯火等の制限）">第62条（その他の灯火等の制限）</option>
+<option value="第63条（警音器）">第63条（警音器）</option>
+<option value="第64条（非常信号用具）">第64条（非常信号用具）</option>
+<option value="第68条（後写鏡等）">第68条（後写鏡等）</option>
+<option value="第69条（窓ふき器等）">第69条（窓ふき器等）</option>
+<option value="第6条">第6条</option>
+<option value="第70条（速度計等）">第70条（速度計等）</option>
+<option value="第71条（消火器）">第71条（消火器）</option>
+<option value="第72条（内圧容器及びその附属装置）">第72条（内圧容器及びその附属装置）</option>
+<option value="第75条（緊急自動車）">第75条（緊急自動車）</option>
+<option value="第76条（道路維持作業用自動車）">第76条（道路維持作業用自動車）</option>
+<option value="第77条（旅客自動車運送事業用自動車）">第77条（旅客自動車運送事業用自動車）</option>
+<option value="第78条（ガス運送容器を備える自動車等）">第78条（ガス運送容器を備える自動車等）</option>
+<option value="第79条（火薬類を運送する自動車）">第79条（火薬類を運送する自動車）</option>
+<option value="第80条（危険物を運送する自動車）">第80条（危険物を運送する自動車）</option>
+<option value="第81条（乗車定員及び最大積載量）">第81条（乗車定員及び最大積載量）</option>
+<option value="第82条（臨時乗車定員）">第82条（臨時乗車定員）</option>
+<option value="第84条（長さ、幅及び高さ）">第84条（長さ、幅及び高さ）</option>
+<option value="第85条（最低地上高）">第85条（最低地上高）</option>
+<option value="第86条（安定性）">第86条（安定性）</option>
+<option value="第87条（接地部及び接地圧）">第87条（接地部及び接地圧）</option>
+<option value="第89条（走行装置）">第89条（走行装置）</option>
+<option value="第8条">第8条</option>
+<option value="第90条（操縦装置）">第90条（操縦装置）</option>
+<option value="第91条（かじ取装置）">第91条（かじ取装置）</option>
+<option value="第92条（施錠装置等）">第92条（施錠装置等）</option>
+<option value="第93条（制動装置）">第93条（制動装置）</option>
+<option value="第95条（緩衝装置）">第95条（緩衝装置）</option>
+<option value="第96条（燃料装置）">第96条（燃料装置）</option>
+<option value="第97条（発生炉ガスを燃料とする自動車の燃料装置）">第97条（発生炉ガスを燃料とする自動車の燃料装置）</option>
+<option value="第99条（電気装置）">第99条（電気装置）</option>
+<option value="第9条">第9条</option>
+          </optgroup>
+          <optgroup label="B系（別添技術基準）">
+<option value="別添100（圧縮水素ガスを燃料とする自動車の燃料装置の技術基準）">別添100（圧縮水素ガスを燃料とする自動車の燃料装置の技術基準）</option>
+<option value="別添101（燃料電池自動車の高電圧からの乗車人員の保護に関する技術基準）">別添101（燃料電池自動車の高電圧からの乗車人員の保護に関する技術基準）</option>
+<option value="別添102（側方照射灯の灯光の色、明るさ等に関する技術基準）">別添102（側方照射灯の灯光の色、明るさ等に関する技術基準）</option>
+<option value="別添103（ガソリン・液化石油ガス特殊自動車排出ガスの測定方法）">別添103（ガソリン・液化石油ガス特殊自動車排出ガスの測定方法）</option>
+<option value="別添105（再帰反射材の技術基準）">別添105（再帰反射材の技術基準）</option>
+<option value="別添106（ワンマンバスの構造要件）">別添106（ワンマンバスの構造要件）</option>
+<option value="別添107（前部潜り込み防止装置の技術基準）">別添107（前部潜り込み防止装置の技術基準）</option>
+<option value="別添108（前部潜り込み防止装置取付装置等の技術基準）">別添108（前部潜り込み防止装置取付装置等の技術基準）</option>
+<option value="別添109（無負荷急加速時に排出される排出ガスの光吸収係数の測定方法）">別添109（無負荷急加速時に排出される排出ガスの光吸収係数の測定方法）</option>
+<option value="別添10（トラック及びバスの制動装置の技術基準）2013.8.30削除">別添10（トラック及びバスの制動装置の技術基準）2013.8.30削除</option>
+<option value="別添110（電気式自動車及び電気式ハイブリッド自動車の高電圧からの乗車人員の保護に関する技術基準）">別添110（電気式自動車及び電気式ハイブリッド自動車の高電圧からの乗車人員の保護に関する技術基準）</option>
+<option value="別添111（電気自動車、電気式ハイブリッド自動車及び燃料電池自動車の衝突後の高電圧からの乗車人員の保護に関する技術基準）">別添111（電気自動車、電気式ハイブリッド自動車及び燃料電池自動車の衝突後の高電圧からの乗車人員の保護に関する技術基準）</option>
+<option value="別添112（後付消音器の技術基準）">別添112（後付消音器の技術基準）</option>
+<option value="別添113（衝突被害軽減制動制御装置の技術基準）">別添113（衝突被害軽減制動制御装置の技術基準）</option>
+<option value="別添114（牽引自動車の軸重に関する技術基準）">別添114（牽引自動車の軸重に関する技術基準）</option>
+<option value="別添115（二輪車のばい煙、悪臭のあるガス、有害なガス等の発散防止装置に係る車載式故障診断装置の技術基準）">別添115（二輪車のばい煙、悪臭のあるガス、有害なガス等の発散防止装置に係る車載式故障診断装置の技術基準）</option>
+<option value="別添116（オフサイクル時のディーゼル重量車排出ガスの制御に関する技術基準）">別添116（オフサイクル時のディーゼル重量車排出ガスの制御に関する技術基準）</option>
+<option value="別添117（二輪車の燃料蒸発ガスの測定方法）">別添117（二輪車の燃料蒸発ガスの測定方法）</option>
+<option value="別添118（圧縮水素ガスを燃料とする二輪自動車及び側車付二輪自動車の燃料装置の技術基準）">別添118（圧縮水素ガスを燃料とする二輪自動車及び側車付二輪自動車の燃料装置の技術基準）</option>
+<option value="別添119（路上走行時のディーゼル軽・中量車排出ガスに関する技術基準）">別添119（路上走行時のディーゼル軽・中量車排出ガスに関する技術基準）</option>
+<option value="別添11（アンチロックブレーキシステムの技術基準）2013.8.30削除">別添11（アンチロックブレーキシステムの技術基準）2013.8.30削除</option>
+<option value="別添122（高速道路等における低速自動運行装置を備える自動車の技術基準）">別添122（高速道路等における低速自動運行装置を備える自動車の技術基準）</option>
+<option value="別添123（作動状態記録装置の技術基準）">別添123（作動状態記録装置の技術基準）</option>
+<option value="別添124（継続検査等に用いる車載式故障診断装置の技術基準）">別添124（継続検査等に用いる車載式故障診断装置の技術基準）</option>
+<option value="別添125（車載式燃料・電力消費等測定装置の技術基準）">別添125（車載式燃料・電力消費等測定装置の技術基準）</option>
+<option value="別添126（特定小型原動機付自転車の走行安定性の技術基準）">別添126（特定小型原動機付自転車の走行安定性の技術基準）</option>
+<option value="別添127（特定小型原動機付自転車の速度抑制装置の技術基準）">別添127（特定小型原動機付自転車の速度抑制装置の技術基準）</option>
+<option value="別添128（車両後退通報装置の通報音の測定方法）">別添128（車両後退通報装置の通報音の測定方法）</option>
+<option value="別添129（後方視界看視装置の技術基準）">別添129（後方視界看視装置の技術基準）</option>
+<option value="別添12（乗用車の制動装置の技術基準）2014.2.13削除">別添12（乗用車の制動装置の技術基準）2014.2.13削除</option>
+<option value="別添130（後方視界看視装置取付装置等の技術基準）">別添130（後方視界看視装置取付装置等の技術基準）</option>
+<option value="別添131（圧縮水素ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）">別添131（圧縮水素ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）</option>
+<option value="別添132（圧縮天然ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）">別添132（圧縮天然ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）</option>
+<option value="別添133（液化天然ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）">別添133（液化天然ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）</option>
+<option value="別添14（制動液漏れ警報装置の技術基準）">別添14（制動液漏れ警報装置の技術基準）</option>
+<option value="別添15（トレーラの制動装置の技術基準）2013.8.30削除">別添15（トレーラの制動装置の技術基準）2013.8.30削除</option>
+<option value="別添16（乗用車用プラスチツク製燃料タンクの技術基準）">別添16（乗用車用プラスチツク製燃料タンクの技術基準）</option>
+<option value="別添17（衝突時等における燃料漏れ防止の技術基準）">別添17（衝突時等における燃料漏れ防止の技術基準）</option>
+<option value="別添18（自動車燃料ガス容器取付部の技術基準）">別添18（自動車燃料ガス容器取付部の技術基準）</option>
+<option value="別添19（自動車燃料ガス容器の気密・換気の技術基準）">別添19（自動車燃料ガス容器の気密・換気の技術基準）</option>
+<option value="別添1（大型貨物自動車の速度抑制装置の技術基準）">別添1（大型貨物自動車の速度抑制装置の技術基準）</option>
+<option value="別添20（外装の技術基準）2016.10.7削除">別添20（外装の技術基準）2016.10.7削除</option>
+<option value="別添21（外装の手荷物積載用部品の技術基準）2016.10.7削除">別添21（外装の手荷物積載用部品の技術基準）2016.10.7削除</option>
+<option value="別添22（外装の電波送受信用アンテナの技術基準）">別添22（外装の電波送受信用アンテナの技術基準）</option>
+<option value="別添23（前面衝突時の乗員保護の技術基準）">別添23（前面衝突時の乗員保護の技術基準）</option>
+<option value="別添24（側面衝突時の乗員保護装置の技術基準）">別添24（側面衝突時の乗員保護装置の技術基準）</option>
+<option value="別添27（内装材料の難燃性の技術基準）">別添27（内装材料の難燃性の技術基準）</option>
+<option value="別添28（インストルメントパネルの衝撃吸収の技術基準）">別添28（インストルメントパネルの衝撃吸収の技術基準）</option>
+<option value="別添29（直接前方視界の技術基準）">別添29（直接前方視界の技術基準）</option>
+<option value="別添2（軽合金製ディスクホイールの技術基準）">別添2（軽合金製ディスクホイールの技術基準）</option>
+<option value="別添33（運転者席の座席ベルトの非装着時警報装置の技術基準）">別添33（運転者席の座席ベルトの非装着時警報装置の技術基準）</option>
+<option value="別添34（頭部後傾抑止装置の技術基準）">別添34（頭部後傾抑止装置の技術基準）</option>
+<option value="別添38（近接排気騒音の測定方法）">別添38（近接排気騒音の測定方法）</option>
+<option value="別添39（定常走行騒音の測定方法）">別添39（定常走行騒音の測定方法）</option>
+<option value="別添3（乗用車用空気入タイヤの技術基準）2015.10.8削除">別添3（乗用車用空気入タイヤの技術基準）2015.10.8削除</option>
+<option value="別添40（加速走行騒音の測定方法）">別添40（加速走行騒音の測定方法）</option>
+<option value="別添42（軽・中量車排出ガスの測定方法）">別添42（軽・中量車排出ガスの測定方法）</option>
+<option value="別添43（ディーゼル特殊自動車排出ガスの測定方法）">別添43（ディーゼル特殊自動車排出ガスの測定方法）</option>
+<option value="別添44（二輪車排出ガスの測定方法）">別添44（二輪車排出ガスの測定方法）</option>
+<option value="別添46（無負荷急加速黒煙の測定方法）">別添46（無負荷急加速黒煙の測定方法）</option>
+<option value="別添47（熱害警報装置等の技術基準）">別添47（熱害警報装置等の技術基準）</option>
+<option value="別添48（車載式故障診断装置の技術基準）">別添48（車載式故障診断装置の技術基準）</option>
+<option value="別添49（燃料蒸発ガスの測定方法）">別添49（燃料蒸発ガスの測定方法）</option>
+<option value="別添4（トラック、バス及びトレーラ用空気入タイヤの技術基準）2015.10.8削除">別添4（トラック、バス及びトレーラ用空気入タイヤの技術基準）2015.10.8削除</option>
+<option value="別添52（灯火器及び反射器並びに指示装置の取付装置の技術基準）">別添52（灯火器及び反射器並びに指示装置の取付装置の技術基準）</option>
+<option value="別添53（二輪自動車等の灯火器及び反射器並びに指示装置の取付装置の技術基準）">別添53（二輪自動車等の灯火器及び反射器並びに指示装置の取付装置の技術基準）</option>
+<option value="別添55（前照灯洗浄器の技術基準）">別添55（前照灯洗浄器の技術基準）</option>
+<option value="別添56（前照灯洗浄器及び前照灯洗浄器取付装置の技術基準）">別添56（前照灯洗浄器及び前照灯洗浄器取付装置の技術基準）</option>
+<option value="別添58（車幅灯の技術基準）">別添58（車幅灯の技術基準）</option>
+<option value="別添59（前部上側端灯の技術基準）">別添59（前部上側端灯の技術基準）</option>
+<option value="別添5（二輪車用空気入タイヤの技術基準）2015.10.8削除">別添5（二輪車用空気入タイヤの技術基準）2015.10.8削除</option>
+<option value="別添60（前部反射器の技術基準）">別添60（前部反射器の技術基準）</option>
+<option value="別添61（側方灯の技術基準）">別添61（側方灯の技術基準）</option>
+<option value="別添62（側方反射器の技術基準）">別添62（側方反射器の技術基準）</option>
+<option value="別添63（番号灯の技術基準）">別添63（番号灯の技術基準）</option>
+<option value="別添64（尾灯の技術基準）">別添64（尾灯の技術基準）</option>
+<option value="別添65（後部霧灯の技術基準）">別添65（後部霧灯の技術基準）</option>
+<option value="別添66（駐車灯の技術基準）">別添66（駐車灯の技術基準）</option>
+<option value="別添67（後部上側端灯の技術基準）">別添67（後部上側端灯の技術基準）</option>
+<option value="別添68（後部反射器の技術基準）">別添68（後部反射器の技術基準）</option>
+<option value="別添6（衝撃吸収式かじ取装置の技術基準）2011.6.23削除">別添6（衝撃吸収式かじ取装置の技術基準）2011.6.23削除</option>
+<option value="別添70（制動灯の技術基準）">別添70（制動灯の技術基準）</option>
+<option value="別添71（補助制動灯の技術基準）">別添71（補助制動灯の技術基準）</option>
+<option value="別添72（後退灯の技術基準）">別添72（後退灯の技術基準）</option>
+<option value="別添73（方向指示器の技術基準）">別添73（方向指示器の技術基準）</option>
+<option value="別添74（警音器の警報音発生装置の技術基準）">別添74（警音器の警報音発生装置の技術基準）</option>
+<option value="別添75（警音器の技術基準）">別添75（警音器の技術基準）</option>
+<option value="別添7（四輪自動車等の施錠装置の技術基準）2022.10.7削除">別添7（四輪自動車等の施錠装置の技術基準）2022.10.7削除</option>
+<option value="別添81（直前直左確認鏡の技術基準）">別添81（直前直左確認鏡の技術基準）</option>
+<option value="別添82（二輪自動車等の後写鏡の技術基準）">別添82（二輪自動車等の後写鏡の技術基準）</option>
+<option value="別添83（二輪自動車等の後写鏡及び後写鏡取付装置の技術基準）">別添83（二輪自動車等の後写鏡及び後写鏡取付装置の技術基準）</option>
+<option value="別添84（乗用車等の窓ふき器及び洗浄液噴射装置の技術基準）">別添84（乗用車等の窓ふき器及び洗浄液噴射装置の技術基準）</option>
+<option value="別添85（バス及びトラックの洗浄液噴射装置の技術基準）">別添85（バス及びトラックの洗浄液噴射装置の技術基準）</option>
+<option value="別添86（デフロスタの技術基準）">別添86（デフロスタの技術基準）</option>
+<option value="別添87（サンバイザの衝撃吸収の技術基準）">別添87（サンバイザの衝撃吸収の技術基準）</option>
+<option value="別添88（速度計の技術基準）">別添88（速度計の技術基準）</option>
+<option value="別添89（運行記録計の技術基準）">別添89（運行記録計の技術基準）</option>
+<option value="別添8（二輪自動車等の施錠装置の技術基準）">別添8（二輪自動車等の施錠装置の技術基準）</option>
+<option value="別添90（速度表示装置の技術基準）">別添90（速度表示装置の技術基準）</option>
+<option value="別添91（連節バスの構造要件）">別添91（連節バスの構造要件）</option>
+<option value="別添92（2階建バスの構造要件）">別添92（2階建バスの構造要件）</option>
+<option value="別添93（連結車両の制動作動おくれ防止の技術基準）">別添93（連結車両の制動作動おくれ防止の技術基準）</option>
+<option value="別添94（灯火等の照明部、個数、取付位置等の測定方法）">別添94（灯火等の照明部、個数、取付位置等の測定方法）</option>
+<option value="別添95（自動車の走行性能の技術基準）">別添95（自動車の走行性能の技術基準）</option>
+<option value="別添96（連結車両の走行性能の技術基準）">別添96（連結車両の走行性能の技術基準）</option>
+<option value="別添97（使用過程にある大型貨物自動車の速度抑制装置の技術基準）">別添97（使用過程にある大型貨物自動車の速度抑制装置の技術基準）</option>
+<option value="別添98（原動機付自転車の制動装置の技術基準）">別添98（原動機付自転車の制動装置の技術基準）</option>
+<option value="別添99（歩行者頭部及び脚部保護の技術基準）">別添99（歩行者頭部及び脚部保護の技術基準）</option>
+<option value="別添9（イモビライザの技術基準）2022.10.7削除">別添9（イモビライザの技術基準）2022.10.7削除</option>
+          </optgroup>
+          <optgroup label="T系（適用関係告示）">
+<option value="第13条（高圧ガスを燃料とする自動車の燃料装置）">第13条（高圧ガスを燃料とする自動車の燃料装置）</option>
+<option value="第14条（電気装置）">第14条（電気装置）</option>
+<option value="第19条（座席）">第19条（座席）</option>
+<option value="第1条（定義等）">第1条（定義等）</option>
+<option value="第20条（座席ベルト等）">第20条（座席ベルト等）</option>
+<option value="第21条（頭部後傾抑止装置）">第21条（頭部後傾抑止装置）</option>
+<option value="第22条（年少者用補助乗車装置等）">第22条（年少者用補助乗車装置等）</option>
+<option value="第26条（窓ガラス）">第26条（窓ガラス）</option>
+<option value="第27条（騒音防止装置）">第27条（騒音防止装置）</option>
+<option value="第28条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）">第28条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）</option>
+<option value="第29条（前照灯等）">第29条（前照灯等）</option>
+<option value="第30条（前部霧灯）">第30条（前部霧灯）</option>
+<option value="第31条の2（低速走行時側方照射灯）">第31条の2（低速走行時側方照射灯）</option>
+<option value="第32条（車幅灯）">第32条（車幅灯）</option>
+<option value="第33条の2（昼間走行灯）">第33条の2（昼間走行灯）</option>
+<option value="第35条（側方灯及び側方反射器）">第35条（側方灯及び側方反射器）</option>
+<option value="第36条（番号灯）">第36条（番号灯）</option>
+<option value="第37条（尾灯）">第37条（尾灯）</option>
+<option value="第38条（後部霧灯）">第38条（後部霧灯）</option>
+<option value="第41条（後部反射器）">第41条（後部反射器）</option>
+<option value="第42条（制動灯）">第42条（制動灯）</option>
+<option value="第43条（補助制動灯）">第43条（補助制動灯）</option>
+<option value="第45条（方向指示器）">第45条（方向指示器）</option>
+<option value="第47条の2（緊急制動表示灯）">第47条の2（緊急制動表示灯）</option>
+<option value="第47条の3（後面衝突警告表示灯）">第47条の3（後面衝突警告表示灯）</option>
+<option value="第47条（非常点滅表示灯）">第47条（非常点滅表示灯）</option>
+<option value="第48条（その他の灯火等の制限）">第48条（その他の灯火等の制限）</option>
+<option value="第4条（原動機及び動力伝達装置）">第4条（原動機及び動力伝達装置）</option>
+<option value="第51条の2（車線逸脱警報装置）">第51条の2（車線逸脱警報装置）</option>
+<option value="第51条の3（車両接近通報装置）">第51条の3（車両接近通報装置）</option>
+<option value="第52条（後写鏡等）">第52条（後写鏡等）</option>
+<option value="第54条の2（事故情報計測・記録装置）">第54条の2（事故情報計測・記録装置）</option>
+<option value="第56条（運行記録計）">第56条（運行記録計）</option>
+<option value="第63条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）">第63条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）</option>
+<option value="第64条（前照灯）">第64条（前照灯）</option>
+<option value="第65条（番号灯）">第65条（番号灯）</option>
+<option value="第66条（尾灯）">第66条（尾灯）</option>
+<option value="第67条の2（後部反射器）">第67条の2（後部反射器）</option>
+<option value="第67条（制動灯）">第67条（制動灯）</option>
+<option value="第71条の2（方向指示器）">第71条の2（方向指示器）</option>
+<option value="第71条の3（後写鏡）">第71条の3（後写鏡）</option>
+<option value="第71条（消音器）">第71条（消音器）</option>
+<option value="第73条の2（電気装置）">第73条の2（電気装置）</option>
+<option value="第76条の2（後面衝突警告表示灯）">第76条の2（後面衝突警告表示灯）</option>
+<option value="第76条（緊急制動表示灯）">第76条（緊急制動表示灯）</option>
+<option value="第78条の2（電気装置）">第78条の2（電気装置）</option>
+<option value="第7条（かじ取装置）">第7条（かじ取装置）</option>
           </optgroup>
         </select>
       </div>
@@ -392,7 +556,7 @@
 </div>
 
 <script>
-const QUESTIONS = [
+const QUESTIONS=[
   {no:5001,section:"保安基準",label:"第2条（長さ、幅及び高さ）",q:"自動車の長さの最大限度として正しいものはどれか。ただし、セミトレーラを除く通常の自動車とする。",choices:["A. 11メートル", "B. 12メートル", "C. 13メートル", "D. 14メートル"],answer:"B",exp:"第2条第1項の規定により、自動車の長さは12メートルを超えてはならない。なお、セミトレーラのうち告示で定めるものは13メートルが上限となる。"},
   {no:5002,section:"保安基準",label:"第2条（長さ、幅及び高さ）",q:"自動車の幅及び高さの最大限度の組み合わせとして正しいものはどれか。",choices:["A. 幅2.3メートル、高さ3.5メートル", "B. 幅2.5メートル、高さ4.0メートル", "C. 幅2.5メートル、高さ3.8メートル", "D. 幅2.8メートル、高さ3.8メートル"],answer:"C",exp:"第2条第1項の規定により、自動車の幅は2.5メートル、高さは3.8メートルを超えてはならない。"},
   {no:5003,section:"保安基準",label:"第2条（長さ、幅及び高さ）",q:"外開き式の窓及び換気装置が自動車の最外側から突出できる最大量として正しいものはどれか。",choices:["A. 200ミリメートル未満", "B. 250ミリメートル未満", "C. 300ミリメートル未満", "D. 350ミリメートル未満"],answer:"B",exp:"第2条第2項第1号の規定により、外開き式の窓及び換気装置は、その自動車の最外側から250ミリメートル未満、又はその自動車の高さから300ミリメートル未満の突出量の範囲内でなければならない。"},
@@ -994,47 +1158,367 @@ const QUESTIONS = [
   {no:6932,section:"保安基準細目",label:"第326条（最高速度表示灯）",q:"第326条第3項第1号の規定により、最高速度表示灯の点灯・点滅の条件として正しいものはどれか。",choices:["A. 速度抑制装置が作動する速度が6km/hを超える場合は、常に点滅するものであること。", "B. 速度抑制装置が作動する速度が6km/h以下の場合は、常に点灯するものであること。", "C. 速度抑制装置が作動する速度が6km/hを超える場合は、常に点灯するものであること。", "D. 速度抑制装置が作動する速度にかかわらず、常に点滅するものであること。"],answer:"C",exp:"第326条第3項第1号の規定により、速度抑制装置が作動する速度が6km/hを超える場合は常に点灯するものであること。速度抑制装置が作動する速度が6km/h以下の場合に限り、常に点滅するものであること（毎分60回以上120回以下の一定の周期）。"},
   {no:6933,section:"保安基準細目",label:"第326条（最高速度表示灯）",q:"第326条第3項第3号の規定による最高速度表示灯（後方に照射するものを除く）の取付高さに関する規定として正しいものはどれか。",choices:["A. 中心が地上0.3m以上となるように取り付けること。", "B. 中心が地上0.4m以上となるように取り付けること。", "C. 中心が地上0.5m以上となるように取り付けること。", "D. 中心が地上0.6m以上となるように取り付けること。"],answer:"B",exp:"第326条第3項第3号の規定により、最高速度表示灯（後方に照射するものを除く）の中心は地上0.4m以上となるように取り付けられていること。"},
   {no:6934,section:"保安基準細目",label:"第321条（警音器）",q:"第321条第2項第1号の規定により、動力が7kW以下の二輪の特定小型原動機付自転車に備える警音器の音の大きさとして正しいものはどれか。",choices:["A. 前方7mの位置において112dB以下87dB以上であること。", "B. 前方7mの位置において112dB以下83dB以上であること。", "C. 前方10mの位置において112dB以下83dB以上であること。", "D. 前方7mの位置において110dB以下80dB以上であること。"],answer:"B",exp:"第321条第2項第1号の規定により、動力が7kW以下の二輪の特定小型原動機付自転車に備える警音器にあっては、前方7mの位置において112dB以下83dB以上であること。一般は112dB以下87dB以上。"},
-  {no:6935,section:"保安基準細目",label:"第318条（尾灯）",q:"第318条（使用の過程にある特定小型原動機付自転車の尾灯）の光源の規格として、基準に適合するとみなされるものはどれか。",choices:["A. 光源が3W以上15W以下で照明部の大きさが10㎠以上であり機能が正常であるもの", "B. 光源が5W以上30W以下で照明部の大きさが15㎠以上であり機能が正常であるもの", "C. 光源が10W以上40W以下で照明部の大きさが20㎠以上であり機能が正常であるもの", "D. 光源が5W以上20W以下で照明部の大きさが10㎠以上であり機能が正常であるもの"],answer:"B",exp:"第318条第1項第1号の規定により、光源が5W以上30W以下で照明部の大きさが15㎠以上であり、かつその機能が正常である尾灯は、後方300mの距離から点灯を確認できる基準に適合するものとする。"}
+  {no:6935,section:"保安基準細目",label:"第318条（尾灯）",q:"第318条（使用の過程にある特定小型原動機付自転車の尾灯）の光源の規格として、基準に適合するとみなされるものはどれか。",choices:["A. 光源が3W以上15W以下で照明部の大きさが10㎠以上であり機能が正常であるもの", "B. 光源が5W以上30W以下で照明部の大きさが15㎠以上であり機能が正常であるもの", "C. 光源が10W以上40W以下で照明部の大きさが20㎠以上であり機能が正常であるもの", "D. 光源が5W以上20W以下で照明部の大きさが10㎠以上であり機能が正常であるもの"],answer:"B",exp:"第318条第1項第1号の規定により、光源が5W以上30W以下で照明部の大きさが15㎠以上であり、かつその機能が正常である尾灯は、後方300mの距離から点灯を確認できる基準に適合するものとする。"},
+  {no:7001,section:"保安基準別添",label:"別添1（大型貨物自動車の速度抑制装置の技術基準）",q:"大型貨物自動車の速度抑制装置に関する次の記述のうち、正しいものはどれか。",choices:["A. 速度抑制装置の設定速度は100km/h以下の任意の速度とする", "B. 速度抑制装置の設定速度は90km/h以下の任意の速度とし、自動車使用者等による設定速度の変更及び解除ができてはならない", "C. 速度抑制装置は主制動装置を補助するために作動させることができる", "D. 速度抑制装置の設定速度は80km/h以下の任意の速度とする"],answer:"B",exp:"別添1の3.2項により、設定速度は90km/h以下の任意の速度とし、自動車使用者等による設定速度の変更及び設定の解除ができてはならないと規定されている。"},
+  {no:7002,section:"保安基準別添",label:"別添1（大型貨物自動車の速度抑制装置の技術基準）",q:"大型貨物自動車の速度抑制装置の試験路試験における天候条件として正しいものはどれか。",choices:["A. 平均風速は8m/s未満で、最大風速は15m/sを超えないこと", "B. 平均風速は6m/s未満で、最大風速は10m/sを超えないこと", "C. 平均風速は4m/s未満で、最大風速は8m/sを超えないこと", "D. 平均風速は5m/s未満で、最大風速は12m/sを超えないこと"],answer:"B",exp:"別添1の4.1.3.1.項により、試験路試験の天候条件は平均風速6m/s未満、最大風速は10m/sを超えないことと規定されている。"},
+  {no:7003,section:"保安基準別添",label:"別添1（大型貨物自動車の速度抑制装置の技術基準）",q:"速度抑制装置の加速試験における判定基準として正しいものはどれか。",choices:["A. 安定速度は設定速度に10km/hを加えた速度を超えてはならない", "B. 安定速度は設定速度に5km/hを加えた速度及び90km/hを超えてはならない", "C. 安定速度は設定速度に3km/hを加えた速度及び90km/hを超えてはならない", "D. 安定速度は設定速度に5km/hを加えた速度及び100km/hを超えてはならない"],answer:"B",exp:"別添1の4.1.4.2.1.項により、安定速度は設定速度に5km/hを加えた速度及び90km/hを超えてはならないと規定されている。"},
+  {no:7004,section:"保安基準別添",label:"別添2（軽合金製ディスクホイールの技術基準）",q:"乗用車用軽合金製ディスクホイールの回転曲げ疲労試験における曲げモーメントの計算式中、係数Smの標準値として正しいものはどれか。",choices:["A. 1.0", "B. 1.2", "C. 1.5", "D. 2.0"],answer:"C",exp:"別添2の2.1.1.項により、曲げモーメントの係数Smの標準値は1.5と規定されている（ただし、特定の合金や鋳鍛造材については1.8または2.0とすることができる）。"},
+  {no:7005,section:"保安基準別添",label:"別添2（軽合金製ディスクホイールの技術基準）",q:"乗用車用軽合金製ディスクホイールの半径方向負荷耐久試験において、ディスクホイールを最低何回転させなければならないか。",choices:["A. 10万回転", "B. 20万回転", "C. 30万回転", "D. 50万回転"],answer:"D",exp:"別添2の2.2.2.2.項により、半径方向負荷耐久試験ではディスクホイールを最低50万回転させることと規定されている。"},
+  {no:7006,section:"保安基準別添",label:"別添2（軽合金製ディスクホイールの技術基準）",q:"乗用車用軽合金製ディスクホイールの衝撃試験において、おもりを落下させる際のタイヤの空気圧として正しいものはどれか。",choices:["A. 150±10kPa", "B. 180±10kPa", "C. 200±10kPa", "D. 250±10kPa"],answer:"C",exp:"別添2の2.3.2.2.項により、衝撃試験時のタイヤの空気圧は200±10kPaと規定されている。"},
+  {no:7007,section:"保安基準別添",label:"別添3（乗用車用空気入タイヤの技術基準）2015.10.8削除",q:"別添3（乗用車用空気入タイヤの技術基準）の適用範囲として正しいものはどれか。",choices:["A. 専ら乗用の用に供する自動車であって乗車定員10人以上のものに備えるタイヤに適用する", "B. 専ら乗用の用に供する自動車であって乗車定員10人未満のもの又は車両総重量3.5t以下の被牽引自動車に備えるタイヤに適用する", "C. 二輪自動車及び側車付二輪自動車を含む全ての自動車のタイヤに適用する", "D. 貨物の運送の用に供する自動車のみに備えるタイヤに適用する"],answer:"B",exp:"別添3の1.項（適用範囲）により、専ら乗用の用に供する自動車（二輪自動車、側車付二輪自動車、三輪自動車及び被牽引自動車を除く）であって乗車定員10人未満のもの又は車両総重量3.5t以下の被牽引自動車に備えるタイヤに適用すると規定されている。"},
+  {no:7008,section:"保安基準別添",label:"別添4（トラック、バス及びトレーラ用空気入タイヤの技術基準）2015.10.8削除",q:"別添4（トラック、バス及びトレーラ用空気入タイヤの技術基準）において、車両総重量3.5t以下の貨物の運送の用に供する自動車に備えるタイヤの取扱いとして正しいものはどれか。",choices:["A. 別添4の基準のみ適用される", "B. 別添3の乗用車用空気入タイヤの技術基準を適用することができる", "C. 適用除外となりいずれの基準も適用されない", "D. 別添5の二輪車用空気入タイヤの技術基準を適用することができる"],answer:"B",exp:"別添4の1.項により、車両総重量3.5t以下の貨物の運送の用に供する自動車に備えるタイヤは、別添4の適用に替えて別添3の基準を適用することができると規定されている。"},
+  {no:7009,section:"保安基準別添",label:"別添5（二輪車用空気入タイヤの技術基準）2015.10.8削除",q:"別添5（二輪車用空気入タイヤの技術基準）における「ランフラットタイヤ（セルフサポートタイヤ）」の定義として最も適切なものはどれか。",choices:["A. 特殊な補強材を追加したタイヤであって、パンク後でも100km/hで走行できるもの", "B. 追加の構成部品なく、適切なリムに取り付けた状態でフラットタイヤランニングモードで80km/hの速度で80kmまで走行できる技術的特徴を有するタイヤ", "C. 特殊な空気圧制御システムと組み合わせて使用するタイヤ", "D. パンク後も空気圧を維持できる構造を持つタイヤ"],answer:"B",exp:"別添3の2.2.7.項（別添5においても同義で参照）により、ランフラットタイヤ（セルフサポートタイヤ）は、追加の構成部品がなく適切なリムに取り付けた状態においてフラットタイヤランニングモードで80km/h（50mph）の速度で80kmまでの距離を走行している間は少なくとも基本的なタイヤの機能を維持している技術的特徴を有するタイヤをいうと規定されている。"},
+  {no:7010,section:"保安基準別添",label:"別添6（衝撃吸収式かじ取装置の技術基準）2011.6.23削除",q:"別添6（衝撃吸収式かじ取装置の技術基準）のバリヤに対する正面衝突試験に関する記述として正しいものはどれか。",choices:["A. 非積載質量の自動車を60km/hの速度でバリヤに衝突させた際にコラム頂点が後方15cmを超えて移動しないこと", "B. 非積載質量の自動車を48.3km/hの速度でバリヤに衝突させた際にステアリングコラムとそのシャフトの頂点が水平方向に後方12.7cmを超えて移動しないこと", "C. 非積載質量の自動車を50km/hの速度でバリヤに衝突させた際にコラム頂点が後方10cmを超えて移動しないこと", "D. 積載状態の自動車を48.3km/hの速度でバリヤに衝突させた際にコラム頂点が後方12.7cmを超えて移動しないこと"],answer:"B",exp:"別添6の3.1.項により、非積載質量の自動車を48.3km/hの速度でバリヤに衝突させた際にステアリングコラムとそのシャフトの頂点が車両の水平方向に後方12.7cmを超えて移動せず、さらに鉛直方向に上方12.7cmを超えて移動しないものでなければならないと規定されている。"},
+  {no:7011,section:"保安基準別添",label:"別添7（四輪自動車等の施錠装置の技術基準）2022.10.7削除",q:"別添7（四輪自動車等の施錠装置の技術基準）における機械式施錠機能の鍵の組合せ数に関する記述として正しいものはどれか。",choices:["A. 機械式施錠機能は500通り以上の鍵の組合せを有するものでなければならない", "B. 機械式施錠機能は1,000通り以上の鍵の組合せを有するものでなければならない", "C. 機械式施錠機能は5,000通り以上の鍵の組合せを有するものでなければならない", "D. 機械式施錠機能は10,000通り以上の鍵の組合せを有するものでなければならない"],answer:"B",exp:"別添7の3.6.項により、機械式施錠機能は1,000通り以上の鍵の組合せを有するものでなければならないと規定されている（ただし、1年間の製造車両台数が1,000台未満の場合は製造車両台数と同数で可）。"},
+  {no:7012,section:"保安基準別添",label:"別添8（二輪自動車等の施錠装置の技術基準）",q:"別添8（二輪自動車等の施錠装置の技術基準）における施錠装置の種類とその説明の組み合わせとして正しいものはどれか。",choices:["A. 第1種：ステアリングと動力伝達装置の両方を施錠する", "B. 第2種：自動車の原動機を不作動にする装置と連動してステアリングを施錠する", "C. 第3種：ステアリングだけを施錠する", "D. 第4種：ステアリングを施錠する"],answer:"B",exp:"別添8の2.1.2.項により、第2種の施錠装置は自動車の原動機を不作動にする装置と連動してステアリングを施錠するものと規定されている。"},
+  {no:7013,section:"保安基準別添",label:"別添8（二輪自動車等の施錠装置の技術基準）",q:"別添8（二輪自動車等の施錠装置の技術基準）において、施錠装置（第4種を除く）が作動するために必要なかじ取りハンドルの操作角度として正しいものはどれか。",choices:["A. 前方直進状態から少なくとも10度左又は右の角度に操作された場合にのみ施錠する", "B. 前方直進状態から少なくとも15度左又は右の角度に操作された場合にのみ施錠する", "C. 前方直進状態から少なくとも20度左又は右の角度に操作された場合にのみ施錠する", "D. 前方直進状態から少なくとも30度左又は右の角度に操作された場合にのみ施錠する"],answer:"C",exp:"別添8の3.10.項により、施錠装置（第4種を除く）はかじ取りハンドルが前方直進状態から少なくとも20度左又は右の角度に操作された場合にのみ施錠するものでなければならないと規定されている。"},
+  {no:7014,section:"保安基準別添",label:"別添8（二輪自動車等の施錠装置の技術基準）",q:"別添8（二輪自動車等の施錠装置の技術基準）において、施錠装置（第4種を除く）に作動時にかじ取りハンドル軸の両方向にかけられるトルクとして正しいものはどれか。",choices:["A. 100Nm", "B. 150Nm", "C. 200Nm", "D. 300Nm"],answer:"C",exp:"別添8の3.9.項により、施錠装置（第4種を除く）はその作動時にかじ取りハンドル軸の軸回りにかじ取りハンドル軸両方向に200Nmのトルクがかけられた場合でも安全性をおびやかすような損傷をかじ取装置に与えることなく耐えなければならないと規定されている。"},
+  {no:7015,section:"保安基準別添",label:"別添9（イモビライザの技術基準）2022.10.7削除",q:"別添9（イモビライザの技術基準）において、イモビライザの適用対象となる自動車の車両電源として正しいものはどれか。",choices:["A. 車両電源が6Vである自動車", "B. 車両電源が12Vである自動車", "C. 車両電源が24Vである自動車", "D. 車両電源が48Vである自動車"],answer:"B",exp:"別添9の1.項（適用範囲）により、この技術基準は車両電源が12Vである自動車に備えるイモビライザに適用すると規定されている。"},
+  {no:7016,section:"保安基準別添",label:"別添10（トラック及びバスの制動装置の技術基準）2013.8.30削除",q:"別添10（トラック及びバスの制動装置の技術基準）における「第2種バス」の定義として正しいものはどれか。",choices:["A. 専ら乗用の用に供する乗車定員10人以上の自動車であって、車両総重量5t以下のもの", "B. 専ら乗用の用に供する乗車定員10人以上の自動車であって、車両総重量が5tを超えるもの", "C. 専ら乗用の用に供する乗車定員11人以上の自動車であって、車両総重量が8tを超えるもの", "D. 専ら乗用の用に供する乗車定員10人以上の自動車であって、車両総重量が10tを超えるもの"],answer:"B",exp:"別添10の2.2.項により、第2種バスとは専ら乗用の用に供する乗車定員10人以上の自動車であって車両総重量が5tを超えるものをいうと規定されている。"},
+  {no:7031,section:"保安基準別添",label:"別添11（アンチロックブレーキシステムの技術基準）2013.8.30削除",q:"別添11（アンチロックブレーキシステムの技術基準）における「ロック」の定義として正しいものはどれか。",choices:["A. 車輪の回転運動の停止状態又はそれに近い状態が0.3秒以上継続する現象", "B. 車輪の回転運動の停止状態又はそれに近い状態が0.5秒以上継続する現象", "C. 車輪の回転運動の停止状態又はそれに近い状態が1.0秒以上継続する現象", "D. 車輪の回転運動が完全に停止した状態が0.5秒以上継続する現象"],answer:"B",exp:"別添11の2.1.「ロック」の定義により、車輪の回転運動の停止状態又はそれに近い状態が0.5秒以上継続する現象をいう。"},
+  {no:7032,section:"保安基準別添",label:"別添12（乗用車の制動装置の技術基準）2014.2.13削除",q:"別添12（乗用車の制動装置の技術基準）における「B種の電気式回生制動装置」の定義として正しいものはどれか。",choices:["A. 主制動装置の一部でない電気式回生制動装置", "B. 主制動装置の一部である電気式回生制動装置", "C. 補助制動装置として機能する電気式回生制動装置", "D. 非常用制動装置として機能する電気式回生制動装置"],answer:"B",exp:"別添12の2.14.3.により、「B種の電気式回生制動装置」とは主制動装置の一部である電気式回生制動装置をいう。なお、A種は主制動装置の一部でないものをいう（2.14.2.）。"},
+  {no:7033,section:"保安基準別添",label:"別添14（制動液漏れ警報装置の技術基準）",q:"別添14（制動液漏れ警報装置の技術基準）において、制動液漏れ警報装置の試験でブレーキペダルを踏み込む際の操作力の上限として正しいものはどれか。",choices:["A. 500N", "B. 600N", "C. 700N", "D. 800N"],answer:"C",exp:"別添14の2.の試験方法により、ブレーキペダルを運転者の操作力700N以下の適当な踏力で踏み込む、と定められている。"},
+  {no:7034,section:"保安基準別添",label:"別添14（制動液漏れ警報装置の技術基準）",q:"別添14（制動液漏れ警報装置の技術基準）の判定基準において、音による警報装置の警報音の大きさとして、「その他の自動車」に適用される基準値として正しいものはどれか（ジーゼル以外の場合）。",choices:["A. 60dB（A）以上", "B. 65dB（A）以上", "C. 70dB（A）以上", "D. 75dB（A）以上"],answer:"C",exp:"別添14の2.1.(1)の表により、その他の自動車（ジーゼルを原動機とするもの以外）の警報音の大きさは70dB（A）以上であること。ジーゼルを原動機とするものは75dB（A）以上。"},
+  {no:7035,section:"保安基準別添",label:"別添15（トレーラの制動装置の技術基準）2013.8.30削除",q:"別添15（トレーラの制動装置の技術基準）における「第3種トレーラ」の説明として正しいものはどれか（センターアクスルトレーラの場合）。",choices:["A. 積載状態での後軸重の総和が0.75tを超え3.5t以下のもの", "B. 積載状態での後軸重の総和が3.5tを超え10t以下のもの", "C. 積載状態での後軸重の総和が10tを超えるもの", "D. 積載状態での後軸重の総和が0.75t以下のもの"],answer:"B",exp:"別添15の2.3.により、センターアクスルトレーラの「第3種トレーラ」とは積載状態での後軸重の総和が3.5tを超え10t以下のものをいう。"},
+  {no:7036,section:"保安基準別添",label:"別添16（乗用車用プラスチツク製燃料タンクの技術基準）",q:"別添16（乗用車用プラスチツク製燃料タンクの技術基準）の燃料透過性試験において、判定基準として燃料の減少量が適合するとされる数値として正しいものはどれか（通常の3.1.2.の試験の場合）。",choices:["A. 24時間当たり10g以下", "B. 24時間当たり15g以下", "C. 24時間当たり20g以下", "D. 24時間当たり30g以下"],answer:"C",exp:"別添16の4.1.1.により、3.1.1.から3.1.2.の試験を行ったとき、燃料の減少量は24時間当たり20g以下であること。なお、再試験（3.1.3.）の場合は10g以下（4.1.2.）。"},
+  {no:7037,section:"保安基準別添",label:"別添16（乗用車用プラスチツク製燃料タンクの技術基準）",q:"別添16（乗用車用プラスチツク製燃料タンクの技術基準）の耐圧試験における試験条件として正しいものはどれか。",choices:["A. 温度40℃の水を公称容量まで満たし、内圧をゲージ圧で20kPaに5時間保つ", "B. 温度53℃の水を公称容量まで満たし、内圧をゲージ圧で29kPaに5時間保つ", "C. 温度53℃の水を公称容量まで満たし、内圧をゲージ圧で20kPaに3時間保つ", "D. 温度40℃の水を公称容量まで満たし、内圧をゲージ圧で29kPaに3時間保つ"],answer:"B",exp:"別添16の3.3.により、耐圧試験では温度53℃の水を公称容量まで満たし、53±2℃の温度のもとで燃料タンクの内圧をゲージ圧で29kPaに5時間保つ。"},
+  {no:7038,section:"保安基準別添",label:"別添17（衝突時等における燃料漏れ防止の技術基準）",q:"別添17（衝突時等における燃料漏れ防止の技術基準）の前面衝突試験において、試験自動車をバリヤに衝突させる速度として正しいものはどれか。",choices:["A. 40±2km/h", "B. 48±2km/h", "C. 50±2km/h", "D. 56±2km/h"],answer:"C",exp:"別添17の3.1.3.により、前面衝突試験では試験自動車を50±2km/hの速度でバリヤ前面に垂直に正面衝突させる。"},
+  {no:7039,section:"保安基準別添",label:"別添17（衝突時等における燃料漏れ防止の技術基準）",q:"別添17（衝突時等における燃料漏れ防止の技術基準）において、台車を使用した後面衝突試験でのインパクタと台車の総質量として正しいものはどれか。",choices:["A. 900±20kg", "B. 1,000±20kg", "C. 1,100±20kg", "D. 1,200±20kg"],answer:"C",exp:"別添17の3.2.1.2.1.(3)により、台車及びインパクタの総質量は1,100±20kgであること。"},
+  {no:7040,section:"保安基準別添",label:"別添18（自動車燃料ガス容器取付部の技術基準）",q:"別添18（自動車燃料ガス容器取付部の技術基準）において、上下方向の振動振幅一定試験での周波数1Hzから3Hzの振幅として正しいものはどれか。",choices:["A. ±0.5mm", "B. ±1mm", "C. ±10mm", "D. ±28mm"],answer:"D",exp:"別添18の4.1.1.(1)により、上下方向の振動振幅一定試験においてf=1～3Hzの振幅はa=±28mmである。"},
+  {no:7041,section:"保安基準別添",label:"別添18（自動車燃料ガス容器取付部の技術基準）",q:"別添18（自動車燃料ガス容器取付部の技術基準）のゆるみ試験において、常用帯域に共振を有する場合の試験時間又は試験回数として正しいものはどれか。",choices:["A. 10時間又は2×10の5乗回", "B. 20時間又は4×10の5乗回", "C. 30時間又は6×10の5乗回", "D. 40時間又は8×10の5乗回"],answer:"B",exp:"別添18の4.2.1.(1)により、常用帯域に共振を有する場合は3方向ともそれぞれの共振周波数で20時間又は4×10の5乗回の試験を行う。加振加速度は±4.9m/s2。"},
+  {no:7042,section:"保安基準別添",label:"別添19（自動車燃料ガス容器の気密・換気の技術基準）",q:"別添19（自動車燃料ガス容器の気密・換気の技術基準）の格納室の気密試験において、停車時の試験で容器格納室に導入する圧力として正しいものはどれか。",choices:["A. 5kPa", "B. 10kPa", "C. 15kPa", "D. 20kPa"],answer:"B",exp:"別添19の3.1.1.(2)により、容器格納室に圧縮炭酸ガスを吹き込み、容器格納室の内圧を10kPaにした後、5分間その状態を保つ。"},
+  {no:7043,section:"保安基準別添",label:"別添19（自動車燃料ガス容器の気密・換気の技術基準）",q:"別添19（自動車燃料ガス容器の気密・換気の技術基準）の判定基準において、格納室の換気試験（3.2.）の合否基準として正しいものはどれか。",choices:["A. 容器格納室内のガス濃度が90%低下するのに要する時間が120秒以内であること", "B. 容器格納室内のガス濃度が90%低下するのに要する時間が180秒以内であること", "C. 容器格納室内のガス濃度が50%低下するのに要する時間が180秒以内であること", "D. 容器格納室内のガス濃度が90%低下するのに要する時間が300秒以内であること"],answer:"B",exp:"別添19の4.(2)により、3.2.による試験を行ったときに、容器格納室内のガス濃度が90%低下するのに要する時間が180秒以内であること。"},
+  {no:7044,section:"保安基準別添",label:"別添20（外装の技術基準）2016.10.7削除",q:"別添20（外装の技術基準）において、自動車の外部表面に有してはならない突起の曲率半径として正しいものはどれか。",choices:["A. 曲率半径が1.5mm未満の突起", "B. 曲率半径が2.0mm未満の突起", "C. 曲率半径が2.5mm未満の突起", "D. 曲率半径が5.0mm未満の突起"],answer:"C",exp:"別添20の3.4.により、外部表面には曲率半径が2.5mm未満である突起を有してはならない。ただし、突出量が5mm未満の突起は端部に丸みが付けられていればよく、突出量が1.5mm未満はこの限りでない。"},
+  {no:7045,section:"保安基準別添",label:"別添21（外装の手荷物積載用部品の技術基準）2016.10.7削除",q:"別添21（外装の手荷物積載用部品の技術基準）において、手荷物積載用部品の表面の曲率半径に関する特別規定として正しいものはどれか。",choices:["A. 直径100mmの球体が接触する部分について、曲率半径が2.5mm以上であること", "B. 直径100mmの球体が接触する部分について、曲率半径が5.0mm以上であること", "C. 直径165mmの球体が接触する部分について、曲率半径が2.5mm以上であること", "D. 直径165mmの球体が接触する部分について、曲率半径が5.0mm以上であること"],answer:"C",exp:"別添21の4.1.2.により、手荷物積載用部品の表面は、自動車に取り付けた状態で直径165mmの球体が接触する部分について、その曲率半径が2.5mm以上であること（4.2.の要件を適用する場合を除く）。"},
+  {no:7061,section:"保安基準別添",label:"別添22（外装の電波送受信用アンテナの技術基準）",q:"別添22「外装の電波送受信用アンテナの技術基準」における電波送受信用アンテナの表面の突起に関する記述として、次のうち正しいものはどれか。",choices:["A. 突起の曲率半径は1.5mm未満であってはならない。", "B. 突起の曲率半径が2.5mm未満であってはならないが、突出量が1.5mm未満の突起はこの限りでない。", "C. 硬さが80ショア(A)以下の材料からなる突起は曲率半径の制限を受けない。", "D. 突出量が5mm未満の突起はすべて曲率半径の制限を受けない。"],answer:"B",exp:"3.4の規定により、電波送受信用アンテナの表面の突起の曲率半径は2.5mm未満であってはならない。ただし、突出量が5mm未満の突起は外向きの端部に丸みがあればよく、突出量が1.5mm未満の突起はこの限りでない（3.4）。硬さの免除基準は60ショア(A)以下（3.5）であり、80ショア(A)ではない。"},
+  {no:7062,section:"保安基準別添",label:"別添23（前面衝突時の乗員保護の技術基準）",q:"別添23「前面衝突時の乗員保護の技術基準」におけるHIC（頭部傷害指数）の算出に用いるt1およびt2の制限として、次のうち正しいものはどれか。",choices:["A. |t1 - t2| は50ms以下でなければならない。", "B. |t1 - t2| は36ms以下でなければならない。", "C. |t1 - t2| は20ms以下でなければならない。", "D. |t1 - t2| は15ms以下でなければならない。"],answer:"B",exp:"2.6の規定において、HICの計算に用いるt1及びt2は衝突中の任意の時間（単位s）であり、|t1－t2|≦36msとする、と定められている。"},
+  {no:7063,section:"保安基準別添",label:"別添24（側面衝突時の乗員保護装置の技術基準）",q:"別添24「側面衝突時の乗員保護装置の技術基準」における胸部性能基準として、次のうち正しいものはどれか。",choices:["A. 胸部変位（RDC）は50mm以下、胸部傷害値（VC）は1.5m/秒以下であること。", "B. 胸部変位（RDC）は42mm以下、胸部傷害値（VC）は1.0m/秒以下であること。", "C. 胸部変位（RDC）は35mm以下、胸部傷害値（VC）は0.5m/秒以下であること。", "D. 胸部変位（RDC）は42mm以下、胸部傷害値（VC）は2.0m/秒以下であること。"],answer:"B",exp:"3.2.1.2の規定により、胸部性能基準は胸部変位（RDC）42mm以下、胸部傷害値（VC）1.0m/秒以下と定められている。また、腰部の恥骨荷重（PSPF）は6kN以下、腹部荷重（APF）は内力2.5kN以下である。"},
+  {no:7064,section:"保安基準別添",label:"別添27（内装材料の難燃性の技術基準）",q:"別添27「内装材料の難燃性の技術基準」における試験片の寸法として、次のうち正しいものはどれか。",choices:["A. 長さ300mm、幅100mm、厚さ10mm", "B. 長さ350mm、幅100mm、厚さ12mm", "C. 長さ350mm、幅50mm、厚さ12mm", "D. 長さ300mm、幅50mm、厚さ10mm"],answer:"B",exp:"3.1.1の規定により、内装材料の試験片の寸法は長さ350mm、幅100mm、厚さ12mmとされている。ただし内装材料の大きさや形状により当該寸法の直方体を採取できない場合は採取できる最大寸のものを試験片とする。"},
+  {no:7065,section:"保安基準別添",label:"別添27（内装材料の難燃性の技術基準）",q:"別添27「内装材料の難燃性の技術基準」における試験実施前の試験片の保管条件として、次のうち正しいものはどれか。",choices:["A. 温度25±5℃、相対湿度50±5％の環境に少なくとも12時間放置する。", "B. 温度20±5℃、相対湿度50±5％の環境に少なくとも24時間放置する。", "C. 温度20±5℃、相対湿度65±5％の環境に少なくとも24時間放置する。", "D. 温度15±5℃、相対湿度50±5％の環境に少なくとも12時間放置する。"],answer:"B",exp:"3.2.2の規定により、試験を実施する前に各試験片は20±5℃の温度および相対湿度50±5％に保たれた環境条件のもとで少なくとも24時間放置する。なお試験片の燃焼は20±5℃の温度および相対湿度65±20％の環境条件のもとで行う。"},
+  {no:7066,section:"保安基準別添",label:"別添27（内装材料の難燃性の技術基準）",q:"別添27「内装材料の難燃性の技術基準」において、ガスバーナーに供給するガスとして原則使用されるものはどれか。",choices:["A. 総発熱量が30,000～35,000kJ/m3の都市ガス", "B. 総発熱量が35,000～38,000kJ/m3の天然ガス", "C. 総発熱量が40,000kJ/m3以上の液化天然ガス", "D. 総発熱量が25,000～30,000kJ/m3のプロパンガス"],answer:"B",exp:"3.2.6の規定により、ガスバーナーに供給されるガスは原則として総発熱量が35,000～38,000kJ/m3の天然ガスを用いる。ただし当該天然ガスと同等以上の総発熱量を有する液化石油ガス（LPガス）を用いてもよい。"},
+  {no:7067,section:"保安基準別添",label:"別添28（インストルメントパネルの衝撃吸収の技術基準）",q:"別添28「インストルメントパネルの衝撃吸収の技術基準」における試験方法として、頭部模型を衝突させる速度は次のうちどれか。（標準的な場合）",choices:["A. 20±1km/h", "B. 24±1km/h", "C. 30±1km/h", "D. 56±1km/h"],answer:"B",exp:"3.4の規定により、頭部模型（直径165mmの球状または半球状剛体模型でその有効質量は6.8kg）を衝撃位置に速度24±1km/hで衝突させ、頭部模型に発生する減速度を測定する。ただし、エアバッグを装備したインストルメントパネルにあっては20±1km/hとすることができる。"},
+  {no:7068,section:"保安基準別添",label:"別添28（インストルメントパネルの衝撃吸収の技術基準）",q:"別添28「インストルメントパネルの衝撃吸収の技術基準」における判定基準として、次のうち正しいものはどれか。",choices:["A. 頭部模型に発生する減速度は3ms以上連続して980m/s2を超えないこと。", "B. 頭部模型に発生する減速度は3ms以上連続して784m/s2を超えないこと。", "C. 頭部模型に発生する減速度は5ms以上連続して784m/s2を超えないこと。", "D. 頭部模型に発生する減速度は5ms以上連続して588m/s2を超えないこと。"],answer:"B",exp:"4.の規定により、試験を行ったとき、頭部模型に発生する減速度は3msec以上連続して784m/s2（約80G相当）を超えないことが判定基準とされている。"},
+  {no:7069,section:"保安基準別添",label:"別添29（直接前方視界の技術基準）",q:"別添29「直接前方視界の技術基準」において、試験に用いる障害物の形状として正しいものはどれか。",choices:["A. 直径0.2m、高さ1mの円柱", "B. 直径0.3m、高さ1mの円柱", "C. 直径0.3m、高さ1.2mの円柱", "D. 直径0.5m、高さ1mの円柱"],answer:"B",exp:"2.4の規定により、直接前方視界の技術基準における「障害物」とは直径0.3m、高さ1mの円柱と定義されている。試験はこの障害物を基準アイポイントから直接確認できるかを確認する。"},
+  {no:7070,section:"保安基準別添",label:"別添33（運転者席の座席ベルトの非装着時警報装置の技術基準）",q:"別添33「運転者席の座席ベルトの非装着時警報装置の技術基準」における初期警報の判定基準として、次のうち正しいものはどれか。",choices:["A. 座席ベルト非装着状態でイグニッションスイッチをONにした後、2秒以上警報音が鳴ること。", "B. 座席ベルト非装着状態でイグニッションスイッチをONにした後、表示による警報が作動すること（ただし座席ベルト装着状態でもON後8秒以下は警報可）。", "C. 座席ベルト非装着状態でイグニッションスイッチをONにした後、2秒以上の間、表示による警報が作動しかつ警報音が鳴ること。", "D. 走行開始後10秒以内に座席ベルト非装着を検知した場合に警報が作動すること。"],answer:"B",exp:"5.1.1の規定により、初期警報の判定基準の一つとして、座席ベルト非装着状態においてイグニッションスイッチを入れた状態にした後、表示による警報が作動すること（ただし座席ベルト装着状態でもON後8秒以下は警報可）が定められている。5.1.2では4秒以上の表示警報と警報音の両方、5.1.3では4秒以上8秒以下の警報音と60秒以上の表示警報も規定されている。"},
+  {no:7071,section:"保安基準別添",label:"別添34（頭部後傾抑止装置の技術基準）",q:"別添34「頭部後傾抑止装置の技術基準」における高さの調節機構を有しない頭部後傾抑止装置の高さの要件として、次のうち正しいものはどれか。",choices:["A. 前部座席において700mm以上、その他の座席にあって650mm以上", "B. 前部座席において750mm以上、その他の座席にあって700mm以上", "C. 前部座席において800mm以上、その他の座席にあって750mm以上", "D. 前部座席において850mm以上、その他の座席にあって800mm以上"],answer:"C",exp:"3.4.2の規定により、高さの調節機構を有しない頭部後傾抑止装置の高さは、運転者席およびこれと並列の座席（前部座席）において800mm以上、その他の座席にあって750mm以上でなければならないと定められている。"},
+  {no:7072,section:"保安基準別添",label:"別添38（近接排気騒音の測定方法）",q:"別添38「近接排気騒音の測定方法」において、マイクロホンの設置位置として正しいものはどれか。（標準的な場合）",choices:["A. 排気管開口部中心から0.3m離れた位置で、排気流方向と外側後方45度に交わる面上", "B. 排気管開口部中心から0.5m離れた位置で、排気流方向と外側後方45度に交わる面上", "C. 排気管開口部中心から1.0m離れた位置で、排気流方向と後方90度に交わる面上", "D. 排気管開口部中心から0.5m離れた位置で、排気流方向と後方90度に交わる面上"],answer:"B",exp:"3.2(1)の規定により、マイクロホンの位置は排気流の方向を含む鉛直面と外側後方45度に交わる排気管の開口部中心を含む鉛直面上で排気管の開口部中心から0.5m離れた位置とされている。また、開口部中心の高さ（地上高さ0.2m未満の場合は地上高さ0.2m）の±0.025mの位置とする。"},
+  {no:7073,section:"保安基準別添",label:"別添38（近接排気騒音の測定方法）",q:"別添38「近接排気騒音の測定方法」における近接排気騒音の測定時の原動機回転速度として、次のうち正しいものはどれか。（一般的な自動車の場合）",choices:["A. 最高出力時の回転速度の50%", "B. 最高出力時の回転速度の60%", "C. 最高出力時の回転速度の75%", "D. 最高出力時の回転速度の80%"],answer:"C",exp:"5.2の規定により、近接排気騒音の測定時は原動機を最高出力時の回転速度の75%の回転速度で測定する。ただし、小型自動車および軽自動車（二輪・側車付二輪）ならびに一般原動機付自転車のうち最高出力時の回転速度が毎分5000回転を超えるものは50%とする。"},
+  {no:7074,section:"保安基準別添",label:"別添39（定常走行騒音の測定方法）",q:"別添39「定常走行騒音の測定方法」において、マイクロホンの設置位置（地上高さ）として正しいものはどれか。",choices:["A. 1.0±0.05m", "B. 1.2±0.05m", "C. 1.5±0.05m", "D. 2.0±0.05m"],answer:"B",exp:"4.2(1)の規定により、定常走行騒音の測定におけるマイクロホンの設置位置は、走行方向に直角に車両中心線から左側へ水平距離7.5m（M1の位置は7m）離れた位置で、かつ地上高さが1.2±0.05mの位置とする。"},
+  {no:7075,section:"保安基準別添",label:"別添39（定常走行騒音の測定方法）",q:"別添39「定常走行騒音の測定方法」における試験速度の基準として、次のうち正しいものはどれか。（一般的な自動車の場合）",choices:["A. 原動機の最高出力時の回転数の50%の回転数で走行した場合の速度（最高50km/h）±1.5km/h", "B. 原動機の最高出力時の回転数の60%の回転数で走行した場合の速度（最高50km/h）±1.5km/h", "C. 原動機の最高出力時の回転数の75%の回転数で走行した場合の速度（最高50km/h）±1.5km/h", "D. 原動機の最高出力時の回転数の60%の回転数で走行した場合の速度（最高60km/h）±2.0km/h"],answer:"B",exp:"6.1(2)イの規定により、定常走行騒音の試験速度は原動機の最高出力時の回転数の60%の回転数で走行した場合の速度（その速度が50km/hを超える自動車（軽自動車（二輪・側車付二輪を除く））にあっては50km/h）±1.5km/hと定められている。"},
+  {no:7091,section:"保安基準別添",label:"別添40（加速走行騒音の測定方法）",q:"別添40に規定する加速走行騒音の測定において、試験自動車の重量に関する許容範囲として正しいものはどれか。",choices:["A. 車両総重量の±1%（車両総重量1000kg未満の場合は±10kg）以内", "B. 車両総重量の±2%（車両総重量1000kg未満の場合は±20kg）以内", "C. 車両総重量の±3%（車両総重量1000kg未満の場合は±30kg）以内", "D. 車両総重量の±5%（車両総重量1000kg未満の場合は±50kg）以内"],answer:"B",exp:"別添40 第2項(3)に、重量の許容範囲はその±2%（車両総重量が1000kg未満の場合は±20kg）以内と規定されている。"},
+  {no:7092,section:"保安基準別添",label:"別添40（加速走行騒音の測定方法）",q:"別添40に規定する加速走行騒音の測定において、騒音測定を行う場所の暗騒音の大きさに関する規定として正しいものはどれか。",choices:["A. 原則として自動車騒音の大きさより5dB以上小さくなければならない", "B. 原則として自動車騒音の大きさより8dB以上小さくなければならない", "C. 原則として自動車騒音の大きさより10dB以上小さくなければならない", "D. 原則として自動車騒音の大きさより15dB以上小さくなければならない"],answer:"C",exp:"別添40 第5項(1)に、暗騒音の大きさは原則として自動車騒音の大きさより10dB以上小さくなければならないと規定されている。"},
+  {no:7093,section:"保安基準別添",label:"別添40（加速走行騒音の測定方法）",q:"別添40に規定する加速走行騒音の測定において、マイクロホンの設置位置として正しいものはどれか。",choices:["A. 走行方向に直角に車両中心線から左側へ水平距離5m、地上高さ1.2±0.05m", "B. 走行方向に直角に車両中心線から左側へ水平距離7.5m、地上高さ1.2±0.05m", "C. 走行方向に直角に車両中心線から左側へ水平距離7.5m、地上高さ1.5±0.05m", "D. 走行方向に直角に車両中心線から左側へ水平距離10m、地上高さ1.2±0.05m"],answer:"B",exp:"別添40 第4.2項(1)に、マイクロホンは車両中心線から左側へ水平距離7.5m（±0.05m）、地上高さ1.2±0.05mの位置と規定されている。"},
+  {no:7094,section:"保安基準別添",label:"別添42（軽・中量車排出ガスの測定方法）",q:"別添42（JC08モード法）の適用範囲において、対象となる自動車の車両総重量の条件として正しいものはどれか。",choices:["A. 車両総重量が3.0t以下のもの又は専ら乗用の用に供する乗車定員8人以下のもの", "B. 車両総重量が3.5t以下のもの又は専ら乗用の用に供する乗車定員9人以下のもの", "C. 車両総重量が4.0t以下のもの又は専ら乗用の用に供する乗車定員10人以下のもの", "D. 車両総重量が5.0t以下のもの又は専ら乗用の用に供する乗車定員11人以下のもの"],answer:"B",exp:"別添42 第1項に、車両総重量が3.5t以下のもの又は専ら乗用の用に供する乗車定員9人以下のものと規定されている。"},
+  {no:7095,section:"保安基準別添",label:"別添42（軽・中量車排出ガスの測定方法）",q:"別添42に規定する測定装置の精度のうち、速度計の精度として正しいものはどれか。",choices:["A. ±0.1km/h以内", "B. ±0.3km/h以内", "C. ±0.5km/h以内", "D. ±1.0km/h以内"],answer:"C",exp:"別添42 第5.1.1項(4)に、速度計の精度は±0.5km/h以内と規定されている。"},
+  {no:7096,section:"保安基準別添",label:"別添42（軽・中量車排出ガスの測定方法）",q:"別添42に規定するCVS装置（定容量採取装置）の精度として正しいものはどれか。",choices:["A. 測定流量の±1%以内", "B. 測定流量の±2%以内", "C. 測定流量の±3%以内", "D. 測定流量の±5%以内"],answer:"B",exp:"別添42 第5.1.1項(8)に、CVS装置の精度は測定流量の±2%以内と規定されている。"},
+  {no:7097,section:"保安基準別添",label:"別添43（ディーゼル特殊自動車排出ガスの測定方法）",q:"別添43（ディーゼル特殊自動車排出ガスの測定方法）の適用対象となるエンジンの定格出力の範囲として正しいものはどれか。",choices:["A. 定格出力が10kW以上500kW未満のエンジン", "B. 定格出力が15kW以上500kW未満のエンジン", "C. 定格出力が19kW以上560kW未満のエンジン", "D. 定格出力が25kW以上600kW未満のエンジン"],answer:"C",exp:"別添43 第2項に、定格出力が19kW以上560kW未満のエンジンに適用されると規定されている。"},
+  {no:7098,section:"保安基準別添",label:"別添43（ディーゼル特殊自動車排出ガスの測定方法）",q:"別添43においてディーゼル特殊自動車8モード法は、ディスクリート試験サイクル又はRMC試験サイクルのいずれかにより実施するとされているが、NRTCモード法と合わせてこの技術基準で測定する排出ガス成分のうち誤っているものはどれか。",choices:["A. 一酸化炭素（CO）と非メタン炭化水素（NMHC）", "B. 窒素酸化物（NOx）と二酸化炭素（CO2）", "C. 粒子状物質（PM）", "D. メタン（CH4）と亜酸化窒素（N2O）"],answer:"D",exp:"別添43 第1項に、測定対象はCO、NMHC、NOx、CO2、PMと規定されており、CH4やN2Oは含まれない。"},
+  {no:7099,section:"保安基準別添",label:"別添43（ディーゼル特殊自動車排出ガスの測定方法）",q:"別添43における「遅れ時間」の定義として正しいものはどれか。",choices:["A. 測定装置を試験直前にゼロ及びスパン校正してから試験開始までの時間", "B. 基準点で測定される成分の変化と基準点として定義されるサンプリングプローブでの最終測定値の10%のシステム応答との間の時間差", "C. ガス分析計の校正ガス導入から安定した数値表示までの時間", "D. 排出ガスがサンプリングプローブからCVS装置に到達するまでの時間"],answer:"B",exp:"別添43 第3.1.10項に、遅れ時間とは基準点での成分変化とサンプリングプローブでの最終測定値の10%（t10）のシステム応答との間の時間差と定義されている。"},
+  {no:7100,section:"保安基準別添",label:"別添44（二輪車排出ガスの測定方法）",q:"別添44（二輪車モード法）の適用範囲として正しいものはどれか。",choices:["A. ガソリンを燃料とする総排気量0.050l以下であって最高速度50km/h以下の車両", "B. ガソリンを燃料とする総排気量0.125l以下であって最高速度50km/h以下の車両", "C. ガソリン又はLPGを燃料とする総排気量0.050l以下の二輪自動車", "D. ガソリンを燃料とする総排気量0.050l以下であって最高速度60km/h以下の車両"],answer:"A",exp:"別添44 第1項に、ガソリンを燃料とする総排気量0.050l以下であって最高速度が50km/h以下の車両（原付自転車）に適用すると規定されている。"},
+  {no:7101,section:"保安基準別添",label:"別添44（二輪車排出ガスの測定方法）",q:"別添44に規定する試験原付自転車の重量に関する記述として正しいものはどれか。",choices:["A. 空車状態の原付自転車のみの重量とする", "B. 空車状態の原付自転車に1人の人員が乗車した重量で、人員1人の重量は55kg又は75kgとする", "C. 空車状態の原付自転車に1人の人員が乗車した重量で、人員1人の重量は65kgとする", "D. 空車状態の原付自転車に1人の人員が乗車した重量で、人員1人の重量は75kgとする"],answer:"B",exp:"別添44 第2.2項に、試験原付自転車重量は空車状態の原付自転車に1人の人員が乗車した重量で、人員1人の重量は55kg又は75kgと規定されている。"},
+  {no:7102,section:"保安基準別添",label:"別添44（二輪車排出ガスの測定方法）",q:"別添44に規定する測定装置の精度のうち、惰行時間の測定装置の精度として正しいものはどれか。",choices:["A. ±0.05秒以内", "B. ±0.1秒以内", "C. ±0.5秒以内", "D. ±1秒以内"],answer:"B",exp:"別添44 第4.1.1項(5)に、惰行時間の測定装置の精度は±0.1秒以内と規定されている。"},
+  {no:7103,section:"保安基準別添",label:"別添46（無負荷急加速黒煙の測定方法）",q:"別添46（無負荷急加速黒煙の測定方法）の黒煙測定器の状態に関する記述として正しいものはどれか。",choices:["A. 黒煙測定器は使用開始前に暖機し、1週間に1回校正を行ったうえで使用する", "B. 黒煙測定器は使用開始前に暖機し、1日1回校正を行ったうえで使用する", "C. 黒煙測定器は校正不要で、プローブのパージのみ行えばよい", "D. 黒煙測定器は使用開始前に暖機し、測定ごとに校正を行ったうえで使用する"],answer:"B",exp:"別添46 第2項に、黒煙測定器は使用開始前に十分暖機し、1日1回校正を行ったうえで使用すると規定されている（2014.1.20削除）。"},
+  {no:7104,section:"保安基準別添",label:"別添47（熱害警報装置等の技術基準）",q:"別添47に規定する試験室内の温度の下限値として正しいものはどれか。",choices:["A. 273K（0℃）以上", "B. 278K（5℃）以上", "C. 283K（10℃）以上", "D. 293K（20℃）以上"],answer:"C",exp:"別添47 第3項に、試験室内の温度は283K（10℃）以上と規定されている。"},
+  {no:7105,section:"保安基準別添",label:"別添47（熱害警報装置等の技術基準）",q:"別添47に規定するシャシダイナモメータの等価慣性重量の設定において、車両総重量が938kg以上1125kg以下の場合の等価慣性重量の標準値として正しいものはどれか。",choices:["A. 875kg", "B. 1000kg", "C. 1250kg", "D. 1500kg"],answer:"B",exp:"別添47 第4.1項 表1に、車両総重量938〜1125kgに対する等価慣性重量の標準値は1000kgと規定されている。"},
+  {no:7106,section:"保安基準別添",label:"別添48（車載式故障診断装置の技術基準）",q:"別添48において、J-OBD Iが適用されるのはどのような自動車か。正しいものはどれか。",choices:["A. ガソリン又はLPGを燃料とする普通自動車及び小型自動車（二輪自動車を除く）のうち車両総重量が3.5tを超えるもの（専ら乗用9人以下のものを除く）", "B. ガソリン、LPG又は軽油を燃料とする普通自動車及び小型自動車で車両総重量が3.5t以下のもの又は乗車定員9人以下のもの", "C. 軽油を燃料とする普通自動車及び小型自動車のうち車両総重量が3.5tを超えるもの（専ら乗用9人以下のものを除く）", "D. ガソリン、LPG又は軽油以外を燃料とする全ての自動車"],answer:"A",exp:"別添48 第Ⅰ章1項に、J-OBD Iはガソリン又はLPGを燃料とする普通自動車及び小型自動車（二輪除く）のうち車両総重量が3.5tを超えるもの（専ら乗用9人以下のものを除く）に適用されると規定されている。"},
+  {no:7107,section:"保安基準別添",label:"別添48（車載式故障診断装置の技術基準）",q:"別添48に規定するJ-OBD Iの故障検知対象（ガソリン又はLPGを燃料とする自動車）のうち、次のうち含まれないものはどれか。",choices:["A. 大気圧センサ及び吸気圧力センサ", "B. 酸素センサ又は空燃比センサ及びそのヒータ回路", "C. 排気二次空気システム", "D. 触媒コンバータの劣化検知システム"],answer:"D",exp:"別添48 第Ⅱ章2.1.1項に規定するJ-OBD Iの故障検知対象には触媒コンバータの劣化検知は含まれず、大気圧センサ、酸素センサ等の電気回路の断線検知等が主な対象となっている。"},
+  {no:7108,section:"保安基準別添",label:"別添48（車載式故障診断装置の技術基準）",q:"別添48において、軽油を燃料とする自動車のJ-OBD I対象部品として、次のうち誤っているものはどれか。",choices:["A. 燃料噴射タイミングセンサ及び燃料噴射量調節センサ", "B. 燃料温度センサ及び燃料圧力センサ", "C. 酸素センサ又は空燃比センサ及びそのヒータ回路", "D. 排気温度センサ（DPFで排気温度センサを採用する場合に限る）"],answer:"C",exp:"別添48 第Ⅱ章2.1.2項に規定する軽油燃料車の故障検知対象には酸素センサや空燃比センサは含まれない。これらはガソリン・LPG燃料車（2.1.1項）の対象である。"},
+  {no:7109,section:"保安基準別添",label:"別添49（燃料蒸発ガスの測定方法）",q:"別添49（燃料蒸発ガスの測定方法）の適用範囲として正しいものはどれか。",choices:["A. ガソリン又はLPGを燃料とする全ての自動車からの蒸発ガス（HC）の測定", "B. ガソリンを燃料とする普通自動車、小型自動車（二輪除く）及び軽自動車（二輪除く）からのHCの測定", "C. ガソリンを燃料とする全ての自動車（二輪自動車を含む）からのHCの測定", "D. 軽油を燃料とする特殊自動車からの蒸発ガス（HC）の測定"],answer:"B",exp:"別添49 第1項に、ガソリンを燃料とする普通自動車、小型自動車（二輪除く）及び軽自動車（二輪除く）から蒸発ガスとして排出されるHCの測定に適用すると規定されている。"},
+  {no:7110,section:"保安基準別添",label:"別添52（灯火器及び反射器並びに指示装置の取付装置の技術基準）",q:"別添52の「非積載状態」の定義として正しいものはどれか。",choices:["A. 乗車人員及び積載物品を乗車又は積載しない状態（燃料含まず）", "B. 乗車人員及び積載物品を乗車又は積載せず、燃料・冷却水・潤滑油の全量を搭載し、工具・付属品を全て装備した状態", "C. 空車状態の自動車に運転者1名（55kg）が乗車した状態", "D. 空車状態の自動車に運転者1名（75kg）が乗車した状態"],answer:"B",exp:"別添52 第2.2項に、「非積載状態」は乗車人員・積載物品を乗車・積載せず、燃料・冷却水・潤滑油の全量を搭載し、工具及び付属品（スペアタイヤ含む）を全て装備した状態と定義されている。"},
+  {no:7111,section:"保安基準別添",label:"別添52（灯火器及び反射器並びに指示装置の取付装置の技術基準）",q:"別添52において、「交換式光源」の定義として正しいものはどれか。",choices:["A. 工具を使用しなければ光源ホルダーに脱着できない光源", "B. 工具を使用せずに光源ホルダーに脱着できるように設計された光源", "C. 固定された装置とともにしか交換できない光源", "D. 固定された光源モジュールとともにしか交換できない光源"],answer:"B",exp:"別添52 第2.5.1.1.1項に、「交換式光源」とは工具を使用せずに光源ホルダーに脱着できるように設計された光源と定義されている。"},
+  {no:7112,section:"保安基準別添",label:"別添52（灯火器及び反射器並びに指示装置の取付装置の技術基準）",q:"別添52において、「放電灯光源」の定義として正しいものはどれか。",choices:["A. 1本以上の白熱フィラメントの熱放射によって可視光を放射する光源", "B. アーク放電によるエレクトロルミネッセンス又はけい光によって可視光を放射する光源", "C. 1個以上の半導体の接合による注入型発光又はけい光によって可視光を放射する光源", "D. LEDのみを光源とする光源モジュール"],answer:"B",exp:"別添52 第2.5.1.1.5項に、「放電灯光源」はアーク放電によるエレクトロルミネッセンス又はけい光によって可視光を放射する光源と定義されている。"},
+  {no:7113,section:"保安基準別添",label:"別添53（二輪自動車等の灯火器及び反射器並びに指示装置の取付装置の技術基準）",q:"別添53において、走行用前照灯の照明部の個数の取扱いに関して、基準軸に直角の方向に測定した2つの隣接する投影間の最短距離が何mm以下の場合に1個とみなすことができるか。",choices:["A. 50mm以下", "B. 60mm以下", "C. 75mm以下", "D. 100mm以下"],answer:"C",exp:"別添53 第2.1.3.1項に、基準軸に直角の方向に測定した2つの隣接する投影間の最短距離が75mm以下のものは1個とみなすことができると規定されている。"},
+  {no:7114,section:"保安基準別添",label:"別添53（二輪自動車等の灯火器及び反射器並びに指示装置の取付装置の技術基準）",q:"別添53において、「前部霧灯の照明部」の取扱いとして正しいものはどれか。",choices:["A. 灯室（反射板等により区切られた光源を納めた部分）の数として取り扱う", "B. 照明部の数として取り扱い、有効反射面の開口部をレンズ面上へ投影した部分が明らかな場合はその部分とする", "C. レンズ外形の全体として取り扱う", "D. 基準中心を起点として測定した外径面として取り扱う"],answer:"B",exp:"別添53 第2.1.1.1項に、前部霧灯の照明部はレンズ部分として取り扱い、有効反射面の開口部をレンズ面上へ投影した部分が明らかとなる書面等の提出がある場合には当該部分とすると規定されている。"},
+  {no:7115,section:"保安基準別添",label:"別添55（前照灯洗浄器の技術基準）",q:"別添55に規定する前照灯洗浄器の作動温度範囲として正しいものはどれか。",choices:["A. −5℃から35℃までのすべての温度", "B. −10℃から35℃までのすべての温度", "C. −15℃から40℃までのすべての温度", "D. −20℃から50℃までのすべての温度"],answer:"B",exp:"別添55 第3.2.3項に、前照灯洗浄器は−10℃から35℃までのすべての温度において作動可能であることと規定されている。"},
+  {no:7116,section:"保安基準別添",label:"別添55（前照灯洗浄器の技術基準）",q:"別添55に規定する前照灯洗浄器の耐放置温度試験に関する規定として正しいものはどれか。",choices:["A. −25℃の温度に1時間及び+70℃の温度に1時間放置しても損傷がないこと", "B. −35℃の温度に1時間及び+80℃の温度に1時間放置しても損傷がないこと", "C. −40℃の温度に2時間及び+85℃の温度に2時間放置しても損傷がないこと", "D. −30℃の温度に1時間及び+90℃の温度に1時間放置しても損傷がないこと"],answer:"B",exp:"別添55 第3.2.3項に、前照灯洗浄器は−35℃の温度に1時間及び+80℃の温度に1時間放置しても損傷がないことと規定されている。"},
+  {no:7117,section:"保安基準別添",label:"別添55（前照灯洗浄器の技術基準）",q:"別添55に規定する前照灯洗浄器が作動中において、すれ違い用前照灯の照明部を覆う面積の上限として正しいものはどれか。",choices:["A. 当該照明部の表面積の10%を超えないこと", "B. 当該照明部の表面積の20%を超えないこと", "C. 当該照明部の表面積の30%を超えないこと", "D. 当該照明部の表面積の50%を超えないこと"],answer:"B",exp:"別添55 第3.2.2.1項に、作動中のすれ違い用前照灯の照明部を当該照明部の表面積の20%を超えて覆わないことと規定されている。"},
+  {no:7118,section:"保安基準別添",label:"別添56（前照灯洗浄器及び前照灯洗浄器取付装置の技術基準）",q:"別添56に規定する洗浄液容器の容量に関して、容量等級50の前照灯洗浄器の場合に必要な洗浄回数として正しいものはどれか。",choices:["A. 少なくとも25回の洗浄に十分な容量", "B. 少なくとも50回の洗浄に十分な容量", "C. 少なくとも100回の洗浄に十分な容量", "D. 少なくとも150回の洗浄に十分な容量"],answer:"B",exp:"別添56 第3.2.2.1項に、容量等級50の前照灯洗浄器は少なくとも50回の洗浄に十分な容量を有することと規定されている。"},
+  {no:7119,section:"保安基準別添",label:"別添58（車幅灯の技術基準）",q:"別添58において、カタピラ及びそりを有する軽自動車に備える車幅灯の灯光の確認距離として正しいものはどれか。",choices:["A. 夜間にその前方100mの距離から点灯を確認できること", "B. 夜間にその前方200mの距離から点灯を確認できること", "C. 夜間にその前方300mの距離から点灯を確認できること", "D. 夜間にその前方500mの距離から点灯を確認できること"],answer:"C",exp:"別添58 第3.4.1項に、カタピラ及びそりを有する軽自動車に備える車幅灯は夜間にその前方300mの距離から点灯を確認できるものであると規定されている。"},
+  {no:7120,section:"保安基準別添",label:"別添58（車幅灯の技術基準）",q:"別添58において、「照明部」の定義として正しいものはどれか。",choices:["A. 灯火器の外形全体のレンズ部分", "B. 基準軸に直角な鉛直面において直射光が図面上入射するレンズの部分又は基準軸方向の光度に対して98%の光度となるレンズの部分", "C. 基準軸方向の光度に対して50%の光度となるレンズの部分", "D. 灯火器のレンズ面積のうち有効発光面積"],answer:"B",exp:"別添58 第2.5項に、「照明部」は基準軸に直角な鉛直面において直射光が図面上入射するレンズの部分又は基準軸方向の光度に対して98%の光度となるレンズの部分と定義されている。"},
+  {no:7121,section:"保安基準別添",label:"別添58（車幅灯の技術基準）",q:"別添58において、側方灯により車幅灯の配光角度を補完する場合の車幅灯の見かけの照明部の表面積の最小値として正しいものはどれか。",choices:["A. 8cm2以上", "B. 10cm2以上", "C. 12.5cm2以上", "D. 15cm2以上"],answer:"C",exp:"別添58 第3.6項に、保安基準第34条第3項の規定に基づき側方灯により車幅灯の配光角度を補完するときは、当該車幅灯の見かけの照明部の表面積は12.5cm2以上でなければならないと規定されている。"},
+  {no:7122,section:"保安基準別添",label:"別添59（前部上側端灯の技術基準）",q:"別添59において、「前部上側端灯」の定義として正しいものはどれか。",choices:["A. 車両後面の最上部にできる限り近く装着され、車両の全幅を明確に示すために備えられたもの", "B. 車両前面の最上部にできる限り近く、かつ最外端近くに装着され、車両の全幅を明確に示すために備えられたもの", "C. 車両側面の最外端に装着され、車両の全長を明確に示すために備えられたもの", "D. 車両前面の最下部に装着され、車両の全幅を明確に示すために備えられたもの"],answer:"B",exp:"別添59 第2.1項に、「前部上側端灯」は車両前面の最上部にできる限り近く、かつ最外端近くに装着され、車両の全幅を明確に示すために備えられたものと定義されている。"},
+  {no:7123,section:"保安基準別添",label:"別添59（前部上側端灯の技術基準）",q:"別添59において、二輪自動車等に備える前部上側端灯の灯光の色として正しいものはどれか。",choices:["A. 橙色のみ", "B. 白色又は橙色", "C. 白色のみ", "D. 黄色又は白色"],answer:"C",exp:"別添59 第3.3.2項に、二輪自動車等に備える前部上側端灯の灯光の色は白色であることと規定されている。"},
+  {no:7124,section:"保安基準別添",label:"別添60（前部反射器の技術基準）",q:"別添60において、前部反射器の配光特性による等級分類として正しいものはどれか。",choices:["A. 等級Ⅰ及び等級Ⅱに分類する", "B. 等級ⅠA及び等級ⅠBに分類する", "C. 等級Ⅰ、等級Ⅱ及び等級Ⅲに分類する", "D. 等級A、等級B及び等級Cに分類する"],answer:"B",exp:"別添60 第2.14項に、反射器はその配光特性にしたがって等級ⅠA及び等級ⅠBに分類すると規定されている（2020.9.25削除）。"},
+  {no:7125,section:"保安基準別添",label:"別添60（前部反射器の技術基準）",q:"別添60において、「光度係数」の定義として正しいものはどれか。",choices:["A. 反射光の光度を照射面積で除した値", "B. 反射光の光度を反射器の照度で除した値", "C. 入射光の照度を反射面積で除した値", "D. 反射光の輝度を入射光の照度で除した値"],answer:"B",exp:"別添60 第2.12項に、「光度係数」とは反射光の光度を反射器の照度で除した値と定義されている（2020.9.25削除）。"},
+  {no:7151,section:"保安基準別添",label:"別添61（側方灯の技術基準）",q:"別添61「側方灯の技術基準」において、側方灯の種類SM1の基準軸上における最小光度として正しいものはどれか。",choices:["A. 0.6cd", "B. 2.0cd", "C. 4.0cd", "D. 10.0cd"],answer:"C",exp:"別添61の4.1.1.により、SM1の基準軸上の最小光度は4.0cdと規定されている。SM2は基準軸上でも0.6cdでよいが、SM1は4.0cd以上が必要。"},
+  {no:7152,section:"保安基準別添",label:"別添61（側方灯の技術基準）",q:"別添61「側方灯の技術基準」において、二輪自動車等に備える側方灯の灯光の色に関する記述として正しいものはどれか。",choices:["A. 灯光の色は橙色でなければならず、いかなる場合も赤色であってはならない", "B. 灯光の色は橙色であるが、後部に備える側方灯で尾灯等と一体のものは赤色でもよい", "C. 灯光の色は白色でなければならない", "D. 灯光の色は橙色または白色のいずれかでなければならない"],answer:"B",exp:"別添61の3.3.2.により、側方灯の灯光の色は橙色であること。ただし後部に備える側方灯であって尾灯、後部上側端灯、後部霧灯、制動灯または後部反射器と構造上一体または兼用のものは赤色でもよい。"},
+  {no:7153,section:"保安基準別添",label:"別添61（側方灯の技術基準）",q:"別添61「側方灯の技術基準」において、側方灯（SM1およびSM2共通）の最大光度として正しいものはどれか。",choices:["A. 10.0cd", "B. 15.0cd", "C. 25.0cd", "D. 40.0cd"],answer:"C",exp:"別添61の4.1.2.により、SM1およびSM2ともに所定の配光表内での最大光度は25.0cdと規定されている。"},
+  {no:7154,section:"保安基準別添",label:"別添62（側方反射器の技術基準）",q:"別添62「側方反射器の技術基準」（2020年9月25日削除）において、等級IB反射器の特徴として正しいものはどれか。",choices:["A. 防水性能を有し、単独の反射装置として使用するもの", "B. 防水性能はなく、車体と一体化した他の灯火と結合した装置", "C. 全反射光学ユニットが交換可能な構造のもの", "D. 三角形の形状をもち被牽引自動車専用のもの"],answer:"B",exp:"別添62の2.15.により、等級IBの反射器は別紙6の1.1.の規定に適合する防水性能はなく、かつ車両の車体と一体化した他の灯火と結合した装置である。"},
+  {no:7155,section:"保安基準別添",label:"別添63（番号灯の技術基準）",q:"別添63「番号灯の技術基準」において、番号灯の判定基準に関する記述として正しいものはどれか。",choices:["A. 各測定点の照度は5ルクス以上であること", "B. 各測定点の照度は15ルクス以上であること", "C. 均斉度は30以下であること", "D. 入射板光と試験板のなす角は5度以上であること"],answer:"B",exp:"別添63の3.1.により各測定点の照度は15ルクス以上、3.2.により均斉度は20以下、3.3.により入射板光と試験板のなす角は8度以上と規定されている。"},
+  {no:7156,section:"保安基準別添",label:"別添64（尾灯の技術基準）",q:"別添64「尾灯の技術基準」において、尾灯（種類R又はR1・固定光度）の基準軸における最小光度として正しいものはどれか。",choices:["A. 1cd", "B. 2cd", "C. 4cd", "D. 8cd"],answer:"C",exp:"別添64の4.1.の表により、種類R又はR1（固定光度）の尾灯の最小光度は4cdと規定されている。"},
+  {no:7157,section:"保安基準別添",label:"別添64（尾灯の技術基準）",q:"別添64「尾灯の技術基準」において、制動灯と兼用の尾灯に関する記述として正しいものはどれか。",choices:["A. 制動灯と兼用の尾灯は認められない", "B. 制動灯と兼用の尾灯は複式光源配列の一部をなすもの、または当該機能の失陥監視装置を備える自動車に備えるものでなければならない", "C. 制動灯と兼用の尾灯は単純に共通の光源を使用すればよい", "D. 制動灯と兼用の尾灯は必ず光度調整装置を備えなければならない"],answer:"B",exp:"別添64の3.3.1.により、制動灯と兼用式の尾灯は、複式光源配列の一部をなすものまたは当該機能の失陥監視装置を備える自動車に備えるもののいずれかに該当しなければならない。"},
+  {no:7158,section:"保安基準別添",label:"別添65（後部霧灯の技術基準）",q:"別添65「後部霧灯の技術基準」（2020年5月29日削除）において、後部霧灯（種類F又はF1・固定光度）の最大光度として正しいものはどれか。",choices:["A. 150cd", "B. 200cd", "C. 300cd", "D. 600cd"],answer:"C",exp:"別添65の4.3.の表により、後部霧灯の種類F又はF1（固定光度）の最大光度は300cdと規定されている。"},
+  {no:7159,section:"保安基準別添",label:"別添66（駐車灯の技術基準）",q:"別添66「駐車灯の技術基準」において、前方駐車灯の基準軸における光度の最小値と最大値の組み合わせとして正しいものはどれか。",choices:["A. 最小1cd、最大30cd", "B. 最小2cd、最大60cd", "C. 最小2cd、最大30cd", "D. 最小4cd、最大60cd"],answer:"B",exp:"別添66の4.1.1.により、前方駐車灯の光度は最小2cd、最大60cdと規定されている。後方駐車灯は最小2cd、最大30cdである。"},
+  {no:7160,section:"保安基準別添",label:"別添66（駐車灯の技術基準）",q:"別添66「駐車灯の技術基準」において、二輪自動車等に備える後面駐車灯の灯光の色として正しいものはどれか。",choices:["A. 白色", "B. 橙色", "C. 赤色", "D. 青色"],answer:"C",exp:"別添66の3.3.2.により、後面に備える駐車灯の灯光の色は赤色と規定されている。前面は白色、両側面は進行方向が白色で後退方向が赤色（側方灯等と兼用の場合は橙色でもよい）。"},
+  {no:7161,section:"保安基準別添",label:"別添67（後部上側端灯の技術基準）",q:"別添67「後部上側端灯の技術基準」において、後部上側端灯（種類RM1・固定光度）の基準軸における最大光度として正しいものはどれか。",choices:["A. 8.5cd", "B. 17cd", "C. 25cd", "D. 42cd"],answer:"B",exp:"別添67の4.1.の表により、種類RM1（固定光度）の単一の後部上側端灯の最大光度は17cdと規定されている。最小光度は4cdである。"},
+  {no:7162,section:"保安基準別添",label:"別添68（後部反射器の技術基準）",q:"別添68「後部反射器の技術基準」（2020年9月25日削除）において、等級IIIAおよびIIIBの後部反射器（被牽引自動車用）の反射部の形状として正しいものはどれか。",choices:["A. 正方形", "B. 円形", "C. 正三角形", "D. 六角形"],answer:"C",exp:"別添68の別紙3のII.1.により、等級IIIAおよびIIIBの後部反射器の反射部の形状は正三角形と規定されている。一つの角にTOPという文字が表示されている場合は当該角の頂点を上方に設置すること。"},
+  {no:7163,section:"保安基準別添",label:"別添70（制動灯の技術基準）",q:"別添70「制動灯の技術基準」において、制動灯（種類S1・固定光度）の基準軸における最小光度として正しいものはどれか。",choices:["A. 25cd", "B. 40cd", "C. 60cd", "D. 100cd"],answer:"C",exp:"別添70の4.1.の表により、種類S1（固定光度）の制動灯の最小光度は60cdと規定されている。最大光度は260cdである。"},
+  {no:7164,section:"保安基準別添",label:"別添70（制動灯の技術基準）",q:"別添70「制動灯の技術基準」において、尾灯と兼用の制動灯の光度比に関する規定として正しいものはどれか。",choices:["A. 制動灯と尾灯を同時点灯したときの光度比は3:1以上", "B. 制動灯と尾灯を同時点灯したときの光度比は5:1以上", "C. 制動灯と尾灯を同時点灯したときの光度比は8:1以上", "D. 制動灯と尾灯を同時点灯したときの光度比は10:1以上"],answer:"B",exp:"別添70の4.2.(3)により、尾灯又は後部上側端灯と兼用の制動灯は、同時に点灯したときの実測光度と尾灯のみまたは後部上側端灯のみ点灯したときの実測光度の比率が5:1以上でなければならない。"},
+  {no:7165,section:"保安基準別添",label:"別添71（補助制動灯の技術基準）",q:"別添71「補助制動灯の技術基準」において、補助制動灯（種類S3・固定光度）の基準軸における最小光度と最大光度の組み合わせとして正しいものはどれか。",choices:["A. 最小10cd、最大80cd", "B. 最小25cd、最大110cd", "C. 最小40cd、最大130cd", "D. 最小60cd、最大260cd"],answer:"B",exp:"別添71の4.1.の表により、種類S3（固定光度）の単一の補助制動灯の最小光度は25cd、最大光度は110cdと規定されている。"},
+  {no:7166,section:"保安基準別添",label:"別添72（後退灯の技術基準）",q:"別添72「後退灯の技術基準」において、後退灯の基準軸における最小光度として正しいものはどれか。",choices:["A. 25cd", "B. 50cd", "C. 80cd", "D. 120cd"],answer:"C",exp:"別添72の4.2.により、後退灯の基準軸の光度は80cd以上でなければならない。また灯光の色は白色でなければならない。"},
+  {no:7167,section:"保安基準別添",label:"別添73（方向指示器の技術基準）",q:"別添73「方向指示器の技術基準」が適用される自動車として正しいものはどれか。",choices:["A. すべての普通自動車の方向指示器", "B. 車両総重量8t以上または最大積載量5t以上の普通自動車（一定の除外車両を除く）の両側面中央部の方向指示器", "C. 乗車定員11人以上の自動車のすべての方向指示器", "D. セミトレーラを牽引する牽引自動車の方向指示器"],answer:"B",exp:"別添73の1.により、本技術基準は車両総重量8t以上または最大積載量5t以上の普通自動車（セミトレーラを牽引する牽引自動車、乗車定員11人以上の自動車等を除く。以下「大型貨物自動車等」という。）の両側面の中央部に備える方向指示器に適用する。"},
+  {no:7168,section:"保安基準別添",label:"別添74（警音器の警報音発生装置の技術基準）",q:"別添74「警音器の警報音発生装置の技術基準」において、二輪自動車（動力7kW超）用以外の警報音発生装置のA特性による加重音圧レベルの上限値として正しいものはどれか。",choices:["A. 100dB(A)", "B. 112dB(A)", "C. 115dB(A)", "D. 118dB(A)"],answer:"D",exp:"別添74の3.2.7.(b)により、二輪自動車（動力7kW以下）用以外の自動車に使用する警報音発生装置のA特性による加重音圧レベルは118dB(A)を超えないこととされている。動力7kW以下の二輪自動車用は115dB(A)。"},
+  {no:7169,section:"保安基準別添",label:"別添75（警音器の技術基準）",q:"別添75「警音器の技術基準」において、二輪自動車（動力7kW超）以外の自動車の警音器の最大音圧レベルの規定として正しいものはどれか。",choices:["A. 83dB(A)以上112dB(A)以下", "B. 87dB(A)以上112dB(A)以下", "C. 87dB(A)以上118dB(A)以下", "D. 95dB(A)以上115dB(A)以下"],answer:"B",exp:"別添75の2.8.(b)により、二輪自動車（動力7kW以下）以外の自動車の警音器の最大音圧レベルは87dB(A)以上112dB(A)以下と規定されている。動力7kW以下の二輪自動車用は83dB(A)以上112dB(A)以下。"},
+  {no:7221,section:"保安基準別添",label:"別添81（直前直左確認鏡の技術基準）",q:"別添81「直前直左確認鏡の技術基準」において、「キャブオーバ型大型貨物自動車等」に関する説明として正しいものはどれか。",choices:["A. 車両総重量が5t以上又は最大積載量が3t以上の普通自動車であって原動機の相当部分が運転者室の下にあるもの", "B. 車両総重量が8t以上又は最大積載量が5t以上の普通自動車であって原動機の相当部分が運転者室又は客室の下にあるもの（乗車定員11人以上の自動車等を除く）", "C. 車両総重量が8t以上又は最大積載量が5t以上の普通自動車であって原動機が運転者室の前方にあるもの", "D. 車両総重量が10t以上の普通自動車であって原動機の相当部分が運転者室又は客室の下にあるもの"],answer:"B",exp:"別添81第2.6項の定義。キャブオーバ型大型貨物自動車等とは、車両総重量8t以上又は最大積載量5t以上の普通自動車であって原動機の相当部分が運転者室又は客室の下にあるもの（乗車定員11人以上の自動車等を除く）をいう。ワンサイドキャブ型やトラッククレーン等は含まれない。"},
+  {no:7222,section:"保安基準別添",label:"別添81（直前直左確認鏡の技術基準）",q:"別添81「直前直左確認鏡の技術基準」において、車外に取り付けた鏡その他の装置の突出量に関して正しいものはどれか。",choices:["A. 自動車の最外側から150mm以上突出しないものでなければならない", "B. 自動車の最外側から200mm以上突出しないものでなければならない", "C. 自動車の最外側から250mm以上突出しないものでなければならない", "D. 自動車の最外側から300mm以上突出しないものでなければならない"],answer:"C",exp:"別添81第3.3項。車外に取り付けた鏡その他の装置は、自動車の最外側から250mm（被牽引自動車を牽引する場合は被牽引自動車の最外側から250mm）以上突出しないものでなければならない。"},
+  {no:7223,section:"保安基準別添",label:"別添81（直前直左確認鏡の技術基準）",q:"別添81「直前直左確認鏡の技術基準」において、障害物の定義として正しいものはどれか。",choices:["A. 直径0.2m、高さ0.8mの円柱", "B. 直径0.3m、高さ1mの円柱", "C. 直径0.5m、高さ1.2mの円柱", "D. 直径0.3m、高さ1.5mの円柱"],answer:"B",exp:"別添81第2.4項の定義。「障害物」とは、直径0.3m、高さ1mの円柱をいう。"},
+  {no:7224,section:"保安基準別添",label:"別添82（二輪自動車等の後写鏡の技術基準）",q:"別添82「二輪自動車等の後写鏡の技術基準」の適用範囲として正しいものはどれか。",choices:["A. すべての二輪自動車に備える後写鏡に適用する", "B. ハンドルバー方式のかじ取り装置を備える二輪自動車、側車付二輪自動車及び三輪自動車であって車室を有しないものに備える後写鏡に適用する", "C. 最高速度50km/hを超えるすべての二輪自動車に備える後写鏡に適用する", "D. 車室を有する二輪自動車に備える後写鏡のみに適用する"],answer:"B",exp:"別添82第1項（適用範囲）。本技術基準は、ハンドルバー方式のかじ取り装置を備える二輪自動車、側車付二輪自動車及び三輪自動車であって車室を有しないものに備える後写鏡に適用する。また、協定規則第81号と調和している。"},
+  {no:7225,section:"保安基準別添",label:"別添82（二輪自動車等の後写鏡の技術基準）",q:"別添82において「反射面上の一点における曲率半径（rp）」の計算式として正しいものはどれか。",choices:["A. rp = ri × r'i（主曲率半径の積）", "B. rp = (ri + r'i) / 2（主曲率半径の算術平均）", "C. rp = (ri - r'i) / 2（主曲率半径の差の半値）", "D. rp = ri / r'i（主曲率半径の比）"],answer:"B",exp:"別添82第2.4項。反射面上の一点における曲率半径（rp）は、主曲率半径riとr'iの算術平均値であり、rp = (ri + r'i) / 2 で表される。"},
+  {no:7226,section:"保安基準別添",label:"別添83（二輪自動車等の後写鏡及び後写鏡取付装置の技術基準）",q:"別添83「二輪自動車等の後写鏡及び後写鏡取付装置の技術基準」において、後写鏡の取り付け数に関する規定として正しいものはどれか。",choices:["A. 最高速度に関わらず、すべての二輪自動車は左右両側に1個ずつ後写鏡を備えなければならない", "B. 最高速度が50km/hを超える二輪自動車、側車付二輪自動車及び三輪自動車は、左右両側にそれぞれ1個ずつ後写鏡を備えなければならない", "C. 最高速度が30km/hを超えるすべての二輪自動車は、左側に1個のみ後写鏡を備えれば足りる", "D. 最高速度が80km/hを超える二輪自動車のみ左右に後写鏡を備える義務がある"],answer:"B",exp:"別添83第3.2.1項。最高速度が50km/hを超える二輪自動車、側車付二輪自動車及び三輪自動車は、自動車の左右両側にそれぞれ1個ずつ後写鏡を備えなければならない。"},
+  {no:7227,section:"保安基準別添",label:"別添83（二輪自動車等の後写鏡及び後写鏡取付装置の技術基準）",q:"別添83において「後写鏡及び後写鏡取付装置」が適合すべき要件として正しいものはどれか。",choices:["A. 取り付けられた後写鏡は、別添81の規定に適合し、かつ堅ろうに取り付けられていること", "B. 取り付けられた後写鏡は、別添82の規定に適合し、かつ堅ろうに取り付けられていること", "C. 取り付けられた後写鏡は、別添84の規定に適合し、かつ確実に固定されていること", "D. 取り付けられた後写鏡は、別添80の規定に適合し、かつ容易に調整できること"],answer:"B",exp:"別添83第3.1.1項及び3.1.2項。自動車に取り付けられた後写鏡は別添82「二輪自動車等の後写鏡の技術基準」の規定に適合するものであること、かつ後写鏡は堅ろうに取り付けられていることが要件となっている。"},
+  {no:7228,section:"保安基準別添",label:"別添84（乗用車等の窓ふき器及び洗浄液噴射装置の技術基準）",q:"別添84「乗用車等の窓ふき器及び洗浄液噴射装置の技術基準」の適用範囲として正しいものはどれか。",choices:["A. すべての乗用自動車の前面ガラスの窓ふき器及び洗浄液噴射装置に適用する", "B. 専ら乗用の用に供する普通自動車又は小型自動車若しくは軽自動車（乗車定員11人以上の自動車、二輪自動車等を除く）に適用する", "C. 乗車定員11人以上の乗用自動車の窓ふき器のみに適用する", "D. 大型バスを含むすべての乗用自動車の窓ふき器に適用する"],answer:"B",exp:"別添84第1項（適用範囲）。専ら乗用の用に供する普通自動車又は小型自動車若しくは軽自動車（乗車定員11人以上の自動車、二輪自動車、側車付二輪自動車、カタピラ及びそりを有する軽自動車、最高速度20km/h未満の自動車及び被牽引自動車を除く）の前面ガラスの窓ふき器及び洗浄液噴射装置に適用する。"},
+  {no:7229,section:"保安基準別添",label:"別添84（乗用車等の窓ふき器及び洗浄液噴射装置の技術基準）",q:"別添84において電気式（12V式）の洗浄液噴射装置の試験電圧として正しいものはどれか。",choices:["A. 10V〜12V", "B. 11V〜13V", "C. 12V〜14V", "D. 14V〜16V"],answer:"C",exp:"別添84の表1（試験電圧又はポンプ作動力）。電気式（12V式）の洗浄液噴射装置の試験電圧は12〜14Vである。電気式（24V式）は24〜28V、手動式は110〜135N、足動式は440〜445Nとされている。"},
+  {no:7230,section:"保安基準別添",label:"別添84（乗用車等の窓ふき器及び洗浄液噴射装置の技術基準）",q:"別添84において「サイクル」の定義として正しいものはどれか。",choices:["A. 窓ふき器の1回の往動作をいう", "B. 窓ふき器の往復動作をいう", "C. 窓ふき器の1回の復動作をいう", "D. 窓ふき器の1分間の動作回数をいう"],answer:"B",exp:"別添84第2.1項。「サイクル」とは、窓ふき器の往復動作をいう。"},
+  {no:7231,section:"保安基準別添",label:"別添85（バス及びトラックの洗浄液噴射装置の技術基準）",q:"別添85「バス及びトラックの洗浄液噴射装置の技術基準」において、足動式ポンプの試験作動力として正しいものはどれか。",choices:["A. 110〜135N", "B. 220〜250N", "C. 350〜400N", "D. 440〜445N"],answer:"D",exp:"別添85の表1（試験電圧又はポンプの作動力）。足動式の試験作動力は440〜445Nである。手動式は110〜135N、電気式（12V式）は12〜14V、電気式（24V式）は24〜28Vである。"},
+  {no:7232,section:"保安基準別添",label:"別添85（バス及びトラックの洗浄液噴射装置の技術基準）",q:"別添85において「耐拘束性を有すること」の試験条件として、1分間に何回の操作を行うか。正しいものはどれか。",choices:["A. 1分間に3回（1回当たり少なくとも3秒間作動）", "B. 1分間に6回（1回当たり少なくとも3秒間作動）", "C. 1分間に10回（1回当たり少なくとも1秒間作動）", "D. 1分間に4回（1回当たり少なくとも5秒間作動）"],answer:"B",exp:"別添85第2.3項。「耐拘束性を有すること」の確認は、全ノズルをふさぎ、規定の試験電圧又はポンプ作動力で洗浄液噴射装置を1分間に6回（1回当たり少なくとも3秒間作動させる）操作する試験による。"},
+  {no:7233,section:"保安基準別添",label:"別添86（デフロスタの技術基準）",q:"別添86「デフロスタの技術基準」において「デフロスト」の定義として正しいものはどれか。",choices:["A. ガラス外表面のミストをデフロスタにより除去することをいう", "B. 前面視界確保のためガラス外表面の霜又は氷をデフロスタにより除去し、若しくは窓ふき器が除去できる程度に溶解すること、または窓ふき器により除去することをいう", "C. ガラス内表面の曇りをデフロスタにより除去することのみをいう", "D. 前面ガラスの内表面の水滴を除去する装置の作動をいう"],answer:"B",exp:"別添86第2.1項。「デフロスト」とは、前面視界確保のためガラス外表面を覆っている霜若しくは氷をデフロスタにより除去し、若しくは前面ガラス用窓ふき器が除去することができる程度に溶解すること、又は当該霜若しくは氷を前面ガラス用窓ふき器により除去することをいう。"},
+  {no:7234,section:"保安基準別添",label:"別添86（デフロスタの技術基準）",q:"別添86において「ミスト」の定義として正しいものはどれか。",choices:["A. ガラス外表面の霜や氷をいう", "B. 空気中の水分がガラス外表面上で結露することにより生じるガラス外表面上の水滴の膜をいう", "C. 空気中の水分がガラス内表面上で凝結することにより生じるガラス内表面上の微小な水滴の膜をいう", "D. 雨滴がガラスに付着した状態をいう"],answer:"C",exp:"別添86第2.3項。「ミスト」とは、空気中の水分がガラス内表面上で凝結することにより生じるガラス内表面上の微小な水滴の膜をいう。「デミスト」は前方視界確保のためガラス内表面を覆っているミストをデフロスタにより除去することをいう（第2.4項）。"},
+  {no:7235,section:"保安基準別添",label:"別添87（サンバイザの衝撃吸収の技術基準）",q:"別添87「サンバイザの衝撃吸収の技術基準」において、静的接触試験に使用する球状剛体頭部模型の直径として正しいものはどれか。",choices:["A. 直径130mm", "B. 直径155mm", "C. 直径165mm", "D. 直径180mm"],answer:"C",exp:"別添87第2.2項。実車取付状態のサンバイザに対して、直径165mmの球状剛体頭部模型があらゆる方向より静的に接触する部分を測定する。"},
+  {no:7236,section:"保安基準別添",label:"別添87（サンバイザの衝撃吸収の技術基準）",q:"別添87において、サンバイザ構成材料のうち硬いものの角の半径の判定基準として正しいものはどれか。",choices:["A. 2.0mm以上", "B. 2.5mm以上", "C. 3.0mm以上", "D. 3.2mm以上"],answer:"D",exp:"別添87第3.2項。静的接触するサンバイザ構成材料のうち硬いものの角の半径は3.2mm以上とする。ただし、取り付けのための基盤部の角の半径は、板厚の15%あればよい。"},
+  {no:7237,section:"保安基準別添",label:"別添88（速度計の技術基準）",q:"別添88「速度計の技術基準」において、「通常走行時のタイヤ空気圧」の定義として正しいものはどれか。",choices:["A. 自動車製作者により指定された冷間時のタイヤ空気圧と同じ値", "B. 自動車製作者により指定された冷間時のタイヤ空気圧に20kPaを加えたもの", "C. 自動車製作者により指定された温間時のタイヤ空気圧", "D. 自動車製作者により指定された冷間時のタイヤ空気圧から10kPaを差し引いたもの"],answer:"B",exp:"別添88第2.2項。「通常走行時のタイヤ空気圧」とは、自動車製作者により指定された冷間時のタイヤ空気圧に20kPaを加えたものをいう。"},
+  {no:7238,section:"保安基準別添",label:"別添88（速度計の技術基準）",q:"別添88において、速度計の指度V1と自動車の走行時の速度V2の間の関係式として正しいものはどれか。",choices:["A. 0 ≦ V1 - V2 ≦ V2/10 + 4", "B. 0 ≦ V1 - V2 ≦ V2/5 + 4", "C. -4 ≦ V1 - V2 ≦ V2/10", "D. 0 ≦ V1 - V2 ≦ V2/10 + 2"],answer:"A",exp:"別添88第3.3項。速度計の指度V1（km/h）と自動車の走行時の速度V2（km/h）の関係は「0 ≦ V1 - V2 ≦ V2/10 + 4」に適合しなければならない。速度計の指度は自動車の走行時の速度を下回ってはならない。"},
+  {no:7239,section:"保安基準別添",label:"別添88（速度計の技術基準）",q:"別添88において、走行試験の試験機器の精度として正しいものはどれか。",choices:["A. ±0.1%以内", "B. ±0.5%以内", "C. ±1.0%以内", "D. ±2.0%以内"],answer:"B",exp:"別添88第3.2.6項。自動車の走行時の速度を測定するために使用する試験機器の精度は±0.5%以内であること。また試験路表面は平坦で乾燥し、十分な粘着性を有するものとされている（第3.2.6.1項）。"},
+  {no:7240,section:"保安基準別添",label:"別添89（運行記録計の技術基準）",q:"別添89「運行記録計の技術基準」の適用対象として正しいものはどれか。",choices:["A. 車両総重量が5t以上又は最大積載量が3t以上の貨物用普通自動車", "B. 貨物の運送の用に供する普通自動車であって車両総重量8t以上又は最大積載量5t以上のもの（緊急自動車等を除く）", "C. すべての事業用貨物自動車", "D. 車両総重量12t以上のすべての貨物自動車"],answer:"B",exp:"別添89適用範囲。貨物の運送の用に供する普通自動車であって車両総重量が8t以上又は最大積載量が5t以上のもの（道路運送車両法第99条の自動車、緊急自動車及び被牽引自動車を除く）が適用対象。該当する被牽引自動車を牽引する牽引自動車も対象となる。"},
+  {no:7241,section:"保安基準別添",label:"別添89（運行記録計の技術基準）",q:"別添89において、運行記録計の瞬間速度記録の精度（許容差）として、標準速度計の指示が60km/hの場合の許容差として正しいものはどれか。",choices:["A. ±2.0km/h", "B. ±2.5km/h", "C. ±3.0km/h", "D. ±3.5km/h"],answer:"C",exp:"別添89の表-2（瞬間速度記録装置の精度）。標準速度計の指示が40km/h及び60km/hの場合の許容差は±3.0km/h、80km/hの場合は±3.5km/h、100km/hの場合は±4.5km/hである。"},
+  {no:7242,section:"保安基準別添",label:"別添89（運行記録計の技術基準）",q:"別添89において、運行時間指示装置（時計）及び記録装置の精度として正しいものはどれか。",choices:["A. 運行時間24時間について±3分以内", "B. 運行時間24時間について±5分以内", "C. 運行時間24時間について±10分以内", "D. 運行時間24時間について±2分以内"],answer:"B",exp:"別添89第4.3項。運行時間指示装置（時計）及び記録装置の精度は、運行時間24時間について±5分以内、24時間を超えてn日連続して記録するものについては±{5+2(n-1)}分以内であること。なお耐熱性試験の運行時間記録の変化は運行時間24時間につき3分以内（表-1）と異なるので注意。"},
+  {no:7243,section:"保安基準別添",label:"別添90（速度表示装置の技術基準）",q:"別添90「速度表示装置の技術基準」の適用対象から除外される自動車として正しいものはどれか。",choices:["A. 車両総重量が8t以上の貨物自動車", "B. 最高速度40km/h未満の自動車、緊急自動車、被牽引自動車", "C. 最高速度60km/h未満の自動車すべて", "D. 最大積載量が5t未満の貨物自動車"],answer:"B",exp:"別添90第1項（適用範囲）。道路運送車両法第99条の自動車、緊急自動車、被牽引自動車及び最高速度40km/h未満の自動車は適用対象から除外される。"},
+  {no:7244,section:"保安基準別添",label:"別添90（速度表示装置の技術基準）",q:"別添90において、速度表示装置の構成として正しいものはどれか。",choices:["A. 速度計指示部及び速度記録部から構成される", "B. 検出部（検出器、作動確認灯、点検スイッチ等）及び速度表示灯から構成される", "C. 発信器及び受信器から構成される", "D. 記録部及び警告灯から構成される"],answer:"B",exp:"別添90第2.4項。速度表示装置は検出部（検出器、作動確認灯、点検スイッチなどにより構成された部分）及び速度表示灯（以下「表示灯」）より構成される。"},
+  {no:7245,section:"保安基準別添",label:"別添91（連節バスの構造要件）",q:"別添91「連節バスの構造要件」において、連節部の床面とターンテーブルとの間の隙間（全車輪が同一平面上にある場合）の許容値として正しいものはどれか。",choices:["A. 5mm以下", "B. 10mm以下", "C. 15mm以下", "D. 20mm以下"],answer:"B",exp:"別添91第3.1.2.1項。空車状態で水平面上に停車している場合、全車輪が同一平面上にあるときの前後各車室の床面とターンテーブルとの間のカバーがされていない隙間は10mmを超えてはならない。"},
+  {no:7246,section:"保安基準別添",label:"別添91（連節バスの構造要件）",q:"別添91において、前車室の後扉及び後車室の扉（ホイールベース間に備えるもの）の有効幅として正しいものはどれか。",choices:["A. 700mm以上", "B. 750mm以上", "C. 800mm以上", "D. 850mm以上"],answer:"C",exp:"別添91第3.4.2項。前車室の後扉及び後車室の扉のうちホイールベース間に備えるものにあっては、有効幅800mm以上であること。"},
+  {no:7247,section:"保安基準別添",label:"別添91（連節バスの構造要件）",q:"別添91において、連節部への座席・立席に関する規定として正しいものはどれか。",choices:["A. 連節部には立席のみ備えることができる", "B. 連節部には立席及び補助座席が備えられていないこと、かつ連節部に備える座席は前向きであること", "C. 連節部には補助座席のみ備えることができる", "D. 連節部には制限なく座席を設置できる"],answer:"B",exp:"別添91第3.8.1項及び3.8.2項。連節部には立席及び補助座席が備えられていないこと、また連節部に備える座席は前向きであることが要件とされている。"},
+  {no:7248,section:"保安基準別添",label:"別添92（2階建バスの構造要件）",q:"別添92「2階建バスの構造要件」において、最大安定傾斜角度として正しいものはどれか。",choices:["A. 左右各20°まで傾けた場合に転覆しないこと", "B. 左右各25°まで傾けた場合に転覆しないこと", "C. 左右各28°まで傾けた場合に転覆しないこと", "D. 左右各30°まで傾けた場合に転覆しないこと"],answer:"C",exp:"別添92第1項（最大安定傾斜角度）。空車状態で乗務員が定位置に乗車し、かつ2階の乗車定員の人員が2階客室のすべての座席に乗車した状態において、左側及び右側にそれぞれ28°まで傾けた場合に転覆しないものでなければならない。"},
+  {no:7249,section:"保安基準別添",label:"別添92（2階建バスの構造要件）",q:"別添92において、2階建バスの階段の踏段の有効幅として正しいものはどれか。",choices:["A. 400mm以上", "B. 500mm以上", "C. 600mm以上", "D. 700mm以上"],answer:"C",exp:"別添92第2項（階段）。階段の踏段の有効幅は600mm以上であること。また踏段上における有効高さは1600mm以上、1段の高さは300mm以下、有効奥行は300mm以上とされている。"},
+  {no:7250,section:"保安基準別添",label:"別添92（2階建バスの構造要件）",q:"別添92において、2階客室の側面の窓ガラスに関する規定として正しいものはどれか。",choices:["A. 座席の上面から高さ600mm以下の部分が開口できない構造でなければならない", "B. 座席の上面から高さ800mm以下の部分が開口できない構造でなければならない", "C. 座席の上面から高さ1000mm以下の部分が開口できない構造でなければならない", "D. すべての窓ガラスが開口できない構造でなければならない"],answer:"B",exp:"別添92第7項（窓ガラス）。2階客室に設けられた側面の窓ガラスは、座席の上面から高さ800mm以下の部分が開口できない構造でなければならない。ただし開口部の有効寸法が100mm以下の場合はこの限りでない。"},
+  {no:7251,section:"保安基準別添",label:"別添93（連結車両の制動作動おくれ防止の技術基準）",q:"別添93「連結車両の制動作動おくれ防止の技術基準」において、ダミー回路1のダミータンクの容量として正しいものはどれか。",choices:["A. 0.4l", "B. 0.6l", "C. 0.8l", "D. 1.0l"],answer:"C",exp:"別添93第2項注1。ダミー回路1とは、容量0.8lのダミータンクに内径8mm、長さ0.5m以下の金属配管を連結したものをいう。ダミー回路2は容量36lのダミータンクを有する。"},
+  {no:7252,section:"保安基準別添",label:"別添93（連結車両の制動作動おくれ防止の技術基準）",q:"別添93において、ブレーキペダルの作動開始時から各車軸のブレーキチャンバ圧力が最終到達圧力の60%に達するまでの時間として正しいものはどれか。",choices:["A. 0.5秒以内", "B. 0.7秒以内", "C. 1.0秒以内", "D. 1.2秒以内"],answer:"B",exp:"別添93第3.3項。ブレーキペダルの作動開始時から牽引自動車及び被牽引自動車のブレーキチャンバ圧力（又はホイールシリンダ圧力）が最終到達圧力の60%に達するまでの時間はいずれも0.7秒以内であること。"},
+  {no:7253,section:"保安基準別添",label:"別添94（灯火等の照明部、個数、取付位置等の測定方法）",q:"別添94において、隣接する灯火等の投影間の最短距離が何mm以下の場合に1個とみなすことができるか。",choices:["A. 50mm以下", "B. 75mm以下", "C. 100mm以下", "D. 150mm以下"],answer:"B",exp:"別添94第2.3.1項。基準軸に直角の方向に測定した2つの隣接する投影間の最短距離が75mm以下のものは、照明部（又は灯室）の数に関係なく、1個とみなすことができる。"},
+  {no:7254,section:"保安基準別添",label:"別添94（灯火等の照明部、個数、取付位置等の測定方法）",q:"別添94において、帯状の灯火等が「2個」とみなされる条件として正しいものはどれか。",choices:["A. 発光面の長さが0.6m以上であって最外縁が最外側から0.3m以内", "B. 発光面の長さが0.8m以上であって最外縁が最外側から0.4m以内で車両中心面に関して対称", "C. 発光面の長さが1.0m以上であって最外縁が最外側から0.5m以内", "D. 発光面の長さが0.5m以上であって最外縁が最外側から0.4m以内"],answer:"B",exp:"別添94第2.3.3項。帯状の形状又は細長い形状を有する灯火等の発光面であって、車両中心面に関して対称な位置に取り付けられ、発光面の長さが0.8m以上かつ発光面の最外縁が自動車の両側において最外側から0.4m以内となるよう取り付けられている場合に2個とみなす。"},
+  {no:7255,section:"保安基準別添",label:"別添95（自動車の走行性能の技術基準）",q:"別添95「自動車の走行性能の技術基準」において、普通自動車（一般）の車両総重量GVWと原動機の最高出力の関係式として正しいものはどれか。",choices:["A. GVW ≦ 217 × kW - 2400", "B. GVW ≦ 135 × kW - 1500", "C. GVW ≦ 122 × kW - 600", "D. GVW ≦ 164 × kW - 1900"],answer:"B",exp:"別添95第2.1項。普通自動車（クレーン車等の特殊な作業用自動車を除く上記以外の自動車）はGVW ≦ 135×kW{100×PS} - 1500、小型自動車はGVW ≦ 122×kW{90×PS} - 600。なおクレーン車等の特殊な作業用自動車（最高出力118kW以上）はGVW ≦ 217×kW{160×PS} - 2400。"},
+  {no:7256,section:"保安基準別添",label:"別添95（自動車の走行性能の技術基準）",q:"別添95の適用範囲から除外される自動車として正しいものはどれか。",choices:["A. 車両総重量8t以上の大型貨物自動車", "B. 専ら乗用の用に供する乗車定員10人以下の自動車", "C. すべての旅客自動車", "D. 最高速度100km/h以下の自動車"],answer:"B",exp:"別添95第1項（適用範囲）。内燃機関を原動機とする自動車のうち、大型特殊自動車、小型特殊自動車及び軽自動車並びにセミトレーラ等の連結車両及び専ら乗用の用に供する乗車定員10人以下の自動車は適用対象から除外される。"},
+  {no:7257,section:"保安基準別添",label:"別添96（連結車両の走行性能の技術基準）",q:"別添96「連結車両の走行性能の技術基準」において、連結車両総重量Gcwと牽引自動車の駆動軸重Wdの関係式として正しいものはどれか。",choices:["A. Gcw ≦ 3 × Wd", "B. Gcw ≦ 4 × Wd", "C. Gcw ≦ 5 × Wd", "D. Gcw ≦ 6 × Wd"],answer:"B",exp:"別添96第2.1項。連結車両の走行性能は次の各式のいずれにも適合していること：Gcw ≦ 164.51×kW{121×PS} - 1900、かつGcw ≦ 4×Wd。Gcwは連結車両総重量、Wdは牽引自動車の駆動軸重。"},
+  {no:7258,section:"保安基準別添",label:"別添96（連結車両の走行性能の技術基準）",q:"別添96において、昭和49年3月31日以前に登録した牽引自動車（まっ消登録したものを除く）で牽引される連結車両の走行性能の特例式として正しいものはどれか。",choices:["A. Gcw ≦ 164.51 × kW - 1900", "B. Gcw ≦ 200.00 × kW - 2000", "C. Gcw ≦ 220.26 × kW - 2530", "D. Gcw ≦ 250.00 × kW - 3000"],answer:"C",exp:"別添96第2.2項。昭和49年3月31日までに道路運送車両法第7条の規定により登録を行った牽引自動車（昭和49年4月1日以降にまっ消登録したものを除く）で牽引される連結車両は、Gcw ≦ 220.26×kW{162×PS} - 2530 かつGcw ≦ 4×Wdに適合すればよい。"},
+  {no:7259,section:"保安基準別添",label:"別添97（使用過程にある大型貨物自動車の速度抑制装置の技術基準）",q:"別添97「使用過程にある大型貨物自動車の速度抑制装置の技術基準」において、速度抑制装置の設定速度の上限として正しいものはどれか。",choices:["A. 80km/h以下の任意の速度", "B. 90km/h以下の任意の速度", "C. 100km/h以下の任意の速度", "D. 110km/h以下の任意の速度"],answer:"B",exp:"別添97第3.2項。速度抑制装置の設定速度は90km/h以下の任意の速度とする。また速度抑制装置は、自動車使用者等により設定速度の変更及び設定の解除ができるものであってはならない。"},
+  {no:7260,section:"保安基準別添",label:"別添97（使用過程にある大型貨物自動車の速度抑制装置の技術基準）",q:"別添97において、加速試験の判定基準として「安定速度」が満たすべき条件として正しいものはどれか。",choices:["A. 安定速度は設定速度に3km/hを加えた速度及び90km/hを超えてはならない", "B. 安定速度は設定速度に5km/hを加えた速度及び90km/hを超えてはならない", "C. 安定速度は設定速度に10km/hを加えた速度及び100km/hを超えてはならない", "D. 安定速度は設定速度と同一でなければならない"],answer:"B",exp:"別添97第4.1.4.2.1項。安定速度は設定速度に5km/hを加えた速度及び90km/hを超えてはならない。また最初に安定速度に達した後の最大速度は安定速度に1.05を乗じた速度を超えてはならない（第4.1.4.2.2項）。"},
+  {no:7261,section:"保安基準別添",label:"別添97（使用過程にある大型貨物自動車の速度抑制装置の技術基準）",q:"別添97において、速度抑制装置付自動車に表示する車両後面の標識の形状として正しいものはどれか。",choices:["A. 直径100mm以上の円形で文字を赤色、地を白色とする", "B. 直径130mm以上の円形で文字を黒色、地を黄色とする", "C. 直径150mm以上の正方形で文字を白色、地を青色とする", "D. 直径120mm以上の三角形で文字を黒色、地を橙色とする"],answer:"B",exp:"別添97第5項（表示）備考。車両の後面に表示する標識の形状は直径130mm以上の円、文字の高さは25mm、色彩は文字を黒色・地を黄色とする。車室内に表示するものは直径30mm以上の円、文字の高さは7mm以上とする。"},
+  {no:7262,section:"保安基準別添",label:"別添98（原動機付自転車の制動装置の技術基準）",q:"別添98「原動機付自転車の制動装置の技術基準」において、常温時制動試験の制動前ブレーキ温度として正しいものはどれか。",choices:["A. 80℃以下", "B. 100℃以下", "C. 120℃以下", "D. 150℃以下"],answer:"B",exp:"別添98第3.2.1.2項。常温時制動試験を行う前の試験原付車の制動前ブレーキ温度は100℃以下とする。"},
+  {no:7263,section:"保安基準別添",label:"別添98（原動機付自転車の制動装置の技術基準）",q:"別添98において、特定小型原動機付自転車を除く原付車の常温時制動試験の制動初速度として正しいものはどれか。",choices:["A. 70%VMAX（60を上限）±5km/h", "B. 80%VMAX（160を上限）±5km/h", "C. 90%VMAX（60を上限）±5km/h", "D. 90%VMAX（80を上限）±5km/h"],answer:"C",exp:"別添98第3.2.1.3項(1)。特定小型原動機付自転車を除く原付車の常温時制動試験は、90%VMAX（VMAXに0.9を乗じて得る値。ただし60、最高速度50km/h以下の第一種原付自転車は40を上限）±5km/hの制動初速度から行う。"},
+  {no:7264,section:"保安基準別添",label:"別添98（原動機付自転車の制動装置の技術基準）",q:"別添98において「連動ブレーキ機能」の定義として正しいものはどれか。",choices:["A. ABS（アンチロックブレーキシステム）と同義で、車輪のロックを防止する機能", "B. 1個の操作装置により前輪及び後輪の制動を行うことができる主制動装置の機能", "C. 前輪と後輪を別々の操作装置で制動できる機能", "D. 電気式回生制動装置を活用して制動力を発生させる機能"],answer:"B",exp:"別添98第2.3項。「連動ブレーキ機能」とは、1個の操作装置により前輪及び後輪の制動を行うことができる主制動装置の機能をいう。「補助ブレーキ機能」は連動ブレーキ機能を有した主制動装置において連動ブレーキ機能を作用させる操作装置以外の操作装置により、連動ブレーキ機能に比べて低い能力の制動を行うことができる機能（第2.4項）。"},
+  {no:7265,section:"保安基準別添",label:"別添99（歩行者頭部及び脚部保護の技術基準）",q:"別添99「歩行者頭部及び脚部保護の技術基準」の取扱いとして正しいものはどれか。",choices:["A. 2023年6月5日に改正され、新たな基準が定められた", "B. 2015年1月22日に削除された", "C. 現在も有効な技術基準として適用されている", "D. 2018年12月28日に削除された"],answer:"B",exp:"別添99のタイトルに「2015.1.22削除」と明記されている。別添99「歩行者頭部及び脚部保護の技術基準」は2015年（平成27年）1月22日に削除されている。"},
+  {no:7266,section:"保安基準別添",label:"別添100（圧縮水素ガスを燃料とする自動車の燃料装置の技術基準）",q:"別添100「圧縮水素ガスを燃料とする自動車の燃料装置の技術基準」において、容器安全弁が作動した場合に放出される水素ガスの排出方法として禁止されているものはどれか。",choices:["A. 車両後方に向けて排出すること", "B. 車両側方に向けて排出すること", "C. 車両前方に向けて排出すること", "D. 車両上方に向けて排出すること"],answer:"C",exp:"別添100第3.1.4.5項。容器安全弁が作動した場合の水素ガス排出は、(1)運転者室内・客室内・荷室内への直接排出禁止、(2)タイヤハウス内への排出禁止、(3)着火源への排出禁止、(4)他のガス容器への排出禁止、(5)車両前方への排出禁止が規定されている。"},
+  {no:7267,section:"保安基準別添",label:"別添100（圧縮水素ガスを燃料とする自動車の燃料装置の技術基準）",q:"別添100において、ガス容器の格納室の換気試験での合格基準として正しいものはどれか。",choices:["A. 格納室内のガス濃度が90%低下するのに要する時間が120s以内", "B. 格納室内のガス濃度が90%低下するのに要する時間が180s以内", "C. 格納室内のガス濃度が50%低下するのに要する時間が60s以内", "D. 格納室内のガス濃度が90%低下するのに要する時間が300s以内"],answer:"B",exp:"別添100第3.5.2.3項。格納室の換気試験（別紙1「気密・換気試験」の2.による）を行ったときに、格納室内のガス濃度が90%低下するのに要する時間が180s以内であること。"},
+  {no:7268,section:"保安基準別添",label:"別添100（圧縮水素ガスを燃料とする自動車の燃料装置の技術基準）",q:"別添100において、貨物の運送の用に供する車両総重量3.5t未満の自動車のガス容器取付部が満たすべき走行方向の加速度として正しいものはどれか。",choices:["A. ±49m/s2", "B. ±98m/s2", "C. ±147m/s2", "D. ±196m/s2"],answer:"D",exp:"別添100第3.5.4.1項。貨物の運送の用に供する車両総重量3.5t未満の自動車のガス容器取付部は、常用圧力でガスを充填した状態において走行方向の加速度±196m/s2により破断しないものでなければならない。車両総重量3.5t以上12t未満の自動車等は±98m/s2（第3.5.4.2項）。"},
+  {no:7311,section:"保安基準別添",label:"別添101（燃料電池自動車の高電圧からの乗車人員の保護に関する技術基準）",q:"別添101の技術基準において、燃料電池自動車の動力系に適用される作動電圧の基準として正しいものはどれか。",choices:["A. 作動電圧が直流48V以上である部分を有する動力系全体に適用する。", "B. 作動電圧が直流60V以上である部分を有する動力系全体（交流部分を含む）に適用する。", "C. 作動電圧が直流100V以上である部分を有する動力系全体に適用する。", "D. 作動電圧が交流30V以上である部分を有する動力系全体に適用する。"],answer:"B",exp:"別添101の1.適用範囲に、作動電圧が直流60V以上である部分を有する動力系の全体（交流部分を含む）に適用すると規定されている。"},
+  {no:7312,section:"保安基準別添",label:"別添101（燃料電池自動車の高電圧からの乗車人員の保護に関する技術基準）",q:"別添101において、客室内及び荷室内の活電部に対する直接接触の保護として要求される保護等級はどれか。",choices:["A. いかなる場合においても保護等級IPXXAを満足するものでなければならない。", "B. いかなる場合においても保護等級IPXXBを満足するものでなければならない。", "C. いかなる場合においても保護等級IPXXDを満足するものでなければならない。", "D. いかなる場合においても保護等級IPXX0を満足するものでなければならない。"],answer:"C",exp:"別添101の3.1.1.1.により、客室内及び荷室内の活電部に対する保護は、いかなる場合においても保護等級IPXXDを満足するものでなければならない。"},
+  {no:7313,section:"保安基準別添",label:"別添101（燃料電池自動車の高電圧からの乗車人員の保護に関する技術基準）",q:"別添101における間接接触に対する保護として、すべての露出導電部と電気的シャシとの間の抵抗値はどの値未満でなければならないか。",choices:["A. 0.01Ω未満", "B. 0.05Ω未満", "C. 0.1Ω未満", "D. 1.0Ω未満"],answer:"C",exp:"別添101の3.2.2.により、すべての露出導電部と電気的シャシとの間の抵抗値は0.1Ω未満でなければならない。これは0.2A以上の電流を流した状態で測定する。"},
+  {no:7314,section:"保安基準別添",label:"別添102（側方照射灯の灯光の色、明るさ等に関する技術基準）",q:"別添102において、光源電子制御装置によって電圧が制御されない側方照射灯のうち、交換することができない光源を装着したものであって12Vのものの測定に印加する電圧はどれか。",choices:["A. 12.0V", "B. 12.5V", "C. 13.5V", "D. 14.0V"],answer:"C",exp:"別添102の4.2.により、光源電子制御装置によって電圧が制御されない側方照射灯のうち交換できない光源を装着したものであって12Vのものの測定は13.5Vの電圧を印加して行う。"},
+  {no:7315,section:"保安基準別添",label:"別添102（側方照射灯の灯光の色、明るさ等に関する技術基準）",q:"別添102における側方照射灯の説明として正しいものはどれか。",choices:["A. 側方照射灯とは、自動車の後方側方の道路を照射するため備える補助灯をいう。", "B. 側方照射灯とは、自動車の進行方向前側方の道路を照射するため備える補助灯をいう。", "C. 側方照射灯とは、自動車の両側面を照射するため備える補助灯をいう。", "D. 側方照射灯とは、自動車の前方を広範囲に照射するため備える補助灯をいう。"],answer:"B",exp:"別添102の2.1.により、側方照射灯とは自動車の進行方向前側方の道路を照射するため、補助灯として自動車に備えるものをいう。"},
+  {no:7316,section:"保安基準別添",label:"別添102（側方照射灯の灯光の色、明るさ等に関する技術基準）",q:"別添102において、電球以外の光源を使用する側方照射灯にあっては、最小光度要件及び最大光度要件への適合を何分後に測定した光度で確認するか。",choices:["A. 作動1分後及び10分後", "B. 作動1分後及び30分後", "C. 作動5分後及び30分後", "D. 作動10分後及び60分後"],answer:"B",exp:"別添102の4.5.により、電球以外の光源を使用する側方照射灯にあっては、作動1分後及び30分後に測定した光度が最小光度要件及び最大光度要件に適合するものとする。"},
+  {no:7317,section:"保安基準別添",label:"別添103（ガソリン・液化石油ガス特殊自動車排出ガスの測定方法）",q:"別添103において対象とするエンジンの定格出力の範囲として正しいものはどれか。",choices:["A. 定格出力が7kW以上19kW未満のエンジン", "B. 定格出力が19kW以上560kW未満のエンジン", "C. 定格出力が19kW以上600kW未満のエンジン", "D. 定格出力が30kW以上560kW未満のエンジン"],answer:"B",exp:"別添103の2.により、対象とするエンジンは定格出力が19kW以上560kW未満のエンジンに適用する。"},
+  {no:7318,section:"保安基準別添",label:"別添103（ガソリン・液化石油ガス特殊自動車排出ガスの測定方法）",q:"別添103の適用範囲として、測定対象となる排出ガス成分に含まれないものはどれか。",choices:["A. 一酸化炭素（CO）", "B. 全炭化水素（THC）", "C. 窒素酸化物（NOx）", "D. 硫黄酸化物（SOx）"],answer:"D",exp:"別添103の1.により、測定対象は一酸化炭素（CO）、全炭化水素（THC）、窒素酸化物（NOx）、二酸化炭素（CO2）である。硫黄酸化物（SOx）は含まれない。"},
+  {no:7319,section:"保安基準別添",label:"別添103（ガソリン・液化石油ガス特殊自動車排出ガスの測定方法）",q:"別添103において、7モード法の説明として正しいものはどれか。",choices:["A. 7モード法とは、エンジン速度とトルクが段階的に変化するテストサイクルをいう。", "B. 7モード法とは、エンジン速度とトルクが一定に保持されるテストサイクルをいう。", "C. 7モード法とは、路上走行を模擬した実走行に基づくテストサイクルをいう。", "D. 7モード法とは、アイドリング状態のみを測定するテストサイクルをいう。"],answer:"B",exp:"別添103の3.1.1.により、7モード法とはエンジン速度とトルクが一定に保持されるテストサイクルであって、ディスクリート試験サイクル又はRMC試験サイクルにより実施されるものをいう。"},
+  {no:7320,section:"保安基準別添",label:"別添105（再帰反射材の技術基準）",q:"別添105において、線状再帰反射材及び輪郭表示再帰反射材に使用しなければならない再帰反射材のクラスはどれか。",choices:["A. クラス「A」", "B. クラス「B」", "C. クラス「C」", "D. クラス「D」"],answer:"C",exp:"別添105の5.2.により、線状再帰反射材及び輪郭表示再帰反射材はクラス「C」の再帰反射材料を使用しなければならない。"},
+  {no:7321,section:"保安基準別添",label:"別添105（再帰反射材の技術基準）",q:"別添105において、再帰反射材が全方向回転式でないものに表示しなければならない文字として正しいものはどれか。",choices:["A. UP", "B. TOP", "C. FRONT", "D. SIDE"],answer:"B",exp:"別添105の3.1.により、再帰反射材が全方向回転式でないものにあっては5.の規定を適合する向きにおいて「TOP」という文字を表示しなければならない。"},
+  {no:7322,section:"保安基準別添",label:"別添105（再帰反射材の技術基準）",q:"別添105において、再帰反射係数の定義として正しいものはどれか。",choices:["A. 反射面における入射光軸方向への光度係数をその面積で割った値", "B. 反射面における観測軸方向への光度係数をその面積で割った値", "C. 反射面における全方向への光度係数の合計をその面積で割った値", "D. 反射面における水平方向への光度係数をその面積で割った値"],answer:"B",exp:"別添105の2.4.1.により、再帰反射係数（記号R）とは反射面における観測軸方向への光度係数をその面積Aで割った値をいう。"},
+  {no:7323,section:"保安基準別添",label:"別添106（ワンマンバスの構造要件）",q:"別添106において、路線を定めて定期的に運行する乗車定員30人以上のワンマンバスのホイールベース間に備える後扉の有効幅として正しいものはどれか。",choices:["A. 600mm以上", "B. 700mm以上", "C. 800mm以上", "D. 900mm以上"],answer:"C",exp:"別添106の3.1.2.により、路線を定めて定期的に運行する乗車定員30人以上のワンマンバスのホイールベース間に備える後扉にあっては、有効幅が800mm以上であること。"},
+  {no:7324,section:"保安基準別添",label:"別添106（ワンマンバスの構造要件）",q:"別添106において、路線を定めて定期的に運行するワンマンバスの後扉の外側上部に備える灯火について、閉扉後の消灯の遅延時間として正しいものはどれか。",choices:["A. 2秒以上遅延して消灯する", "B. 4秒以上遅延して消灯する", "C. 6秒以上遅延して消灯する", "D. 10秒以上遅延して消灯する"],answer:"B",exp:"別添106の3.7.2.により、路線を定めて定期的に運行するワンマンバスの乗降口（後扉に限る）の外側上部の灯火は、開扉と同時に点灯し、閉扉後4秒以上遅延して消灯する。"},
+  {no:7325,section:"保安基準別添",label:"別添106（ワンマンバスの構造要件）",q:"別添106において、ワンマンバスの乗降口の扉の開閉装置の要件として正しいものはどれか。",choices:["A. 乗降口の扉の開閉は、車掌が操作できる構造でなければならない。", "B. 乗降口の扉の開閉は、運転者が運転者席において操作できる構造（自動式）でなければならない。", "C. 乗降口の扉の開閉は、乗客が操作できる構造でなければならない。", "D. 乗降口の扉の開閉は、外部から遠隔操作できる構造でなければならない。"],answer:"B",exp:"別添106の3.2.1.により、乗降口の扉の開閉は運転者が運転者席において操作できる構造（自動式）でなければならない。"},
+  {no:7326,section:"保安基準別添",label:"別添107（前部潜り込み防止装置の技術基準）",q:"別添107の適用範囲として正しいものはどれか。",choices:["A. 車両総重量が2.5tを超える貨物自動車の前面に備える前部潜り込み防止装置", "B. 車両総重量が3.5tを超える貨物自動車の前面に備える前部潜り込み防止装置", "C. 車両総重量が5.0tを超える貨物自動車の前面に備える前部潜り込み防止装置", "D. 車両総重量が7.5tを超える貨物自動車の前面に備える前部潜り込み防止装置"],answer:"B",exp:"別添107の1.により、本技術基準は貨物の運送の用に供する自動車であって車両総重量が3.5tを超えるものの前面に備える前部潜り込み防止装置に適用する。"},
+  {no:7327,section:"保安基準別添",label:"別添107（前部潜り込み防止装置の技術基準）",q:"別添107において、前部潜り込み防止装置の平面部の断面の高さとして、車両総重量が12tを超えるものに要求される最小値はどれか。",choices:["A. 80mm以上", "B. 100mm以上", "C. 120mm以上", "D. 150mm以上"],answer:"C",exp:"別添107の3.2.により、前部潜り込み防止装置の平面部の断面の高さは、車両総重量が12tを超えるものにあっては120mm以上でなければならない。"},
+  {no:7328,section:"保安基準別添",label:"別添107（前部潜り込み防止装置の技術基準）",q:"別添107において、前部潜り込み防止装置の位置を変えるための操作力の上限として正しいものはどれか。",choices:["A. 200Nを超えるものであってはならない。", "B. 300Nを超えるものであってはならない。", "C. 400Nを超えるものであってはならない。", "D. 500Nを超えるものであってはならない。"],answer:"C",exp:"別添107の3.3.により、前部潜り込み防止装置の位置を変えるための操作力は、400Nを超えるものであってはならない。"},
+  {no:7329,section:"保安基準別添",label:"別添108（前部潜り込み防止装置取付装置等の技術基準）",q:"別添108において、前部潜り込み防止装置の2つのP1点間における下縁の高さの上限として、通常の自動車（コンクリートミキサー車及びダンプ車以外）に適用される値はどれか。",choices:["A. 地上350mm以下", "B. 地上400mm以下", "C. 地上445mm以下", "D. 地上500mm以下"],answer:"B",exp:"別添108の3.1.5.により、前部潜り込み防止装置の2つのP1点間における下縁の高さは地上400mm（コンクリートミキサー車及びダンプ車にあっては地上450mm）を超えてはならない。"},
+  {no:7330,section:"保安基準別添",label:"別添108（前部潜り込み防止装置取付装置等の技術基準）",q:"別添108において、前部潜り込みを防止する構造又は装置として認められないものはどれか。",choices:["A. 特殊な前部潜り込み防止装置", "B. 車体構造であって前部潜り込み防止装置の機能を果たすことができるもの", "C. 車枠部品であって前部潜り込み防止装置の機能を果たすことができるもの", "D. 後部に取り付けられた緩衝装置"],answer:"D",exp:"別添108の2.5.により、前部潜り込みを防止する構造又は装置は特殊な前部潜り込み防止装置か、車体構造・車枠部品・その他の構成部品であって機能を果たすことができるものをいう。後部緩衝装置は該当しない。"},
+  {no:7331,section:"保安基準別添",label:"別添108（前部潜り込み防止装置取付装置等の技術基準）",q:"別添108の適用範囲について、車両総重量が7.5t以下の自動車の前部潜り込みを防止する装置について適用免除となる要件として正しいものはどれか。",choices:["A. 堅ろうであり板状であること及び下縁の高さが地上350mm以下であれば適用しない。", "B. 堅ろうであり板状であること及び下縁の高さが地上400mm以下であれば適用しない。", "C. 堅ろうであり板状であること及び下縁の高さが地上450mm以下であれば適用しない。", "D. 堅ろうであり板状であること及び下縁の高さが地上500mm以下であれば適用しない。"],answer:"B",exp:"別添108の1.ただし書きにより、車両総重量が7.5t以下の自動車にあっては、堅ろうであり板状であり前部潜り込み防止機能を有し、かつ前部潜り込み防止装置の下縁の高さが地上400mm以下であれば本規定は適用しない。"},
+  {no:7332,section:"保安基準別添",label:"別添109（無負荷急加速時に排出される排出ガスの光吸収係数の測定方法）",q:"別添109において、排出ガスの光吸収係数の測定に際して加速ペダルを踏み込んだ後の排出ガス採取時間として正しいものはどれか。",choices:["A. 加速ペダルを踏み込み始めた時から3秒が経過するまでの間", "B. 加速ペダルを踏み込み始めた時から5秒が経過するまでの間", "C. 加速ペダルを踏み込み始めた時から10秒が経過するまでの間", "D. 加速ペダルを踏み込み始めた時から30秒が経過するまでの間"],answer:"B",exp:"別添109の4.3.により、排出ガスの採取は加速ペダルを踏み込み始めた時から5秒が経過するまでの間に行う。"},
+  {no:7333,section:"保安基準別添",label:"別添109（無負荷急加速時に排出される排出ガスの光吸収係数の測定方法）",q:"別添109において、測定値が閾値を超えた場合の再測定の間隔として正しいものはどれか。",choices:["A. 1秒以上5秒以下の間隔", "B. 2秒以上8秒以下の間隔", "C. 4秒以上10秒以下の間隔", "D. 10秒以上30秒以下の間隔"],answer:"C",exp:"別添109の4.4.3.及び4.4.4.により、測定値が閾値を超える場合には4秒以上10秒以下の間隔をおいて再度測定を行う。"},
+  {no:7334,section:"保安基準別添",label:"別添110（電気式自動車及び電気式ハイブリッド自動車の高電圧からの乗車人員の保護に関する技術基準）",q:"別添110の適用範囲として、適用が除外される自動車の種別に含まれないものはどれか。",choices:["A. 二輪自動車", "B. 三輪自動車", "C. 燃料電池自動車", "D. 普通乗用自動車（乗車定員5人）"],answer:"D",exp:"別添110の1.により、二輪自動車、側車付二輪自動車、三輪自動車、カタピラ及びそりを有する軽自動車、大型特殊自動車、小型特殊自動車、被牽引自動車並びに燃料電池自動車は除外されるが、普通乗用自動車（乗車定員5人）は適用対象となる。"},
+  {no:7335,section:"保安基準別添",label:"別添110（電気式自動車及び電気式ハイブリッド自動車の高電圧からの乗車人員の保護に関する技術基準）",q:"別添110において、充電系連結システムの構成として正しいものはどれか。",choices:["A. 充電系連結システムは動力系に含まれる。", "B. 充電系連結システムは常時動力系と直流電気的に接続されている。", "C. 充電系連結システムは外部電源に接続している時以外には動力系から直流電気的に絶縁される。", "D. 充電系連結システムには燃料電池スタックが含まれる。"],answer:"C",exp:"別添110の2.4.により、充電系連結システムは電気回路を開閉する接触器、絶縁トランス等により外部電源に接続している時以外には動力系から直流電気的に絶縁される電気回路である。"},
+  {no:7336,section:"保安基準別添",label:"別添110（電気式自動車及び電気式ハイブリッド自動車の高電圧からの乗車人員の保護に関する技術基準）",q:"別添110において、動力系の感電からの保護が適用される作動電圧の基準として正しいものはどれか。",choices:["A. 作動電圧が直流12V以上である部分を有する動力系に適用する。", "B. 作動電圧が直流48V以上である部分を有する動力系に適用する。", "C. 作動電圧が直流60V以上である部分を有する動力系（交流部分を含む）に適用する。", "D. 作動電圧が直流100V以上である部分を有する動力系に適用する。"],answer:"C",exp:"別添110の3.1.により、作動電圧が直流60V以上である部分を有する動力系（交流部分を含む）に適用する。"},
+  {no:7337,section:"保安基準別添",label:"別添111（電気自動車、電気式ハイブリッド自動車及び燃料電池自動車の衝突後の高電圧からの乗車人員の保護に関する技術基準）",q:"別添111において、高電圧の定義として正しいものはどれか。",choices:["A. 直流60V以下又は交流30V（実効値）以下の作動電圧をいう。", "B. 直流60Vを超え1,500V以下又は交流30V（実効値）を超え1,000V（実効値）以下の作動電圧をいう。", "C. 直流100Vを超え1,000V以下又は交流50V（実効値）を超え750V（実効値）以下の作動電圧をいう。", "D. 直流48Vを超え600V以下又は交流24V（実効値）を超え480V（実効値）以下の作動電圧をいう。"],answer:"B",exp:"別添111の2.19.により、高電圧とは直流60Vを超え1,500V以下又は交流30V（実効値）を超え1,000V（実効値）以下の作動電圧をいう。"},
+  {no:7338,section:"保安基準別添",label:"別添111（電気自動車、電気式ハイブリッド自動車及び燃料電池自動車の衝突後の高電圧からの乗車人員の保護に関する技術基準）",q:"別添111において、後面衝突に関する要件が適用される自動車として正しいものはどれか。",choices:["A. すべての電力により作動する原動機を有する自動車", "B. 乗車定員11人以上の自動車及び車両総重量が2.8tを超える自動車", "C. 専ら乗用の用に供する普通自動車又は小型自動車若しくは軽自動車（乗車定員11人以上の自動車及び車両総重量2.8t超を除く）", "D. 燃料電池自動車のみ"],answer:"C",exp:"別添111の3.により、後面衝突に関する要件は専ら乗用の用に供する普通自動車又は小型自動車若しくは軽自動車（乗車定員11人以上の自動車及び車両総重量が2.8tを超える自動車を除く）に適用する。"},
+  {no:7339,section:"保安基準別添",label:"別添111（電気自動車、電気式ハイブリッド自動車及び燃料電池自動車の衝突後の高電圧からの乗車人員の保護に関する技術基準）",q:"別添111において、原動機用蓄電池パックの定義として正しいものはどれか。",choices:["A. 1つのセル又はセルの集合体から成る最小の単一エネルギ貯蔵体をいう。", "B. 原動機用蓄電池モジュール及び保持枠又はトレーやケースを含む単一の機械的集合体をいう。", "C. 駆動に係る電力を供給するための電気的に接続された電力貯蔵体及びその集合体をいう。", "D. 電気的に互いに接続された導電性の部分の集合体をいう。"],answer:"B",exp:"別添111の2.4.により、原動機用蓄電池パックとは原動機用蓄電池モジュール及び保持枠又はトレーやケースを含む単一の機械的集合体をいう。"},
+  {no:7340,section:"保安基準別添",label:"別添112（後付消音器の技術基準）",q:"別添112において、第一種後付消音器の騒音防止性能試験の要件として、加速走行騒音の上限値（乗車定員10人以下の専ら乗用の普通自動車・小型自動車・軽自動車）として正しいものはどれか。",choices:["A. 73dBを超える騒音を発しない構造であること", "B. 76dBを超える騒音を発しない構造であること", "C. 79dBを超える騒音を発しない構造であること", "D. 82dBを超える騒音を発しない構造であること"],answer:"A",exp:"別添112 IのII表及び3.(2)により、専ら乗用の用に供する乗車定員10人以下の普通自動車・小型自動車・軽自動車（二輪除く）は73dBを超える騒音を発しない構造でなければならない。"},
+  {no:7341,section:"保安基準別添",label:"別添112（後付消音器の技術基準）",q:"別添112において、第二種後付消音器の説明として正しいものはどれか。",choices:["A. 指定自動車等に備えられている消音器と異なる構造を有し、異なる範囲の自動車等に備えられるもの", "B. 指定自動車等に備えられている消音器と同一の構造を有し、同一の範囲の自動車等の同一の位置に備えられるもの", "C. 新たに開発された消音技術を用いた消音器", "D. 自動車に備えられた純正品の消音器"],answer:"B",exp:"別添112 Iの2.(2)により、第二種後付消音器とは指定自動車等に備えられている消音器と同一の構造を有し、かつ同一の範囲の自動車等の同一の位置に備えられるものをいう。"},
+  {no:7342,section:"保安基準別添",label:"別添113（衝突被害軽減制動制御装置の技術基準）",q:"別添113において、警報制動の最大減速度の範囲として正しいものはどれか。",choices:["A. 最大減速度が0.49m/s2以上1.96m/s2以下であり、かつ0.5秒未満のもの", "B. 最大減速度が0.98m/s2以上2.45m/s2以下であり、かつ0.8秒未満のもの", "C. 最大減速度が1.47m/s2以上3.92m/s2以下であり、かつ1.0秒未満のもの", "D. 最大減速度が2.0m/s2以上4.0m/s2以下であり、かつ1.5秒未満のもの"],answer:"B",exp:"別添113の2.26.により、警報制動とは最大減速度が0.98m/s2以上2.45m/s2以下であり、かつ0.8秒未満の制動装置の制御による車両の制動をいう。"},
+  {no:7343,section:"保安基準別添",label:"別添113（衝突被害軽減制動制御装置の技術基準）",q:"別添113の適用範囲として、衝突被害軽減制動制御装置の技術基準が適用される自動車に含まれないものはどれか。",choices:["A. 立席を有するものを除く専ら乗用の用に供する乗車定員10人以上の普通自動車であって車両総重量が5tを超えるもの", "B. 貨物の運送の用に供する普通自動車（第5輪荷重を有する牽引自動車及び被牽引自動車を除く）であって車両総重量が8tを超えるもの", "C. 貨物の運送の用に供する普通自動車（第5輪荷重を有する牽引自動車に限る）であって車両総重量が13tを超えるもの", "D. 軽自動車の乗用車であって車両総重量が3.5tを超えるもの"],answer:"D",exp:"別添113の1.により、適用対象は乗車定員10人以上の普通自動車（立席なし・GVW5t超）、貨物普通自動車（GVW8t超）及び牽引自動車（GVW13t超）である。軽自動車の乗用車は含まれない。"},
+  {no:7344,section:"保安基準別添",label:"別添113（衝突被害軽減制動制御装置の技術基準）",q:"別添113において、装置搭載車がABSを備えていないトレーラを牽引する牽引自動車の場合、制動制御はどのように規定されているか。",choices:["A. 制動制御は通常どおり作動しなければならない。", "B. 制動制御は作動してはならない。", "C. 制動制御は警告灯の点灯と同時に作動しなければならない。", "D. 制動制御は速度50km/h以下の場合のみ作動してもよい。"],answer:"B",exp:"別添113の3.3.により、装置搭載車が牽引自動車である場合であって、被牽引自動車がABSを備えていない場合又は被牽引自動車のABSが故障している場合においては、制動制御は作動してはならない。"},
+  {no:7345,section:"保安基準別添",label:"別添114（牽引自動車の軸重に関する技術基準）",q:"別添114において、試験自動車の走行速度として正しいものはどれか。",choices:["A. 速度3±1km/h", "B. 速度5±1km/h", "C. 速度10±2km/h", "D. 速度20±5km/h"],answer:"B",exp:"別添114の3.1.により、試験用ステップ板の上を速度5±1km/hで後軸の両輪が同時に当該ステップ板から離れるように試験自動車を走行させる。"},
+  {no:7346,section:"保安基準別添",label:"別添114（牽引自動車の軸重に関する技術基準）",q:"別添114において、周波数が2.0Hzを超える場合の判定として正しいものはどれか。",choices:["A. 本技術基準に適合するものとする。", "B. 本技術基準に適合しないものとする。", "C. 追加試験を実施して判定する。", "D. 減衰比の値のみで判定する。"],answer:"B",exp:"別添114の4.1.により、周波数が2.0Hzを超える場合は本技術基準に適合しないものとする。"},
+  {no:7347,section:"保安基準別添",label:"別添115（二輪車のばい煙、悪臭のあるガス、有害なガス等の発散防止装置に係る車載式故障診断装置の技術基準）",q:"別添115において、二輪車用J-OBDIが適用される自動車として正しいものはどれか。",choices:["A. すべてのガソリンを燃料とする二輪自動車", "B. 総排気量が0.050リットル以下で最高速度が50km/h以下のガソリンを燃料とする一般原動機付自転車", "C. ガソリンを燃料とする側車付二輪自動車", "D. 総排気量が0.125リットル以下のガソリンを燃料とする二輪自動車"],answer:"B",exp:"別添115のI.1.により、二輪車用J-OBDIは総排気量が0.050リットル以下で最高速度が50km/h以下のガソリンを燃料とする一般原動機付自転車に備えるものに適用する。"},
+  {no:7348,section:"保安基準別添",label:"別添115（二輪車のばい煙、悪臭のあるガス、有害なガス等の発散防止装置に係る車載式故障診断装置の技術基準）",q:"別添115において、二輪車用J-OBDIの警告灯に関する規定として正しいものはどれか。",choices:["A. 走行開始後5分以内に正常作動を確認できる機能を有するものであること。", "B. 走行開始前に正常に作動することの確認ができる機能を有するものであること。", "C. 走行中に点灯して自動的に消灯する機能を有するものであること。", "D. 車速が時速30km以上の場合のみ点灯する機能を有するものであること。"],answer:"B",exp:"別添115のII.3.5.2.により、走行開始前に二輪車用J-OBDIが正常に作動することの確認ができる機能を有するものでなければならない。"},
+  {no:7349,section:"保安基準別添",label:"別添115（二輪車のばい煙、悪臭のあるガス、有害なガス等の発散防止装置に係る車載式故障診断装置の技術基準）",q:"別添115において、電気回路診断の対象として明記されているセンサとして正しいものはどれか。",choices:["A. 乗員体重センサ", "B. 酸素センサ又は空燃比センサ", "C. フロントブレーキ圧力センサ", "D. ナビゲーションシステム位置センサ"],answer:"B",exp:"別添115のII.3.1.15.により、酸素センサ又は空燃比センサは電気回路診断の対象として明記されている。"},
+  {no:7350,section:"保安基準別添",label:"別添116（オフサイクル時のディーゼル重量車排出ガスの制御に関する技術基準）",q:"別添116における規制対象排出ガスとして正しいものはどれか。",choices:["A. 一酸化炭素、非メタン炭化水素、窒素酸化物及び粒子状物質", "B. 一酸化炭素、全炭化水素、窒素酸化物及び二酸化炭素", "C. 一酸化炭素、窒素酸化物、粒子状物質及び硫黄酸化物", "D. 一酸化炭素、窒素酸化物、粒子状物質及び二酸化炭素"],answer:"A",exp:"別添116の2.6.により、規制対象排出ガスとは一酸化炭素、非メタン炭化水素、窒素酸化物及び粒子状物質をいう。"},
+  {no:7351,section:"保安基準別添",label:"別添116（オフサイクル時のディーゼル重量車排出ガスの制御に関する技術基準）",q:"別添116において、ディフィートストラテジーの定義として正しいものはどれか。",choices:["A. 基本排出ガスストラテジーと補助排出ガスストラテジーを統合したものをいう。", "B. 基本排出ガスストラテジー及び補助排出ガスストラテジーの性能要件を満たさない排出ガスストラテジーをいう。", "C. 排出ガスを削減するために特定の条件下でのみ作動するストラテジーをいう。", "D. 試験時のみに作動する排出ガス制御ストラテジーをいう。"],answer:"B",exp:"別添116の2.4.により、ディフィートストラテジーとは基本排出ガスストラテジー及び補助排出ガスストラテジーの性能要件を満たさない排出ガスストラテジーをいう。"},
+  {no:7352,section:"保安基準別添",label:"別添116（オフサイクル時のディーゼル重量車排出ガスの制御に関する技術基準）",q:"別添116の適用範囲として正しいものはどれか。",choices:["A. 軽油を燃料とする普通自動車及び小型自動車であって車両総重量が3.5tを超えるもの（専ら乗用の用に供する乗車定員10人以下のものを除く）", "B. ガソリンを燃料とするすべての自動車", "C. 軽油を燃料とするすべての自動車", "D. 軽油を燃料とする車両総重量5t以下の小型自動車"],answer:"A",exp:"別添116の1.により、本技術基準は軽油を燃料とする普通自動車及び小型自動車であって車両総重量が3.5tを超えるもの（専ら乗用の用に供する乗車定員10人以下のものを除く）のオフサイクル時の排出ガスの制御に適用する。"},
+  {no:7353,section:"保安基準別添",label:"別添117（二輪車の燃料蒸発ガスの測定方法）",q:"別添117において、非露出型燃料タンクの定義として正しいものはどれか。",choices:["A. 燃料タンクが完全に密閉されているもの", "B. 燃料タンクキャップ以外の部分が直射日光に当たらないように備え付けられた燃料タンク", "C. 燃料タンクが車体内部に完全に収納されているもの", "D. 燃料タンクの素材が樹脂製のもの"],answer:"B",exp:"別添117の2.1.により、非露出型燃料タンクとは燃料タンクキャップ以外の部分が直射日光に当たらないように備え付けられた燃料タンクをいう。"},
+  {no:7354,section:"保安基準別添",label:"別添117（二輪車の燃料蒸発ガスの測定方法）",q:"別添117において、温度計の精度として正しいものはどれか。",choices:["A. プラスマイナス0.5K以内", "B. プラスマイナス1K（プラスマイナス1度C）以内", "C. プラスマイナス2K以内", "D. プラスマイナス5K以内"],answer:"B",exp:"別添117の5.1.により、温度計の精度はプラスマイナス1K（プラスマイナス1度C）以内であること。"},
+  {no:7355,section:"保安基準別添",label:"別添117（二輪車の燃料蒸発ガスの測定方法）",q:"別添117において、SHED試験のプレコンディショニングフェーズにおける車両ソークの温度範囲として正しいものはどれか。",choices:["A. 283.7Kから303.7Kの間で60分", "B. 288.7Kから308.7Kの間で60分", "C. 293.7Kから313.7Kの間で60分", "D. 298.0Kから318.0Kの間で60分"],answer:"B",exp:"別添117別紙1の図1により、車両ソークは288.7から308.7K（摂氏15.7から35.7度）の範囲で60分間行うものとされている。"},
+  {no:7356,section:"保安基準別添",label:"別添118（圧縮水素ガスを燃料とする二輪自動車及び側車付二輪自動車の燃料装置の技術基準）",q:"別添118において、容器安全弁の定義として正しいものはどれか。",choices:["A. 圧力が異常に上昇した場合に圧力を減じる弁であって、再び閉めることができるもの", "B. ガス容器内の水素ガスの流出を遮断する弁", "C. ガス容器に直接取り付けられ、温度異常上昇時に一回に限って作動し水素ガスを放出する弁", "D. ガス容器からガス充填口への水素ガスの逆流を防止する弁"],answer:"C",exp:"別添118の2.6.により、容器安全弁とはガス容器に直接取り付けられ、ガス容器内の水素ガスの温度が異常に上昇しガス容器が損傷するおそれがある場合に一回に限って作動し水素ガスを放出する弁をいう。"},
+  {no:7357,section:"保安基準別添",label:"別添118（圧縮水素ガスを燃料とする二輪自動車及び側車付二輪自動車の燃料装置の技術基準）",q:"別添118において、ガス充填口の取付に関して禁止されている場所として正しいものはどれか。",choices:["A. 車体外部の目立つ場所", "B. 車体外部からの衝撃を吸収する構造体の外側", "C. 運転者室内、客室内、荷室内及び換気が十分でない場所", "D. 車体後部の上部"],answer:"C",exp:"別添118の3.1.3.により、ガス充填口は車体外部からの衝撃を吸収する構造体の内側、運転者室内、客室内、荷室内、その他水素ガスが滞留する場所及び換気が十分でない場所に取り付けてはならない。"},
+  {no:7358,section:"保安基準別添",label:"別添118（圧縮水素ガスを燃料とする二輪自動車及び側車付二輪自動車の燃料装置の技術基準）",q:"別添118において、主止弁の定義として正しいものはどれか。",choices:["A. 圧力が異常に上昇した場合に圧力を減じる弁をいう。", "B. 容器元弁のうち電磁的に作動することによりその弁から下流への水素ガスの供給を遮断する弁であって、電源に接続されていないときは閉じているもの", "C. ガス容器に直接取り付けられ水素ガスの流出を遮断する弁全般", "D. 容器元弁のうちガス容器からガス充填口への水素ガスの逆流を防止する弁"],answer:"B",exp:"別添118の2.4.により、主止弁とは容器元弁のうち電磁的に作動することによりその弁から下流への水素ガスの供給を遮断する弁であって、電源に接続されていないときは閉じているものをいう。"},
+  {no:7359,section:"保安基準別添",label:"別添119（路上走行時のディーゼル軽・中量車排出ガスに関する技術基準）",q:"別添119の適用範囲として正しいものはどれか。",choices:["A. ガソリンを燃料とするすべての乗用自動車", "B. 軽油を燃料とする普通自動車及び小型自動車であって、車両総重量が3.5t以下のもの又は専ら乗用の用に供する乗車定員9人以下のもの", "C. 軽油を燃料とする大型貨物自動車", "D. 軽油を燃料とする車両総重量が5tを超えるすべての自動車"],answer:"B",exp:"別添119の1.により、本技術基準は軽油を燃料とする普通自動車及び小型自動車であって、車両総重量が3.5t以下のもの又は専ら乗用の用に供する乗車定員9人以下のものについて適用する。"},
+  {no:7360,section:"保安基準別添",label:"別添119（路上走行時のディーゼル軽・中量車排出ガスに関する技術基準）",q:"別添119において、拡張高度条件として規定されている範囲として正しいものはどれか。",choices:["A. 海抜500mを超え海抜700m以下", "B. 海抜700mを超え海抜1000m以下", "C. 海抜1000mを超え海抜1500m以下", "D. 海抜1500mを超え海抜2000m以下"],answer:"B",exp:"別添119の2.3.により、拡張高度条件は海抜700mを超え海抜1000m以下とする。"},
+  {no:7381,section:"保安基準別添",label:"別添122（高速道路等における低速自動運行装置を備える自動車の技術基準）",q:"自動車線維持システム（ALKS）の作動が許可される最高速度として正しいものはどれか。",choices:["A. 40km/h", "B. 50km/h", "C. 60km/h", "D. 80km/h"],answer:"C",exp:"別添122の3.1.2.3.1.に「自動車線維持システムの作動が許可される最高速度は60km/hである」と規定されている。"},
+  {no:7382,section:"保安基準別添",label:"別添122（高速道路等における低速自動運行装置を備える自動車の技術基準）",q:"自動車線維持システムにおいて、引継ぎ要求の開始から強化されるまでの最大時間として正しいものはどれか。",choices:["A. 2秒後", "B. 4秒後", "C. 10秒後", "D. 30秒後"],answer:"B",exp:"別添122の3.1.4.3.2.に「引継ぎフェーズの間、引継ぎ要求は、当該要求の開始から遅くとも4秒後に強化されなければならない」と規定されている。"},
+  {no:7383,section:"保安基準別添",label:"別添123（作動状態記録装置の技術基準）",q:"作動状態記録装置が記録した情報の保存期間について、正しいものはどれか。",choices:["A. 3ヶ月間またはデータ記録が1000回を超えるまでのいずれか短い期間", "B. 6ヶ月間またはデータ記録が2500回を超えるまでのいずれか短い期間", "C. 1年間またはデータ記録が5000回を超えるまでのいずれか短い期間", "D. 2年間またはデータ記録が10000回を超えるまでのいずれか短い期間"],answer:"B",exp:"別添123の3.3.1.に「6ヶ月間」または「2500回を超えて情報を記録するまでの間」のいずれか短い期間と規定されている。"},
+  {no:7384,section:"保安基準別添",label:"別添123（作動状態記録装置の技術基準）",q:"作動状態記録装置のタイムスタンプの精度として正しいものはどれか。",choices:["A. ±0.1秒", "B. ±0.5秒", "C. ±1.0秒", "D. ±2.0秒"],answer:"C",exp:"別添123の3.2.1.3.2.に「精度：±1.0秒」と規定されている。"},
+  {no:7385,section:"保安基準別添",label:"別添123（作動状態記録装置の技術基準）",q:"事故情報計測・記録装置を備える自動車の作動状態記録装置は、トリガー条件を最後に満たした時点から少なくとも何秒前までに記録したデータを電子通信インターフェースにより取得できなければならないか。",choices:["A. 10秒前", "B. 20秒前", "C. 30秒前", "D. 60秒前"],answer:"C",exp:"別添123の3.4.3.1.に「事故情報記録・計測装置へのトリガー条件を最後に満たした時点から少なくとも30秒前までに記録したデータを電子通信インターフェースにより取得できなければならない」と規定されている。"},
+  {no:7386,section:"保安基準別添",label:"別添124（継続検査等に用いる車載式故障診断装置の技術基準）",q:"継続検査等に用いる車載式故障診断装置（継続検査用OBD）において、「特定故障コード」の定義として正しいものはどれか。",choices:["A. 故障コードのうち、自動車製作者が定めた任意のコード", "B. 故障コードのうち、当該コードのみで対象装置が基準に適合しなくなると識別できるもの", "C. 故障コードのうち、走行中の診断により記録されるもの", "D. 故障コードのうち、排出ガス規制に関するもの"],answer:"B",exp:"別添124の用語定義に「特定故障コード」は「故障コードのうち、当該故障コードのみで対象装置が基準に適合しなくなると識別できるもの」と規定されている。"},
+  {no:7387,section:"保安基準別添",label:"別添124（継続検査等に用いる車載式故障診断装置の技術基準）",q:"継続検査用OBDに規定する故障コードの規格として、正しい組み合わせはどれか。",choices:["A. ISO 15031-6またはSAE J 2012", "B. ISO 9141またはISO 15765", "C. SAE J1939またはISO 13400", "D. ISO 14229またはISO 14230"],answer:"A",exp:"別添124の3.1.(1)に「故障コードは、ISO 15031-6又はSAE J 2012に従って定められたものであること」と規定されている。"},
+  {no:7388,section:"保安基準別添",label:"別添125（車載式燃料・電力消費等測定装置の技術基準）",q:"「ライフタイム値」の定義として正しいものはどれか。",choices:["A. 車両製作時から廃車までの総積算値", "B. 車両完成時から特定の時間までの間に積算される値", "C. 各走行サイクルにおける燃料消費量の平均値", "D. 直近1年間に積算された燃料消費量の合計値"],answer:"B",exp:"別添125の2.2.に「ライフタイム値とは、車両完成時から特定の時間までの間に積算される値をいう」と定義されている。"},
+  {no:7389,section:"保安基準別添",label:"別添125（車載式燃料・電力消費等測定装置の技術基準）",q:"車載式燃料・電力消費等測定装置において、ガソリン又は軽油を燃料とする乗用車（乗車定員9人以下）の精度要件として正しいものはどれか。",choices:["A. 試験WLTC燃料消費量との差が－10%を超え10%未満であること", "B. 試験WLTC燃料消費量との差が－5%を超え5%未満であること", "C. 試験WLTC燃料消費量との差が±3%以内であること", "D. 試験WLTC燃料消費量との差が±1%以内であること"],answer:"B",exp:"別添125の4.に「試験WLTC燃料消費量から記録される総燃料消費量を引いて得た値を試験WLTC燃料消費量で除した値が－0.05を超え0.05未満であること（つまり±5%未満）」と規定されている。"},
+  {no:7390,section:"保安基準別添",label:"別添126（特定小型原動機付自転車の走行安定性の技術基準）",q:"特定小型原動機付自転車の走行安定性試験において、試験路面通過後の進行方向誤差の許容範囲として正しいものはどれか。",choices:["A. 10度以内", "B. 15度以内", "C. 20度以内", "D. 30度以内"],answer:"C",exp:"別添126の2.(2)に「目標と実際の軌道の誤差は20度以内であること」と規定されている。"},
+  {no:7391,section:"保安基準別添",label:"別添127（特定小型原動機付自転車の速度抑制装置の技術基準）",q:"特定小型原動機付自転車の速度抑制装置における設定最高速度の上限として正しいものはどれか（歩道通行モード以外の場合）。",choices:["A. 15km/h", "B. 20km/h", "C. 25km/h", "D. 30km/h"],answer:"B",exp:"別添127の3.2.に「速度抑制装置の設定最高速度は、20km/h（6km/h）以下の任意の速度とする」と規定されている。通常走行モードの上限は20km/hである。"},
+  {no:7392,section:"保安基準別添",label:"別添127（特定小型原動機付自転車の速度抑制装置の技術基準）",q:"特定小型原動機付自転車の速度抑制装置の走行試験において、試験車両の平均安定速度の許容誤差として正しいものはどれか。",choices:["A. 実測値が平均安定速度の±5%以内", "B. 実測値が平均安定速度の±10%以内", "C. 実測値が平均安定速度の±15%以内", "D. 実測値が平均安定速度の±20%以内"],answer:"B",exp:"別添127の4.2.2.に「実測値が平均安定速度の±10%以内であること」と規定されている。"},
+  {no:7393,section:"保安基準別添",label:"別添128（車両後退通報装置の通報音の測定方法）",q:"車両後退通報装置の通報音測定に用いる騒音計の周波数補正回路の特性として正しいものはどれか。",choices:["A. C特性", "B. Z特性（フラット）", "C. A特性", "D. B特性"],answer:"C",exp:"別添128の3.1.1.(2)に「周波数補正回路の特性は、A特性とする」と規定されている。"},
+  {no:7394,section:"保安基準別添",label:"別添128（車両後退通報装置の通報音の測定方法）",q:"車両後退通報装置の通報音測定において、マイクロホンの設置位置として正しいものはどれか。",choices:["A. 車両中心線上から左右方向±0.15m以内、車両後端から1.00±0.10m、地上0.45mから1.55mの範囲", "B. 車両中心線上から左右方向±0.30m以内、車両後端から2.00±0.20m、地上0.50mから1.20mの範囲", "C. 車両後端の中心から後方1.00m、地上高さ1.00m固定", "D. 車両後端から0.50±0.05mの位置、地上1.20mの高さ固定"],answer:"A",exp:"別添128の3.2.(1)に「マイクロホンは、車両中心線上から左右方向±0.15mの位置、かつ、車両後端から1.00±0.10mの位置で、地上0.45mから1.55mの範囲のいずれかの高さの位置」と規定されている。"},
+  {no:7395,section:"保安基準別添",label:"別添129（後方視界看視装置の技術基準）",q:"後方視界看視装置の技術基準において、試験対象物の寸法として正しいものはどれか。",choices:["A. 高さ1.0m、直径0.2mの円柱", "B. 高さ0.8m、直径0.3mの円柱", "C. 高さ0.5m、直径0.5mの円柱", "D. 高さ1.2m、直径0.4mの円柱"],answer:"B",exp:"別添129の2.2.に「試験対象物とは、高さ0.8m、直径0.3mの円柱形の対象物を指す」と規定されている。"},
+  {no:7396,section:"保安基準別添",label:"別添129（後方視界看視装置の技術基準）",q:"後方視界看視装置の近接後方視界において、車両最後端を基準とした前後の境界面の距離として正しいものはどれか。",choices:["A. 後方0.2mから2.5mの範囲", "B. 後方0.3mから3.5mの範囲", "C. 後方0.5mから5.0mの範囲", "D. 後方1.0mから4.0mの範囲"],answer:"B",exp:"別添129の3.1.(a)(b)に「車両の最後端の後方0.3mにある点を通る鉛直面」および「車両の最後端の後方3.5mにある点を通る鉛直面」が近接後方視界の境界として規定されている。"},
+  {no:7397,section:"保安基準別添",label:"別添130（後方視界看視装置取付装置等の技術基準）",q:"後退イベントの定義において、前進状態に係る終了条件の一つとして正しいものはどれか。",choices:["A. 速度が10km/h以下になった場合", "B. 速度が16km/h以下になった場合", "C. 速度が20km/h以下になった場合", "D. 速度が8km/h以下になった場合"],answer:"B",exp:"別添130の2.2.(a)に後退イベントの終了条件として「速度≦16km/h（0km/hを含む）」が規定されている。"},
+  {no:7398,section:"保安基準別添",label:"別添130（後方視界看視装置取付装置等の技術基準）",q:"後方視界看視装置（バックカメラシステム）において、型式指定時の後退イベント開始から後方視界像が表示されるまでの時間として正しいものはどれか。",choices:["A. 1.0秒以内", "B. 2.0秒以内", "C. 3.0秒以内", "D. 5.0秒以内"],answer:"B",exp:"別添130の3.4.に「型式の指定等を行う場合にあっては後退イベントの開始から2.0秒以内に後方視界像が表示されるものとする」と規定されている。"},
+  {no:7399,section:"保安基準別添",label:"別添131（圧縮水素ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）",q:"圧縮水素ガスを燃料とする自動車のガス容器に関する技術基準において、「国際相互承認圧縮水素自動車燃料装置用容器」が適合すべき協定規則として正しいものはどれか。",choices:["A. 協定規則第110号", "B. 協定規則第134号", "C. 協定規則第146号", "D. 協定規則第154号"],answer:"B",exp:"別添131の2.1.に「国際相互承認圧縮水素自動車燃料装置用容器とは、協定規則第134号の基準に適合するものとして認定された自動車の燃料装置用として圧縮水素を充填するためのガス容器」と規定されている。"},
+  {no:7400,section:"保安基準別添",label:"別添132（圧縮天然ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）",q:"圧縮天然ガス自動車燃料装置用容器において、「フープラップ容器」の定義として正しいものはどれか。",choices:["A. ライナーにヘリカル巻により繊維を巻き付けたガス容器", "B. ライナーにフープ巻のみにより繊維を巻き付けたガス容器", "C. 溶接部を有しない継目なし構造のガス容器", "D. ライナー全体を繊維で覆ったフルラップ構造のガス容器"],answer:"B",exp:"別添132の2.8.に「フープラップ容器とは、ライナーに、フープ巻（ライナー胴部に繊維を軸とほぼ直角に巻き付ける方法）のみにより樹脂含浸連続繊維を巻き付けたガス容器」と定義されている。"},
+  {no:7401,section:"保安基準別添",label:"別添132（圧縮天然ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）",q:"圧縮天然ガス自動車燃料装置用容器が適合すべき協定規則として正しいものはどれか。",choices:["A. 協定規則第100号", "B. 協定規則第110号", "C. 協定規則第134号", "D. 協定規則第146号"],answer:"B",exp:"別添132の2.1.に「国際相互承認圧縮天然ガス自動車燃料装置用容器とは、協定規則第110号に適合するものとして認定された容器」と規定されている。"},
+  {no:7402,section:"保安基準別添",label:"別添133（液化天然ガスを燃料とする自動車のガス容器及びガス容器附属品の技術基準）",q:"液化天然ガス（LNG）自動車燃料装置用容器附属品（国際相互承認）として、圧縮天然ガス（CNG）用附属品と比較して追加されているものはどれか。",choices:["A. 安全弁", "B. バルブ", "C. 逆止弁", "D. 過流防止弁"],answer:"C",exp:"別添133の2.2.には国際相互承認液化天然ガス自動車燃料装置用容器附属品としてバルブ、安全弁、逆止弁、過流防止弁が列挙されている。別添132（CNG）の2.2.にはバルブ、安全弁、過流防止弁が規定されており、LNG用には「逆止弁」が追加されている点が特徴的である。"},
+  {no:8001,section:"保安基準適用関係",label:"第1条（定義等）",q:"道路運送車両の保安基準適用関係告示において、用語の定義が規定されている根拠法令として正しいものはどれか。",choices:["A. 道路交通法第2条、保安基準第1条及び細目告示第2条第1項による", "B. 道路運送車両法第2条、保安基準第1条及び細目告示第2条第1項による", "C. 道路運送法第2条、保安基準第2条及び細目告示第2条第1項による", "D. 道路運送車両法第3条、保安基準第1条及び細目告示第2条第2項による"],answer:"B",exp:"第1条（定義等）において、用語の定義は道路運送車両法第2条、保安基準第1条及び細目告示第2条第1項によると規定されている。"},
+  {no:8002,section:"保安基準適用関係",label:"第4条（原動機及び動力伝達装置）",q:"道路運送車両の保安基準適用関係告示（第4条）において、速度抑制装置（保安基準第8条第4項）の適用に関する記述として正しいものはどれか。",choices:["A. 平成15年8月31日以前に製作された自動車には速度抑制装置の備付義務が全て免除される", "B. 平成15年8月31日以前に製作された自動車には速度抑制装置備付期限の経過措置が設けられている", "C. 電気自動車には速度抑制装置の備付義務が常に適用される", "D. すべての自動車に速度抑制装置（OBD規制含む）の適用除外はない"],answer:"B",exp:"第4条では、平成15年8月31日以前に製作された自動車に対して速度抑制装置備付期限の経過措置が設けられている。また電気自動車はOBD規制の適用除外となる場合がある。"},
+  {no:8003,section:"保安基準適用関係",label:"第4条（原動機及び動力伝達装置）",q:"第4条（原動機及び動力伝達装置）において、燃料消費率測定規制の適用除外となる燃料種として正しいものはどれか。",choices:["A. ガソリン車及びLPG車", "B. 軽油（ディーゼル）車のみ", "C. 圧縮水素ガス自動車・電気自動車・燃料電池自動車", "D. 全ての自動車が適用除外となる"],answer:"C",exp:"第4条では圧縮水素ガス自動車（EV含む）・燃料電池自動車（FCEV）等について燃料消費率測定規制の適用除外が定められている。"},
+  {no:8004,section:"保安基準適用関係",label:"第7条（かじ取装置）",q:"第7条（かじ取装置）において、旧基準の適用対象となる製作時期として正しいものはどれか。",choices:["A. 昭和45年9月30日以前に製作された自動車", "B. 昭和48年9月30日以前に製作された自動車", "C. 昭和50年3月31日以前に製作された自動車", "D. 昭和55年12月31日以前に製作された自動車"],answer:"B",exp:"第7条（かじ取装置）では昭和48年9月30日以前に製作された自動車に旧基準を適用する経過措置が設けられている。"},
+  {no:8005,section:"保安基準適用関係",label:"第7条（かじ取装置）",q:"第7条（かじ取装置）において、小型低速軽自動車の特例基準で定められている車両長さとして正しいものはどれか。",choices:["A. 長さ2.00m以下", "B. 長さ2.50m以下", "C. 長さ3.00m以下", "D. 長さ3.50m以下"],answer:"B",exp:"第7条における小型低速軽自動車の特例基準では、長さ2.50m等の寸法要件が定められている。"},
+  {no:8006,section:"保安基準適用関係",label:"第13条（高圧ガスを燃料とする自動車の燃料装置）",q:"第13条（高圧ガスを燃料とする自動車の燃料装置）が対象とする燃料の種類として正しいものはどれか。",choices:["A. 圧縮水素ガス・ガソリン・液化石油ガスを燃料とする自動車", "B. 圧縮水素ガス・圧縮天然ガス・液化天然ガスを燃料とする自動車", "C. 電気・燃料電池・圧縮天然ガスを燃料とする自動車", "D. 液化石油ガス・圧縮天然ガス・軽油を燃料とする自動車"],answer:"B",exp:"第13条は圧縮水素ガス・圧縮天然ガス・液化天然ガスを燃料とする自動車の燃料装置（ガス容器・配管等）に関する経過措置を定めている。"},
+  {no:8007,section:"保安基準適用関係",label:"第13条（高圧ガスを燃料とする自動車の燃料装置）",q:"第13条において引用されている、高圧ガス燃料装置に関連する協定規則の番号として正しいものはどれか。",choices:["A. 協定規則第79号・第80号・第100号・第110号", "B. 協定規則第94号・第95号・第110号・第134号", "C. 協定規則第44号・第129号・第145号・第173号", "D. 協定規則第10号・第14号・第16号・第17号"],answer:"B",exp:"第13条では衝突時の乗員保護基準等として協定規則第94号・第95号・第110号・第134号・第137号等が引用されている。"},
+  {no:8008,section:"保安基準適用関係",label:"第14条（電気装置）",q:"第14条（電気装置）において、旧基準（電気配線被覆・電気端子の保護・蓄電池固定）が適用される製作時期として正しいものはどれか。",choices:["A. 昭和40年12月31日以前に製作された自動車", "B. 昭和46年12月31日以前に製作された自動車", "C. 昭和50年3月31日以前に製作された自動車", "D. 昭和55年9月30日以前に製作された自動車"],answer:"B",exp:"第14条（電気装置）では昭和46年12月31日以前に製作された自動車に旧基準（電気配線被覆、電気端子の保護、蓄電池固定）を適用する経過措置がある。"},
+  {no:8009,section:"保安基準適用関係",label:"第14条（電気装置）",q:"第14条において、サイバーセキュリティシステム及びプログラム等改変システムに関する協定規則として正しいものはどれか。",choices:["A. 協定規則第94号別添", "B. 協定規則第100号", "C. 協定規則別添120", "D. 協定規則第175号"],answer:"C",exp:"第14条では、サイバーセキュリティシステム・プログラム等改変システムについて協定規則別添120の段階的適用（令和4〜8年）が規定されている。"},
+  {no:8010,section:"保安基準適用関係",label:"第19条（座席）",q:"第19条（座席）において、旧基準（座席寸法・間隙・取付耐久性等）が適用される製作時期の区分として正しいものはどれか。",choices:["A. 乗用車：平成15年6月30日以前、大型・貨物：平成19年6月30日以前", "B. 乗用車：平成19年6月30日以前、大型・貨物：平成24年6月30日以前", "C. 乗用車：平成24年6月30日以前、大型・貨物：平成28年6月30日以前", "D. 全車種共通で平成22年3月31日以前"],answer:"B",exp:"第19条では乗用車は平成19年6月30日以前、大型・貨物車は平成24年6月30日以前に製作された自動車に旧基準を適用する経過措置が設けられている。"},
+  {no:8011,section:"保安基準適用関係",label:"第20条（座席ベルト等）",q:"第20条（座席ベルト等）において引用されている、座席ベルトに関する主な協定規則として正しい組み合わせはどれか。",choices:["A. 協定規則第10号・第17号・第80号・第100号", "B. 協定規則第14号・第16号・第173号・第174号", "C. 協定規則第44号・第94号・第95号・第129号", "D. 協定規則第79号・第134号・第145号・第153号"],answer:"B",exp:"第20条（座席ベルト等）では協定規則第14号・第16号・第173号・第174号への各改訂版読替えが令和9年まで段階的に規定されている。"},
+  {no:8012,section:"保安基準適用関係",label:"第20条（座席ベルト等）",q:"第20条において、座席ベルト非装着時警報装置（ELR等）の段階的適用期間として正しいものはどれか。",choices:["A. 平成25年〜平成30年", "B. 平成28年〜令和5年", "C. 令和元年〜令和9年", "D. 令和5年〜令和12年"],answer:"C",exp:"第20条では座席ベルト非装着時警報装置（ELR等）の段階的適用について令和元年〜令和9年の期間が経過措置として設けられている。"},
+  {no:8013,section:"保安基準適用関係",label:"第21条（頭部後傾抑止装置）",q:"第21条（頭部後傾抑止装置）において、旧基準が適用される製作時期として正しいものはどれか。",choices:["A. 平成19年6月30日以前に製作された自動車", "B. 平成22年3月31日以前に製作された自動車", "C. 平成24年6月30日以前に製作された自動車", "D. 平成28年3月31日以前に製作された自動車"],answer:"C",exp:"第21条（頭部後傾抑止装置）では平成24年6月30日以前に製作された自動車に旧基準（追突等による頭部後傾抑止装置の基準）を適用する経過措置が設けられている。"},
+  {no:8014,section:"保安基準適用関係",label:"第21条（頭部後傾抑止装置）",q:"第21条において引用されている協定規則第17号の読替え対象改訂版として正しいものはどれか。",choices:["A. 第8改訂版・第9改訂版", "B. 第10改訂版・第11改訂版補足改訂版", "C. 第12改訂版・第13改訂版", "D. 第6改訂版・第7改訂版"],answer:"B",exp:"第21条では協定規則第17号（座席・頭部後傾抑止装置）について第10改訂版・第11改訂版補足改訂版への段階的読替えが令和4年〜令和11年に定められている。"},
+  {no:8015,section:"保安基準適用関係",label:"第22条（年少者用補助乗車装置等）",q:"第22条（年少者用補助乗車装置等）において、旧基準（チャイルドシート装置・取付具・着脱性）が適用される製作時期として正しいものはどれか。",choices:["A. 昭和62年3月31日以前に製作された自動車", "B. 平成7年3月31日以前に製作された自動車", "C. 平成12年3月31日以前に製作された自動車", "D. 平成15年9月30日以前に製作された自動車"],answer:"B",exp:"第22条（年少者用補助乗車装置等）では平成7年3月31日以前に製作された自動車に旧基準（チャイルドシート装置・取付具・着脱性）を適用する経過措置がある。"},
+  {no:8016,section:"保安基準適用関係",label:"第22条（年少者用補助乗車装置等）",q:"第22条において、協定規則第44号から第129号（ISOFIX等）への移行経過措置の期間として正しいものはどれか。",choices:["A. 平成25年〜平成30年", "B. 平成28年〜令和3年", "C. 令和2年〜令和8年", "D. 令和5年〜令和12年"],answer:"C",exp:"第22条では協定規則第44号から第129号（ISOFIX等）への移行について令和2年〜令和8年の段階的経過措置が規定されている。"},
+  {no:8061,section:"保安基準適用関係",label:"第26条（窓ガラス）",q:"平成元年4月30日以前に製作された自動車の窓ガラスについて、最高速度35キロメートル毎時未満の大型特殊自動車にはどのような適用が定められているか。",choices:["A. すべての窓ガラスが安全ガラスでなければならない", "B. 前面ガラスのみが安全ガラスでなければならない", "C. 窓ガラスに関する規定は一切適用されない", "D. 側面ガラスのみが安全ガラスでなければならない"],answer:"B",exp:"第26条第1項第1号において、最高速度35キロメートル毎時未満の大型特殊自動車にあっては前面ガラスのみが安全ガラスでなければならないとされており、すべての窓ガラスへの適用ではない。"},
+  {no:8062,section:"保安基準適用関係",label:"第26条（窓ガラス）",q:"前面ガラスに乗用自動車の試験領域Aにアンテナをはり付ける場合の要件として正しいものはどれか。",choices:["A. 機器の幅が1.0ミリメートル以下であること", "B. 機器の幅が0.5ミリメートル以下であり、かつ3本以下であること", "C. 機器の幅が0.5ミリメートル以下であること（本数制限なし）", "D. 機器の幅が1.0ミリメートル以下であり、かつ3本以下であること"],answer:"B",exp:"第26条第1項第3号トの(1)において、試験領域Aにはり付ける場合は機器の幅が0.5ミリメートル以下であり、かつ3本以下であることと規定されている。"},
+  {no:8063,section:"保安基準適用関係",label:"第26条（窓ガラス）",q:"前面ガラス及び側面ガラス（運転者席より後方の部分を除く）に装着等が認められるものとして誤っているものはどれか。",choices:["A. 検査標章", "B. 整備命令標章", "C. 車検ステッカー（民間の認証）", "D. 臨時検査合格標章"],answer:"C",exp:"第26条第1項第3号では、前面ガラス及び側面ガラスに装着等が認められるものとして整備命令標章、臨時検査合格標章、検査標章など法令で定めるものが列挙されている。民間の認証ステッカーは規定にないため認められない。"},
+  {no:8064,section:"保安基準適用関係",label:"第27条（騒音防止装置）",q:"昭和51年8月31日以前に製作された普通自動車のうち、車両総重量が3.5トンを超え、かつ原動機の最高出力が150キロワットを超えるものの定常走行騒音の基準として正しいものはどれか。",choices:["A. 74デシベルを超えないこと", "B. 78デシベルを超えないこと", "C. 80デシベルを超えないこと", "D. 86デシベルを超えないこと"],answer:"C",exp:"第27条第1項の表において、車両総重量が3.5トンを超え、原動機の最高出力が150キロワットを超えるものの定常走行騒音は80デシベルを超えない構造とされている。"},
+  {no:8065,section:"保安基準適用関係",label:"第27条（騒音防止装置）",q:"昭和51年8月31日以前に製作された小型自動車（二輪自動車に限る）の加速走行騒音の上限として正しいものはどれか。",choices:["A. 84デシベル", "B. 86デシベル", "C. 89デシベル", "D. 92デシベル"],answer:"B",exp:"第27条第1項の表において、小型自動車（二輪自動車に限る）の加速走行騒音の上限は86デシベルと定められている。"},
+  {no:8066,section:"保安基準適用関係",label:"第27条（騒音防止装置）",q:"昭和52年8月31日以前に製作された専ら乗用の用に供する乗車定員10人以下の普通自動車（二輪を除く）の定常走行騒音の上限として正しいものはどれか。",choices:["A. 70デシベル", "B. 74デシベル", "C. 78デシベル", "D. 80デシベル"],answer:"A",exp:"第27条第2項の表において、専ら乗用の用に供する乗車定員10人以下の普通自動車・小型自動車・軽自動車（二輪除く）の定常走行騒音は70デシベルとされている。"},
+  {no:8067,section:"保安基準適用関係",label:"第28条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）",q:"昭和45年12月31日以前に製作された自動車について適用が免除される細目告示の規定として正しいものはどれか。（昭和45年9月1日以降に指定を受けた型式指定自動車及び認定を受けた型式認定自動車（軽自動車に限る）を除く）",choices:["A. 細目告示第41条第1項及び第2項", "B. 細目告示第41条第3項、第119条第3項及び第197条第3項", "C. 細目告示第41条第4項、第119条第4項及び第197条第4項", "D. 細目告示第41条第1項第5号から第8号まで及び第2項"],answer:"B",exp:"第28条第1項の表において、昭和45年12月31日以前に製作された自動車については細目告示第41条第3項、第119条第3項及び第197条第3項の規定が適用されないとされている。"},
+  {no:8068,section:"保安基準適用関係",label:"第28条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）",q:"軽油を燃料とする大型特殊自動車又は小型特殊自動車であって定格出力が19kW以上37kW未満の原動機を備えたものは、何年8月31日以前に製作された場合に一部規定の適用が免除されるか。",choices:["A. 平成19年8月31日", "B. 平成20年8月31日", "C. 平成21年8月31日", "D. 平成22年8月31日"],answer:"B",exp:"第28条第1項の表第8号イにおいて、定格出力が19kW以上37kW未満の原動機を備えた自動車は平成20年8月31日以前に製作されたものが対象とされている。"},
+  {no:8069,section:"保安基準適用関係",label:"第29条（前照灯等）",q:"平成17年12月31日以前に製作された自動車の走行用前照灯について、すべてを同時に照射したときに確認できる距離（通常の場合）として正しいものはどれか。",choices:["A. 夜間前方50メートルの距離にある交通上の障害物", "B. 夜間前方75メートルの距離にある交通上の障害物", "C. 夜間前方100メートルの距離にある交通上の障害物", "D. 夜間前方150メートルの距離にある交通上の障害物"],answer:"C",exp:"第29条第1項第1号イにおいて、走行用前照灯はすべてを同時に照射したときに夜間前方100メートルの距離にある交通上の障害物を確認できる性能を有することが必要とされている。"},
+  {no:8070,section:"保安基準適用関係",label:"第29条（前照灯等）",q:"走行用前照灯の最高光度の合計の上限として正しいものはどれか。",choices:["A. 10万カンデラ", "B. 15万カンデラ", "C. 20万カンデラ", "D. 22万5000カンデラ"],answer:"D",exp:"第29条第1項第1号イにおいて、走行用前照灯の最高光度の合計は22万5000カンデラを超えないことが規定されている。"},
+  {no:8071,section:"保安基準適用関係",label:"第29条（前照灯等）",q:"すれ違い用前照灯（通常の自動車）の照明部の上縁の取付け高さの上限として正しいものはどれか。",choices:["A. 地上1.0メートル以下", "B. 地上1.2メートル以下", "C. 地上1.5メートル以下", "D. 地上2.1メートル以下"],answer:"B",exp:"第29条第1項第4号ロにおいて、二輪自動車等以外の自動車に備えるすれ違い用前照灯の照明部の上縁の高さは地上1.2メートル以下とされている。"},
+  {no:8072,section:"保安基準適用関係",label:"第30条（前部霧灯）",q:"平成17年12月31日以前に製作された自動車の前部霧灯について、同時に点灯できる個数の上限として正しいものはどれか。",choices:["A. 同時に1個まで", "B. 同時に2個まで", "C. 同時に3個以上点灯しないこと", "D. 個数制限なし"],answer:"C",exp:"第30条第1項第3号イにおいて、前部霧灯は同時に3個以上点灯しないように取り付けられていることが規定されている。"},
+  {no:8073,section:"保安基準適用関係",label:"第30条（前部霧灯）",q:"前部霧灯（二輪等以外）の照明部の下縁の取付け高さの下限として正しいものはどれか。",choices:["A. 地上0.15メートル以上", "B. 地上0.2メートル以上", "C. 地上0.25メートル以上", "D. 地上0.35メートル以上"],answer:"C",exp:"第30条第1項第3号ロにおいて、前部霧灯の照明部の下縁の高さは地上0.25メートル以上となるように取り付けられていることが規定されている。"},
+  {no:8074,section:"保安基準適用関係",label:"第31条の2（低速走行時側方照射灯）",q:"第31条の2第2項において、令和8年9月1日以降に製作された自動車であって旧規定の適用が認められる型式指定自動車の要件として正しいものはどれか。",choices:["A. 令和8年8月31日以前に指定を受けた型式指定自動車", "B. 令和7年8月31日以前に指定を受けた型式指定自動車", "C. 令和9年8月31日以前に指定を受けた型式指定自動車", "D. 令和10年8月31日以前に指定を受けた型式指定自動車"],answer:"A",exp:"第31条の2第2項第2号イにおいて、令和8年9月1日以降に製作された自動車であって旧規定が認められる型式指定自動車は令和8年8月31日以前に指定を受けたものとされている。"},
+  {no:8075,section:"保安基準適用関係",label:"第31条の2（低速走行時側方照射灯）",q:"貨物の運送の用に供する自動車であって車両総重量3.5トンを超えるものに係る旧規定の適用（第3項）の期限として正しいものはどれか。",choices:["A. 令和9年8月31日以前に製作された自動車", "B. 令和10年8月31日以前に製作された自動車", "C. 令和11年8月31日以前に製作された自動車", "D. 令和12年8月31日以前に製作された自動車"],answer:"B",exp:"第31条の2第3項第3号において、貨物の運送の用に供する自動車であって車両総重量3.5トンを超えるものは令和10年8月31日以前に製作されたものが旧規定に適合するものであればよいとされている。"},
+  {no:8076,section:"保安基準適用関係",label:"第32条（車幅灯）",q:"平成17年12月31日以前に製作された自動車の車幅灯について、夜間の前方何メートルの距離から点灯を確認できることが必要か。",choices:["A. 150メートル", "B. 200メートル", "C. 300メートル", "D. 500メートル"],answer:"C",exp:"第32条第1項第2号イにおいて、車幅灯は夜間にその前方300メートルの距離から点灯を確認できるものであることが規定されている。"},
+  {no:8077,section:"保安基準適用関係",label:"第32条（車幅灯）",q:"車幅灯（二輪等以外）の照明部の上縁の取付け高さの上限として正しいものはどれか。",choices:["A. 地上1.5メートル以下", "B. 地上1.8メートル以下", "C. 地上2.0メートル以下", "D. 地上2.1メートル以下"],answer:"D",exp:"第32条第1項第3号イにおいて、二輪自動車等以外の自動車に備える車幅灯の照明部の上縁の高さは地上2.1メートル以下とされている。"},
+  {no:8078,section:"保安基準適用関係",label:"第32条（車幅灯）",q:"車幅灯の照明部の最外縁の取付け位置について、被牽引自動車の場合の上限として正しいものはどれか。",choices:["A. 自動車の最外側から150ミリメートル以内", "B. 自動車の最外側から200ミリメートル以内", "C. 自動車の最外側から300ミリメートル以内", "D. 自動車の最外側から400ミリメートル以内"],answer:"A",exp:"第32条第1項第3号ハにおいて、被牽引自動車の車幅灯の照明部の最外縁は自動車の最外側から150ミリメートル以内とされている（一般の自動車は400ミリメートル以内）。"},
+  {no:8079,section:"保安基準適用関係",label:"第33条の2（昼間走行灯）",q:"第33条の2第2項において旧規定（令和4年改正前）の適用が認められる自動車のうち、令和6年9月1日から令和9年8月31日までに製作された型式指定自動車の要件として正しいものはどれか。",choices:["A. 令和6年7月31日以前に指定を受けた型式指定自動車", "B. 令和6年8月31日以前に指定を受けた型式指定自動車", "C. 令和7年8月31日以前に指定を受けた型式指定自動車", "D. 令和8年8月31日以前に指定を受けた型式指定自動車"],answer:"B",exp:"第33条の2第2項第2号イにおいて、令和6年9月1日から令和9年8月31日までに製作された型式指定自動車であって旧規定に適合するものとして認められるのは令和6年8月31日以前に指定を受けたものとされている。"},
+  {no:8080,section:"保安基準適用関係",label:"第33条の2（昼間走行灯）",q:"第33条の2第2項第3号における出荷検査証に係る自動車の特例について、出荷検査証の発行後何月を経過しない間に新規検査等を受けようとするものが対象か。",choices:["A. 6月", "B. 9月", "C. 11月", "D. 12月"],answer:"C",exp:"第33条の2第2項第3号において、令和9年8月31日以前に発行された出荷検査証に係る自動車であって当該出荷検査証の発行後11月を経過しない間に新規検査又は予備検査を受けようとし、又は受けたものが対象とされている。"},
+  {no:8081,section:"保安基準適用関係",label:"第35条（側方灯及び側方反射器）",q:"長さ9メートル以上の普通自動車（専ら乗用の用に供するものを除く）に側方灯又は側方反射器を備えなければならない部位として正しいものはどれか。",choices:["A. 前部のみ", "B. 前部及び後部", "C. 前部、中央部及び後部", "D. 後部のみ"],answer:"C",exp:"第35条第1項第1号イにおいて、長さ9メートル以上の普通自動車は前部、中央部及び後部の両側面に側方灯又は側方反射器を備えなければならないとされている。"},
+  {no:8082,section:"保安基準適用関係",label:"第35条（側方灯及び側方反射器）",q:"側方灯の点灯確認距離として正しいものはどれか。",choices:["A. 夜間側方50メートルの距離から点灯を確認できること", "B. 夜間側方100メートルの距離から点灯を確認できること", "C. 夜間側方150メートルの距離から点灯を確認できること", "D. 夜間側方300メートルの距離から点灯を確認できること"],answer:"C",exp:"第35条第1項第2号イにおいて、側方灯は夜間側方150メートルの距離から点灯を確認できるものであることが規定されている。"},
+  {no:8083,section:"保安基準適用関係",label:"第35条（側方灯及び側方反射器）",q:"側方反射器の反射部の形状として定められているものはどれか。",choices:["A. 三角形以外であること", "B. 文字及び三角形以外であること", "C. 円形のみであること", "D. 長方形のみであること"],answer:"B",exp:"第35条第1項第5号ロにおいて、側方反射器の反射部は文字及び三角形以外の形であることと規定されている。"},
+  {no:8084,section:"保安基準適用関係",label:"第36条（番号灯）",q:"昭和35年3月31日以前に製作された自動車の番号灯について、夜間の確認距離として正しいものはどれか。",choices:["A. 後方10メートルの距離から番号標の数字等を確認できること", "B. 後方20メートルの距離から番号標の数字等を確認できること", "C. 後方30メートルの距離から番号標の数字等を確認できること", "D. 後方50メートルの距離から番号標の数字等を確認できること"],answer:"B",exp:"第36条第1項第1号において、番号灯は夜間後方20メートルの距離から自動車登録番号標等の数字等の表示を確認できる灯光の色が白色のものとされている。"},
+  {no:8085,section:"保安基準適用関係",label:"第36条（番号灯）",q:"第36条第10項において旧規定（令和2年改正前）の適用が認められる二輪自動車の期限として正しいものはどれか。",choices:["A. 令和3年8月31日以前に製作された二輪自動車", "B. 令和5年8月31日以前に製作された二輪自動車", "C. 令和7年8月31日以前に製作された二輪自動車", "D. 令和8年8月31日以前に製作された二輪自動車"],answer:"B",exp:"第36条第10項第1号において、令和5年8月31日以前に製作された二輪自動車については改正前の細目告示に適合するものであればよいとされている。"},
+  {no:8121,section:"保安基準適用関係",label:"第37条（尾灯）",q:"平成17年12月31日以前に製作された自動車について、尾灯の視認性に関する基準として正しいものはどれか。",choices:["A. 尾灯は、夜間にその後方200メートルの距離から点灯を確認できるものであること。", "B. 尾灯は、夜間にその後方300メートルの距離から点灯を確認できるものであること。", "C. 尾灯は、昼間にその後方300メートルの距離から点灯を確認できるものであること。", "D. 尾灯は、夜間にその後方150メートルの距離から点灯を確認できるものであること。"],answer:"B",exp:"第37条第1項第2号イの規定により、尾灯は夜間にその後方300メートルの距離から点灯を確認できるものでなければならない。なお、昭和48年11月30日以前に製作された自動車については150メートルに読み替えられる。"},
+  {no:8122,section:"保安基準適用関係",label:"第37条（尾灯）",q:"平成17年12月31日以前に製作された自動車について、二輪自動車、側車付二輪自動車並びにカタピラ及びそりを有する軽自動車以外の自動車に備える尾灯の取付高さとして正しいものはどれか。",choices:["A. 照明部の上縁の高さが地上2.5メートル以下、下縁の高さが地上0.35メートル以上", "B. 照明部の上縁の高さが地上2.1メートル以下、下縁の高さが地上0.35メートル以上", "C. 照明部の上縁の高さが地上2.1メートル以下、下縁の高さが地上0.25メートル以上", "D. 照明部の上縁の高さが地上2.0メートル以下、下縁の高さが地上0.35メートル以上"],answer:"B",exp:"第37条第1項第3号ロの規定により、照明部の上縁の高さが地上2.1メートル以下、下縁の高さが地上0.35メートル以上（セミトレーラでその自動車の構造上取り付けることができないものは最高の高さ）となるように取り付けられなければならない。"},
+  {no:8123,section:"保安基準適用関係",label:"第37条（尾灯）",q:"平成17年12月31日以前に製作された自動車について、後面の両側に備える尾灯の最外縁に関する取付基準として正しいものはどれか。",choices:["A. 最外側にあるものの照明部の最外縁は、自動車の最外側から300ミリメートル以内", "B. 最外側にあるものの照明部の最外縁は、自動車の最外側から500ミリメートル以内", "C. 最外側にあるものの照明部の最外縁は、自動車の最外側から400ミリメートル以内", "D. 最外側にあるものの照明部の最外縁は、自動車の最外側から450ミリメートル以内"],answer:"C",exp:"第37条第1項第3号ニの規定により、後面の両側に備える尾灯の最外側にあるものの照明部の最外縁は、自動車の最外側から400ミリメートル以内となるように取り付けられなければならない。"},
+  {no:8124,section:"保安基準適用関係",label:"第38条（後部霧灯）",q:"平成17年12月31日以前に製作された自動車について、後部霧灯の数の基準として正しいものはどれか。",choices:["A. 後部霧灯の数は、1個であること。", "B. 後部霧灯の数は、2個以下であること。", "C. 後部霧灯の数は、3個以下であること。", "D. 後部霧灯の数は、4個以下であること。"],answer:"B",exp:"第38条第1項第3号イの規定により、後部霧灯の数は2個以下でなければならない。"},
+  {no:8125,section:"保安基準適用関係",label:"第38条（後部霧灯）",q:"平成17年12月31日以前に製作された自動車について、後部霧灯の制動灯との離隔距離に関する基準として正しいものはどれか。",choices:["A. 後部霧灯の照明部は、制動灯の照明部から50ミリメートル以上離れていること。", "B. 後部霧灯の照明部は、制動灯の照明部から150ミリメートル以上離れていること。", "C. 後部霧灯の照明部は、制動灯の照明部から100ミリメートル以上離れていること。", "D. 後部霧灯の照明部は、制動灯の照明部から200ミリメートル以上離れていること。"],answer:"C",exp:"第38条第1項第3号ヘの規定により、後部霧灯の照明部は制動灯の照明部から100ミリメートル以上離れていなければならない。"},
+  {no:8126,section:"保安基準適用関係",label:"第38条（後部霧灯）",q:"平成17年12月31日以前に製作された自動車について、後部霧灯を1個備える場合の取付位置に関する基準として正しいものはどれか。",choices:["A. 当該後部霧灯の中心が車両中心面上又はこれより左側の位置となるように取り付けられていること。", "B. 当該後部霧灯の中心が車両中心面上に取り付けられていること。", "C. 当該後部霧灯の中心が車両中心面上又はこれより右側の位置となるように取り付けられていること。", "D. 当該後部霧灯の中心が車両右端から400ミリメートル以内に取り付けられていること。"],answer:"C",exp:"第38条第1項第3号チの規定により、後部霧灯を1個備える場合にあっては、当該後部霧灯の中心が車両中心面上又はこれより右側の位置となるように取り付けられていなければならない。"},
+  {no:8127,section:"保安基準適用関係",label:"第41条（後部反射器）",q:"平成17年12月31日以前に製作された自動車について、後部反射器の視認性に関する基準として正しいものはどれか。",choices:["A. 後部反射器は、夜間にその後方100メートルの距離から走行用前照灯で照射した場合にその反射光を照射位置から確認できるものであること。", "B. 後部反射器は、夜間にその後方150メートルの距離から走行用前照灯で照射した場合にその反射光を照射位置から確認できるものであること。", "C. 後部反射器は、夜間にその後方200メートルの距離から走行用前照灯で照射した場合にその反射光を照射位置から確認できるものであること。", "D. 後部反射器は、昼間にその後方150メートルの距離から確認できるものであること。"],answer:"B",exp:"第41条第1項第1号ハの規定により、後部反射器は夜間にその後方150メートルの距離から走行用前照灯で照射した場合にその反射光を照射位置から確認できるものでなければならない。なお、昭和48年11月30日以前に製作された自動車については100メートルに読み替えられる。"},
+  {no:8128,section:"保安基準適用関係",label:"第41条（後部反射器）",q:"平成17年12月31日以前に製作された被牽引自動車に備える後部反射器の形状に関する基準として正しいものはどれか。",choices:["A. 反射部は、文字及び三角形以外の形であること。", "B. 反射部は、正立正三角形又は帯状部の幅が一辺の5分の1以上の中空の正立正三角形であって、一辺が150ミリメートル以上200ミリメートル以下のものであること。", "C. 反射部は、円形又は正方形であること。", "D. 反射部は、一辺が100ミリメートル以上150ミリメートル以下の正立正三角形であること。"],answer:"B",exp:"第41条第1項第1号ロの規定により、被牽引自動車に備える後部反射器の反射部は、正立正三角形又は帯状部の幅が一辺の5分の1以上の中空の正立正三角形であって、一辺が150ミリメートル以上200ミリメートル以下のものでなければならない。"},
+  {no:8129,section:"保安基準適用関係",label:"第42条（制動灯）",q:"平成17年12月31日以前に製作された自動車について、制動灯の視認性に関する基準として正しいものはどれか。",choices:["A. 制動灯は、昼間にその後方50メートルの距離から点灯を確認できるものであること。", "B. 制動灯は、夜間にその後方100メートルの距離から点灯を確認できるものであること。", "C. 制動灯は、昼間にその後方100メートルの距離から点灯を確認できるものであること。", "D. 制動灯は、昼間にその後方200メートルの距離から点灯を確認できるものであること。"],answer:"C",exp:"第42条第1項第2号イの規定により、制動灯は昼間にその後方100メートルの距離から点灯を確認できるものでなければならない。なお、昭和48年11月30日以前に製作された自動車については30メートルに読み替えられる。"},
+  {no:8130,section:"保安基準適用関係",label:"第42条（制動灯）",q:"平成17年12月31日以前に製作された自動車について、尾灯と兼用の制動灯の光度に関する基準として正しいものはどれか。",choices:["A. 同時に点灯したときの光度が尾灯のみを点灯したときの光度の3倍以上となる構造であること。", "B. 同時に点灯したときの光度が尾灯のみを点灯したときの光度の5倍以上となる構造であること。", "C. 同時に点灯したときの光度が尾灯のみを点灯したときの光度の2倍以上となる構造であること。", "D. 同時に点灯したときの光度が尾灯のみを点灯したときの光度の10倍以上となる構造であること。"],answer:"B",exp:"第42条第1項第2号ロの規定により、尾灯と兼用の制動灯は、同時に点灯したときの光度が尾灯のみを点灯したときの光度の5倍以上となる構造でなければならない。なお、昭和35年3月31日以前に製作された自動車については2倍以上、昭和35年4月1日から昭和48年11月30日までに製作された自動車については3倍以上に読み替えられる。"},
+  {no:8131,section:"保安基準適用関係",label:"第42条（制動灯）",q:"平成17年12月31日以前に製作された自動車に備える制動灯の灯光の色として正しいものはどれか。",choices:["A. 橙色であること。", "B. 黄色であること。", "C. 赤色であること。", "D. 赤色又は橙色であること。"],answer:"C",exp:"第42条第1項第2号ハの規定により、制動灯の灯光の色は赤色でなければならない。なお、昭和48年11月30日以前に製作された自動車については赤色又は橙色とすることができる。"},
+  {no:8132,section:"保安基準適用関係",label:"第43条（補助制動灯）",q:"平成17年12月31日以前に製作された自動車について、補助制動灯の個数に関する基準として正しいものはどれか。",choices:["A. 補助制動灯の数は、2個以下であること。", "B. 補助制動灯の数は、1個であること（ただし書の場合を除く）。", "C. 補助制動灯の数は、3個以下であること。", "D. 補助制動灯の数は、左右1個ずつであること。"],answer:"B",exp:"第43条第1項第3号イの規定により、補助制動灯の数は1個でなければならない。ただし、自動車の構造上照明部の中心を車両中心面上に取り付けることができない場合に、車両中心面の両側に1個ずつ取り付ける場合を除く。"},
+  {no:8133,section:"保安基準適用関係",label:"第43条（補助制動灯）",q:"平成17年12月31日以前に製作された自動車について、補助制動灯の照明部の下縁の取付高さに関する基準として正しいものはどれか。",choices:["A. その照明部の下縁の高さが地上0.75メートル以上又は後面ガラスの最下端の下方0.15メートルより上方であって制動灯の照明部の上縁を含む水平面以上", "B. その照明部の下縁の高さが地上1.0メートル以上又は後面ガラスの最下端の下方0.15メートルより上方であって制動灯の照明部の上縁を含む水平面以上", "C. その照明部の下縁の高さが地上0.85メートル以上又は後面ガラスの最下端の下方0.15メートルより上方であって制動灯の照明部の上縁を含む水平面以上", "D. その照明部の下縁の高さが地上0.60メートル以上又は後面ガラスの最下端の下方0.15メートルより上方であって制動灯の照明部の上縁を含む水平面以上"],answer:"C",exp:"第43条第1項第3号ロの規定により、補助制動灯は、その照明部の下縁の高さが地上0.85メートル以上又は後面ガラスの最下端の下方0.15メートルより上方であって、制動灯の照明部の上縁を含む水平面以上となるように取り付けられていなければならない。"},
+  {no:8134,section:"保安基準適用関係",label:"第45条（方向指示器）",q:"平成17年12月31日以前に製作された自動車について、方向指示器の視認距離に関する基準として正しいものはどれか（前面又は後面に備えるものについて）。",choices:["A. 方向の指示を表示する方向50メートルの距離から昼間において点灯を確認できるものであること。", "B. 方向の指示を表示する方向100メートルの距離から昼間において点灯を確認できるものであること。", "C. 方向の指示を表示する方向150メートルの距離から昼間において点灯を確認できるものであること。", "D. 方向の指示を表示する方向200メートルの距離から昼間において点灯を確認できるものであること。"],answer:"B",exp:"第45条第1項第2号イの規定により、方向指示器（前面又は後面に備えるもの）は方向の指示を表示する方向100メートルの距離から昼間において点灯を確認できるものでなければならない。なお、自動車の両側面に備える方向指示器については30メートルの距離からでよい。"},
+  {no:8135,section:"保安基準適用関係",label:"第45条（方向指示器）",q:"平成17年12月31日以前に製作された自動車について、方向指示器の灯光の色として正しいものはどれか。",choices:["A. 白色であること。", "B. 赤色であること。", "C. 橙色であること。", "D. 黄色であること。"],answer:"C",exp:"第45条第1項第2号ロの規定により、方向指示器の灯光の色は橙色でなければならない。"},
+  {no:8136,section:"保安基準適用関係",label:"第45条（方向指示器）",q:"平成17年12月31日以前に製作された自動車について、方向指示器を備えなければならない位置について正しいものはどれか。",choices:["A. 自動車の車両中心線上の前方及び後方20メートルの距離から指示部が見通すことのできる位置に少なくとも左右1個ずつ備えること。", "B. 自動車の車両中心線上の前方及び後方30メートルの距離から指示部が見通すことのできる位置に少なくとも左右1個ずつ備えること。", "C. 自動車の車両中心線上の前方及び後方50メートルの距離から指示部が見通すことのできる位置に少なくとも左右1個ずつ備えること。", "D. 自動車の車両中心線上の前方及び後方100メートルの距離から指示部が見通すことのできる位置に少なくとも左右1個ずつ備えること。"],answer:"B",exp:"第45条第1項第1号イの規定により、自動車には方向指示器を車両中心線上の前方及び後方30メートルの距離から指示部が見通すことのできる位置に少なくとも左右1個ずつ備えなければならない。"},
+  {no:8137,section:"保安基準適用関係",label:"第47条の2（緊急制動表示灯）",q:"第47条の2に規定する緊急制動表示灯について、協定規則第48号第5改訂版が適用される型式指定期間として正しいものはどれか。",choices:["A. 平成21年7月22日から平成23年2月6日までに型式の指定を行う場合", "B. 平成21年10月24日から平成24年10月23日までに型式の指定を行う場合", "C. 平成24年11月18日から平成29年11月17日までに型式の指定を行う場合", "D. 平成29年11月18日以降に型式の指定を行う場合"],answer:"C",exp:"第47条の2第1項の規定により、保安基準第41条の4第4項及び細目告示第61条の2第2項ただし書の規定が適用される自動車のうち平成24年11月18日から平成29年11月17日までに型式の指定を行う場合については、協定規則第48号第5改訂版の規定に適合するものであればよい。"},
+  {no:8138,section:"保安基準適用関係",label:"第47条の3（後面衝突警告表示灯）",q:"第47条の3第2項に規定する二輪自動車について、協定規則第53号の読替えが適用される製作期間として正しいものはどれか。",choices:["A. 令和8年8月31日以前に製作された二輪自動車", "B. 令和10年8月31日以前に製作された二輪自動車", "C. 令和5年8月31日以前に製作された二輪自動車", "D. 令和12年8月31日以前に製作された二輪自動車"],answer:"B",exp:"第47条の3第2項の規定により、令和10年8月31日以前に製作された二輪自動車については、細目告示第61条の3第2項の規定中「協定規則第53号」とあるのは、「協定規則第53号第3改訂版補足第4改訂版」と読み替えることができる。"},
+  {no:8139,section:"保安基準適用関係",label:"第47条（非常点滅表示灯）",q:"平成17年12月31日以前に製作された自動車に非常点滅表示灯の備付けが不要とされる車両として正しいものはどれか。",choices:["A. 最高速度40キロメートル毎時未満の自動車", "B. 最高速度30キロメートル毎時未満の自動車", "C. 最高速度50キロメートル毎時未満の自動車", "D. 最高速度60キロメートル毎時未満の自動車"],answer:"A",exp:"第47条第1項第1号の規定により、二輪自動車、側車付二輪自動車、カタピラ及びそりを有する軽自動車、大型特殊自動車、幅0.8メートル以下の自動車並びに最高速度40キロメートル毎時未満の自動車並びにこれらにより牽引される被牽引自動車にあっては、非常点滅表示灯の備付けは不要とされている。"},
+  {no:8140,section:"保安基準適用関係",label:"第47条（非常点滅表示灯）",q:"昭和48年11月30日以前に製作された自動車の非常点滅表示灯の点滅周期として認められる基準として正しいものはどれか。",choices:["A. 毎分60回以上120回以下の一定の周期で点滅し、又は光度が増減するものであること。", "B. 毎分50回以上120回以下の一定の周期で点滅し、又は光度が増減するものであること。", "C. 毎分40回以上100回以下の一定の周期で点滅し、又は光度が増減するものであること。", "D. 毎分50回以上150回以下の一定の周期で点滅し、又は光度が増減するものであること。"],answer:"B",exp:"第47条第4項第2号の規定により、昭和48年11月30日以前に製作された自動車の非常点滅表示灯は毎分50回以上120回以下の一定の周期で点滅し、又は光度が増減するものであることとされている。"},
+  {no:8141,section:"保安基準適用関係",label:"第48条（その他の灯火等の制限）",q:"平成17年12月31日以前に製作された自動車について、後方を照射し若しくは後方に表示する灯光の色が橙色である灯火で照明部の上縁が地上何メートル以下のものを備えてはならないか（例外灯火を除く）。",choices:["A. 地上2.0メートル以下のもの", "B. 地上2.5メートル以下のもの", "C. 地上3.0メートル以下のもの", "D. 地上1.5メートル以下のもの"],answer:"B",exp:"第48条第1項第1号の規定により、自動車には、例外として認められた灯火を除き、後方を照射し若しくは後方に表示する灯光の色が橙色である灯火で照明部の上縁が地上2.5メートル以下のもの、又は灯光の色が赤色である灯火を備えてはならない。"},
+  {no:8142,section:"保安基準適用関係",label:"第48条（その他の灯火等の制限）",q:"平成17年12月31日以前に製作された自動車について、灯火の光度制限に関する基準として正しいものはどれか（所定の灯火を除く）。",choices:["A. 光度が200カンデラ以下のものでなければならない。", "B. 光度が300カンデラ以下のものでなければならない。", "C. 光度が400カンデラ以下のものでなければならない。", "D. 光度が500カンデラ以下のものでなければならない。"],answer:"B",exp:"第48条第1項第9号の規定により、自動車に備える灯火は、規定された灯火（前照灯、制動灯等）を除き、光度が300カンデラ以下のものでなければならない。"},
+  {no:8143,section:"保安基準適用関係",label:"第48条（その他の灯火等の制限）",q:"平成17年12月31日以前に製作された自動車について、後方を照射し又は後方に表示する灯光の色が白色である灯火を備えることが認められるものとして正しいものはどれか。",choices:["A. 尾灯", "B. 後退灯", "C. 制動灯", "D. 後部霧灯"],answer:"B",exp:"第48条第1項第2号の規定により、後方を照射し又は後方に表示する灯光の色が白色である灯火として備えることが認められるものは、番号灯、後退灯、室内照明灯、一般乗合旅客自動車運送事業の用に供する自動車の方向幕灯、一般乗用旅客自動車運送事業の用に供する自動車の社名表示灯及び走行中に使用しない灯火である。"},
+  {no:8144,section:"保安基準適用関係",label:"第51条の2（車線逸脱警報装置）",q:"車線逸脱警報装置（保安基準第43条の6）が適用除外となる製作時期として正しいものはどれか。",choices:["A. 平成25年7月31日以前に製作された自動車", "B. 平成27年7月31日以前に製作された自動車", "C. 平成30年7月31日以前に製作された自動車", "D. 令和元年7月31日以前に製作された自動車"],answer:"B",exp:"第51条の2第1項の規定により、平成27年7月31日以前に製作された自動車については、保安基準第43条の6の規定並びに細目告示第67条の2、第145条の2及び第223条の2の規定は適用しない。"},
+  {no:8145,section:"保安基準適用関係",label:"第51条の2（車線逸脱警報装置）",q:"車線逸脱警報装置に関して、指定自動車等以外の自動車に対する協定規則第130号の読替えとして認められる内容として正しいものはどれか。",choices:["A. 走行中に車線から逸脱しようとしている又は逸脱していることを検知した場合に自動的に制動する装置であること", "B. 走行中に車線から逸脱しようとしている又は逸脱していることを検知した場合に運転者に警報するものであり、解除装置を備える場合は作動しない状態となったときに運転者に視覚的に警報するものであること", "C. 走行中に車線から逸脱しようとしている又は逸脱していることを検知した場合に自動的に操舵するものであること", "D. 走行中に車線から逸脱した場合のみに運転者に警報するものであること"],answer:"B",exp:"第51条の2第9項の規定により、指定自動車等以外の自動車については、当分の間、細目告示第145条の2第1項中の協定規則第130号の規定を、走行中に車線から逸脱しようとしている又は逸脱していることを検知した場合に運転者に警報するものであり、解除装置を備える場合はその旨を運転者席の運転者に的確かつ視覚的に警報するものであること、と読み替えることができる。"},
+  {no:8146,section:"保安基準適用関係",label:"第51条の3（車両接近通報装置）",q:"車両接近通報装置（保安基準第43条の7）が適用除外となる製作時期として正しいものはどれか。",choices:["A. 平成28年3月7日以前に製作された自動車", "B. 平成30年3月7日以前に製作された自動車", "C. 令和元年3月7日以前に製作された自動車", "D. 令和2年3月7日以前に製作された自動車"],answer:"B",exp:"第51条の3第1項第1号の規定により、平成30年3月7日以前に製作された自動車については、保安基準第43条の7の規定は適用しない。"},
+  {no:8147,section:"保安基準適用関係",label:"第51条の3（車両接近通報装置）",q:"第51条の3第5項に規定する協定規則第138号の読替えが適用される製作期間として正しいものはどれか。",choices:["A. 令和6年8月31日以前に製作された自動車", "B. 令和8年8月31日以前に製作された自動車", "C. 令和10年8月31日以前に製作された自動車", "D. 令和5年8月31日以前に製作された自動車"],answer:"B",exp:"第51条の3第5項の規定により、令和8年8月31日以前に製作された自動車については、細目告示第67条の3の規定中「協定規則第138号」とあるのは「協定規則第138号改訂版補足第3改訂版」と読み替えることができる。"},
+  {no:8148,section:"保安基準適用関係",label:"第52条（後写鏡等）",q:"平成18年12月31日以前に製作された自動車について、後写鏡の視野に関する基準として正しいものはどれか（普通の自動車の場合）。",choices:["A. 運転者が運転者席において、自動車の左右の外側線上後方30メートルまでの間にある車両の交通状況を確認できるものであること。", "B. 運転者が運転者席において、自動車の左右の外側線上後方50メートルまでの間にある車両の交通状況を確認できるものであること。", "C. 運転者が運転者席において、自動車の左右の外側線上後方100メートルまでの間にある車両の交通状況を確認できるものであること。", "D. 運転者が運転者席において、自動車の左右の外側線上後方20メートルまでの間にある車両の交通状況を確認できるものであること。"],answer:"B",exp:"第52条第1項第1号ニの規定により、運転者が運転者席において自動車の左右の外側線上後方50メートルまでの間にある車両の交通状況及び自動車の左外側線付近の交通状況を確認できるものでなければならない。"},
+  {no:8149,section:"保安基準適用関係",label:"第52条（後写鏡等）",q:"平成18年12月31日以前に製作されたハンドルバー方式の二輪自動車について、後写鏡の反射面の取付位置に関する基準として正しいものはどれか。",choices:["A. 後写鏡の反射面の中心が、かじ取装置の中心を通り進行方向に平行な鉛直面から180ミリメートル以上外側となるように取り付けられていること。", "B. 後写鏡の反射面の中心が、かじ取装置の中心を通り進行方向に平行な鉛直面から280ミリメートル以上外側となるように取り付けられていること。", "C. 後写鏡の反射面の中心が、かじ取装置の中心を通り進行方向に平行な鉛直面から380ミリメートル以上外側となるように取り付けられていること。", "D. 後写鏡の反射面の中心が、かじ取装置の中心を通り進行方向に平行な鉛直面から200ミリメートル以上外側となるように取り付けられていること。"],answer:"B",exp:"第52条第1項第3号イの規定により、後写鏡の反射面の中心が、かじ取装置の中心を通り進行方向に平行な鉛直面から280ミリメートル以上外側となるように取り付けられていなければならない。"},
+  {no:8150,section:"保安基準適用関係",label:"第52条（後写鏡等）",q:"平成18年12月31日以前に製作された普通自動車（乗車定員11人以上又は車両総重量8トン以上若しくは最大積載量5トン以上）に備えなければならない装置として正しいものはどれか。",choices:["A. 当該自動車の前面から0.5メートルの距離にある鉛直面及び当該自動車の左側面から0.3メートルの距離にある鉛直面と当該自動車との間にある高さ1メートルの障害物を確認できる鏡その他の装置", "B. 当該自動車の前面から0.3メートルの距離にある鉛直面及び当該自動車の左側面から0.3メートルの距離にある鉛直面と当該自動車との間にある高さ1メートルの障害物を確認できる鏡その他の装置", "C. 当該自動車の前面から0.3メートルの距離にある鉛直面及び当該自動車の左側面から0.5メートルの距離にある鉛直面と当該自動車との間にある高さ1メートルの障害物を確認できる鏡その他の装置", "D. 当該自動車の前面から1.0メートルの距離にある鉛直面及び当該自動車の左側面から0.3メートルの距離にある鉛直面と当該自動車との間にある高さ1メートルの障害物を確認できる鏡その他の装置"],answer:"B",exp:"第52条第1項第4号の表イの規定により、乗車定員11人以上の自動車及び車両総重量が8トン以上又は最大積載量が5トン以上の普通自動車には、当該自動車の前面から0.3メートルの距離にある鉛直面及び当該自動車の左側面から0.3メートルの距離にある鉛直面と当該自動車との間にある高さ1メートルの障害物を確認できる鏡その他の装置を備えなければならない。"},
+  {no:8181,section:"保安基準適用関係",label:"第54条の2（事故情報計測・記録装置）",q:"事故情報計測・記録装置（第54条の2）の適用が除外される対象となる自動車の車両区分として正しいものはどれか。",choices:["A. 専ら乗用の用に供する自動車のうち乗車定員10人未満のもの及び貨物の運送の用に供する自動車のうち車両総重量が3.5トン以下のもの", "B. 専ら乗用の用に供する自動車のうち乗車定員10人以上のもの及び貨物の運送の用に供する自動車のうち車両総重量が3.5トンを超えるもの", "C. 専ら乗用の用に供する自動車のうち乗車定員11人未満のもの及び貨物の運送の用に供する自動車のうち車両総重量が5トン以下のもの", "D. 専ら乗用の用に供する自動車のうち乗車定員8人未満のもの及び貨物の運送の用に供する自動車のうち車両総重量が3トン以下のもの"],answer:"A",exp:"第54条の2第1項の括弧書きにより、乗用車は乗車定員10人未満、貨物車は車両総重量3.5トン以下のものが対象となる。"},
+  {no:8182,section:"保安基準適用関係",label:"第54条の2（事故情報計測・記録装置）",q:"第54条の2第1項の規定により、令和4年7月1日から令和8年8月31日までに製作された（輸入車以外の）国産自動車のうち、保安基準第46条の2等の規定が適用されないものの要件として誤っているものはどれか。",choices:["A. 令和4年6月30日以前に指定を受けた型式指定自動車", "B. 令和4年7月1日以降に新たに指定を受けた型式指定自動車であって、同年6月30日以前の型式と事故情報計測・記録装置に係る性能が同一のもの", "C. 国土交通大臣が定める自動車", "D. 令和5年1月1日以降に指定を受けた型式指定自動車であって、令和4年6月30日以前に指定を受けた型式指定自動車と車体形状が同一のもの"],answer:"D",exp:"第54条の2第1項第2号ロは、性能が同一であることを条件としており、車体形状の同一性は要件ではない。また、令和5年1月1日以降に指定を受けた型式という区分も規定にはなく、Dは誤り。"},
+  {no:8183,section:"保安基準適用関係",label:"第54条の2（事故情報計測・記録装置）",q:"第54条の2第5項において、乗車定員10人以上の乗用自動車及び車両総重量3.5トンを超える貨物自動車に係る保安基準第46条の2等の規定の適用除外の期限として正しいものはどれか（製作日の基準）。",choices:["A. 令和6年11月30日以前に製作された自動車", "B. 令和8年11月30日以前に製作された自動車", "C. 令和10年11月30日以前に製作された自動車", "D. 令和4年6月30日以前に製作された自動車"],answer:"B",exp:"第54条の2第5項第1号は「令和8年11月30日以前に製作された自動車」について、保安基準第46条の2等の規定を適用しないと定めている。"},
+  {no:8184,section:"保安基準適用関係",label:"第56条（運行記録計）",q:"第56条の経過措置により、平成18年12月31日以前に製作された自動車について運行記録計の備え付けが必要な自動車として正しいものはどれか。",choices:["A. 貨物の運送の用に供する普通自動車であって、車両総重量が5トン以上又は最大積載量が3トン以上のもの", "B. 貨物の運送の用に供する普通自動車であって、車両総重量が8トン以上又は最大積載量が5トン以上のもの", "C. 貨物の運送の用に供する普通自動車であって、車両総重量が10トン以上又は最大積載量が7トン以上のもの", "D. すべての貨物の運送の用に供する普通自動車"],answer:"B",exp:"第56条第1項第1号イは、貨物の運送の用に供する普通自動車であって、車両総重量が8トン以上または最大積載量が5トン以上のものに運行記録計を備えることを定めている。"},
+  {no:8185,section:"保安基準適用関係",label:"第56条（運行記録計）",q:"第56条の規定において、旧基準の運行記録計の技術基準への適合が認められる運行記録計として、令和10年9月1日以降に製作されたものでも旧基準適合が許容されるものはどれか。",choices:["A. 令和10年9月1日以降に法第75条の3第1項の規定による型式の指定を受けた運行記録計", "B. 令和10年8月31日以前に法第75条の3第1項の規定によりその型式について指定を受けた運行記録計", "C. 令和10年8月31日以前に製作された自動車以外の新規自動車に備える運行記録計", "D. 輸入された自動車に備える運行記録計"],answer:"B",exp:"第56条第2項第2号は、令和10年9月1日以降に製作された運行記録計であっても、令和10年8月31日以前に型式の指定を受けたものは旧基準に適合すればよいと定めている。"},
+  {no:8186,section:"保安基準適用関係",label:"第63条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）",q:"第63条第1項に規定する保安基準第61条の3第2項から第4項の規定が適用されない第一種一般原動機付自転車について、製作日の上限として正しいものはどれか（輸入品を除く）。",choices:["A. 平成10年8月31日以前に製作されたもの", "B. 平成11年8月31日以前に製作されたもの", "C. 平成12年8月31日以前に製作されたもの", "D. 平成13年8月31日以前に製作されたもの"],answer:"B",exp:"第63条第1項第1号は、平成11年8月31日以前に製作された第一種一般原動機付自転車（一定のものを除く）については保安基準第61条の3第2項から第4項の規定は適用しないと定めている。"},
+  {no:8187,section:"保安基準適用関係",label:"第63条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）",q:"第63条第2項に規定する、ガソリンを燃料とする第一種一般原動機付自転車（型式認定済み）の二輪車暖機モード法による排出ガス基準において、4サイクルの原動機を有するものの一酸化炭素の基準値（g/km）として正しいものはどれか。",choices:["A. 8.00", "B. 13.0", "C. 3.00", "D. 2.00"],answer:"B",exp:"第63条第2項の表によれば、4サイクルの原動機を有するものの一酸化炭素の基準値は13.0 g/kmである。2サイクルは8.00 g/kmである。"},
+  {no:8188,section:"保安基準適用関係",label:"第63条（ばい煙、悪臭のあるガス、有害なガス等の発散防止装置）",q:"第63条第4項に定める、ガソリンを燃料とする第一種一般原動機付自転車の無負荷アイドリング時排出ガス基準において、4サイクルの炭化水素（HC）の基準値として正しいものはどれか。",choices:["A. 100万分の7800", "B. 100万分の3000", "C. 100万分の2000", "D. 100万分の1600"],answer:"C",exp:"第63条第4項の表によれば、4サイクルの原動機を有するものの炭化水素は100万分の2000とされている。2サイクルは100万分の7800である。"},
+  {no:8189,section:"保安基準適用関係",label:"第64条（前照灯）",q:"第64条第1項の経過措置において、平成10年3月31日以前に製作された一般原動機付自転車の前照灯について、夜間前方何メートルの距離にある交通上の障害物を確認できる性能が必要とされるか（最高速度20km/h以上の第2種原動機付自転車以外）。",choices:["A. 10メートル", "B. 15メートル", "C. 25メートル", "D. 50メートル"],answer:"B",exp:"第64条第1項第1号は、夜間前方15メートルの距離にある交通上の障害物を確認できる性能を有することを定めている（最高速度20km/h以上の第2種は50メートル）。"},
+  {no:8190,section:"保安基準適用関係",label:"第64条（前照灯）",q:"第64条第1項第5号の規定において、一般原動機付自転車の前照灯に減光または照射方向を下向きに変換できる構造が必要とされる光度の閾値として正しいものはどれか。",choices:["A. 5000カンデラ以上", "B. 8000カンデラ以上", "C. 1万カンデラ以上", "D. 2万カンデラ以上"],answer:"C",exp:"第64条第1項第5号は、光度が1万カンデラ以上の前照灯について、減光または照射方向を下向きに変換できる構造であることを定めている。"},
+  {no:8191,section:"保安基準適用関係",label:"第65条（番号灯）",q:"第65条第1項の規定において、保安基準第62条の2および細目告示の番号灯関連規定が適用されない一般原動機付自転車の製作日の上限として正しいものはどれか。",choices:["A. 昭和35年10月14日以前", "B. 昭和39年10月14日以前", "C. 昭和44年3月31日以前", "D. 昭和48年11月30日以前"],answer:"B",exp:"第65条第1項は、昭和39年10月14日以前に製作された一般原動機付自転車については、保安基準第62条の2並びに細目告示第245条等の規定は適用しないと定めている。"},
+  {no:8192,section:"保安基準適用関係",label:"第65条（番号灯）",q:"第65条第6項の規定において、二輪の一般原動機付自転車について細目告示中の「協定規則第53号」を「協定規則第53号第3改訂版補足第4改訂版」と読み替えることができる対象として正しいものはどれか（輸入車以外の場合）。",choices:["A. 令和8年8月31日以前に製作された二輪の一般原動機付自転車", "B. 令和9年8月31日以前に製作された二輪の一般原動機付自転車", "C. 令和10年8月31日以前に製作された二輪の一般原動機付自転車", "D. 令和12年8月31日以前に製作された二輪の一般原動機付自転車"],answer:"C",exp:"第65条第6項第1号は、令和10年8月31日（輸入された二輪の一般原動機付自転車にあっては令和12年8月31日）以前に製作された二輪の一般原動機付自転車を対象としている。"},
+  {no:8193,section:"保安基準適用関係",label:"第66条（尾灯）",q:"第66条第1項第2号イの規定において、旧基準が適用される一般原動機付自転車（平成17年12月31日以前製作）の尾灯について、夜間後方何メートルの距離から点灯を確認できることが求められるか。",choices:["A. 50メートル", "B. 100メートル", "C. 150メートル", "D. 200メートル"],answer:"C",exp:"第66条第1項第2号イは、尾灯は夜間にその後方150メートルの距離から点灯を確認できるものであることを定めている。"},
+  {no:8194,section:"保安基準適用関係",label:"第66条（尾灯）",q:"第66条第3項に規定する昭和39年12月31日以前に製作された一般原動機付自転車の尾灯について、取付位置の基準として正しいものはどれか。",choices:["A. 地上1メートル以下", "B. 地上1.5メートル以下", "C. 地上2メートル以下", "D. 地上2.5メートル以下"],answer:"C",exp:"第66条第3項第4号は、尾灯の取付位置は地上2メートル以下であることを定めている（ただし、座席高500mm未満の一部の車両は1m以上2m以下）。"},
+  {no:8195,section:"保安基準適用関係",label:"第67条の2（後部反射器）",q:"第67条の2第4項において、細目告示の後部反射器規定について旧規定への適合が認められる原動機付自転車のうち、令和8年9月1日以降に製作されたものに旧規定適合が許容される条件として正しいものはどれか。",choices:["A. 令和8年9月1日以降に型式認定を受けたものであって、後部反射器の色が同一のもの", "B. 令和8年9月1日以降に型式認定を受けたものであって、令和8年8月31日以前に認定を受けたものと後部反射器の型式が同一のもの", "C. 令和8年9月1日以降に型式認定を受けたものであって、令和8年8月31日以前に認定を受けたものと車体形状が同一のもの", "D. 令和8年8月31日以前に型式認定を受けたものと同一メーカーが製造したもの"],answer:"B",exp:"第67条の2第4項第3号は、令和8年9月1日以降に型式認定を受けた原動機付自転車であって、令和8年8月31日以前に認定を受けたものと後部反射器の型式が同一であるものに旧規定適合を許容している。"},
+  {no:8196,section:"保安基準適用関係",label:"第67条（制動灯）",q:"第67条第1項第1号の旧基準において、制動灯は昼間後方何メートルの距離から点灯を確認できることが必要とされるか。",choices:["A. 15メートル", "B. 20メートル", "C. 30メートル", "D. 50メートル"],answer:"C",exp:"第67条第1項第1号は、制動灯は昼間後方30メートルの距離から点灯を確認できるものであることを定めている。"},
+  {no:8197,section:"保安基準適用関係",label:"第67条（制動灯）",q:"第67条第3項の規定において、昭和39年10月15日から昭和48年11月30日までに製作された一般原動機付自転車の制動灯の灯光の色について許容される色の組み合わせとして正しいものはどれか。",choices:["A. 赤色のみ", "B. 赤色または白色", "C. 赤色または橙色", "D. 赤色または黄色"],answer:"C",exp:"第67条第3項は、昭和39年10月15日から昭和48年11月30日までに製作された一般原動機付自転車については、制動灯の灯光の色は赤色または橙色とすることができると定めている。"},
+  {no:8198,section:"保安基準適用関係",label:"第71条の2（方向指示器）",q:"第71条の2第1項第2号の旧基準において、一般原動機付自転車（平成17年12月31日以前製作）の方向指示器の点滅周期として正しいものはどれか。",choices:["A. 毎分40回以上100回以下", "B. 毎分50回以上120回以下", "C. 毎分60回以上120回以下", "D. 毎分60回以上150回以下"],answer:"C",exp:"第71条の2第1項第2号は、方向指示器は毎分60回以上120回の一定の周期で点滅するものであることを定めている。"},
+  {no:8199,section:"保安基準適用関係",label:"第71条の2（方向指示器）",q:"第71条の2第3項の規定において、保安基準第64条の3第1項（方向指示器の備え付け義務）が適用されない一般原動機付自転車の製作時期の上限として正しいものはどれか。",choices:["A. 昭和39年10月14日以前", "B. 昭和44年3月31日以前", "C. 昭和48年11月30日以前", "D. 昭和51年8月31日以前"],answer:"B",exp:"第71条の2第3項は、昭和44年3月31日以前に製作された一般原動機付自転車については、保安基準第64条の3第1項の規定は適用しないと定めている。"},
+  {no:8200,section:"保安基準適用関係",label:"第71条の3（後写鏡）",q:"第71条の3第1項の規定において、平成18年12月31日以前に製作されたハンドルバー方式・車室なしの一般原動機付自転車の後写鏡について、旧基準として認められる視野範囲として正しいものはどれか。",choices:["A. 左外側線上後方30メートルまでの間にある車両の交通状況を確認できること", "B. 左外側線上後方50メートルまでの間にある車両の交通状況を確認できること", "C. 左外側線上後方100メートルまでの間にある車両の交通状況を確認できること", "D. 左右外側線上後方50メートルまでの間にある車両の交通状況を確認できること"],answer:"B",exp:"第71条の3第1項は、後写鏡は運転者が運転者席において一般原動機付自転車の左外側線上後方50メートルまでの間にある車両の交通状況を確認できるものであればよいと定めている。"},
+  {no:8201,section:"保安基準適用関係",label:"第71条の3（後写鏡）",q:"第71条の3第2項の規定において、保安基準第65条および細目告示の後写鏡関連規定が適用されない一般原動機付自転車の製作日の上限として正しいものはどれか。",choices:["A. 昭和35年9月30日以前", "B. 昭和39年10月14日以前", "C. 昭和44年3月31日以前", "D. 昭和48年11月30日以前"],answer:"B",exp:"第71条の3第2項は、昭和39年10月14日以前に製作された一般原動機付自転車については、保安基準第65条および細目告示の規定は適用しないと定めている。"},
+  {no:8202,section:"保安基準適用関係",label:"第71条（消音器）",q:"第71条第1項の表において、昭和51年8月31日以前に製作された第二種原動機付自転車の加速走行騒音の基準値として正しいものはどれか。",choices:["A. 79デシベル", "B. 80デシベル", "C. 82デシベル", "D. 85デシベル"],answer:"C",exp:"第71条第1項の表によれば、第二種原動機付自転車の加速走行騒音の基準値は82デシベルである（定常走行騒音は80デシベル）。"},
+  {no:8203,section:"保安基準適用関係",label:"第71条（消音器）",q:"第71条第10項の規定において、内燃機関を原動機とする一般原動機付自転車の消音器について、細目告示第252条第2項の代わりに破損および腐食がないことのみを求める旧基準が認められる製作日の上限として正しいものはどれか。",choices:["A. 平成18年3月31日以前", "B. 平成20年3月31日以前", "C. 平成22年3月31日以前", "D. 平成25年3月31日以前"],answer:"C",exp:"第71条第10項は、平成22年3月31日以前に製作されたものが備える消音器については、細目告示第252条第2項の規定にかかわらず、破損および腐食がないものであればよいと定めている。"},
+  {no:8204,section:"保安基準適用関係",label:"第73条の2（電気装置）",q:"第73条の2第1項の規定において、一般原動機付自転車について当分の間適用しなくてもよいとされる規定として正しいものはどれか。",choices:["A. 保安基準第65条の4第2項", "B. 保安基準第65条の4第1項並びに細目告示第253条の3第1項等", "C. 保安基準第65条の4第3項", "D. 細目告示第253条の3第2項のみ"],answer:"B",exp:"第73条の2第1項は、一般原動機付自転車について当分の間、保安基準第65条の4第1項並びに細目告示第253条の3第1項、第269条の3第1項および第2項並びに第285条の3第1項の規定は適用しなくてもよいと定めている。"},
+  {no:8205,section:"保安基準適用関係",label:"第73条の2（電気装置）",q:"第73条の2第2項に規定する、保安基準第65条の4第2項が適用されない一般原動機付自転車について、令和9年3月1日から令和11年2月28日までに製作されたものに適用除外が認められる条件として正しいものはどれか。",choices:["A. 令和9年2月28日以前に型式認定を受けたもの、または同日以前に認定を受けたものと電気装置に係る性能が同一のもの、または型式認定を受けていないもの", "B. 令和9年2月28日以前に製作されたもの", "C. 令和9年3月1日以降に新たに型式認定を受けたもの", "D. 輸入された一般原動機付自転車のみ"],answer:"A",exp:"第73条の2第2項第2号は、令和9年3月1日から令和11年2月28日までに製作されたものについて、イ（令和9年2月28日以前に認定を受けたもの）、ロ（性能が同一のもの）、ハ（型式認定外のもの）の3条件のいずれかを満たすものに適用除外を認めている。"},
+  {no:8206,section:"保安基準適用関係",label:"第76条の2（後面衝突警告表示灯）",q:"第76条の2の規定において、細目告示中の「協定規則第53号」を「協定規則第53号第3改訂版補足第4改訂版」と読み替えることができる二輪の一般原動機付自転車として、令和10年9月1日から令和12年8月31日までに製作されたものに読み替えが認められる条件として正しいものはどれか。",choices:["A. 令和10年8月31日以前に型式認定を受けたものと後面衝突警告表示灯の性能、取付位置および取付方法に変更がないもの", "B. 令和10年8月31日以前に型式認定を受けたもの", "C. 令和10年8月31日以前に製作されたものと車体形状が同一のもの", "D. 輸入された二輪の一般原動機付自転車に限る"],answer:"A",exp:"第76条の2第2号は、令和10年8月31日以前に型式認定を受けたものと後面衝突警告表示灯の性能、取付位置および取付方法に変更がないものを条件としている。"},
+  {no:8207,section:"保安基準適用関係",label:"第76条（緊急制動表示灯）",q:"第76条第1項に規定する旧基準（令和2年告示第1021号による改正前）への適合が認められる一般原動機付自転車として、正しいものはどれか。",choices:["A. 令和5年8月31日以前に製作された二輪の第一種一般原動機付自転車", "B. 令和7年6月14日以前に製作された二輪の第一種一般原動機付自転車", "C. 令和8年8月31日以前に製作された二輪の第一種一般原動機付自転車", "D. 令和10年8月31日以前に製作された二輪の第一種一般原動機付自転車"],answer:"B",exp:"第76条第1項第1号は、令和7年6月14日以前に製作された二輪の第一種一般原動機付自転車を旧基準適合可能な対象として定めている。"},
+  {no:8208,section:"保安基準適用関係",label:"第78条の2（電気装置）",q:"第78条の2の規定において、特定小型原動機付自転車について当分の間適用しなくてもよいとされる規定として正しいものはどれか。",choices:["A. 保安基準第66条の15第2項のみ", "B. 保安基準第66条の15第1項並びに細目告示第298条第1項、第311条第1項および第2項並びに第324条第1項", "C. 細目告示第298条第2項のみ", "D. 保安基準第66条の15全項および細目告示関連規定のすべて"],answer:"B",exp:"第78条の2は、特定小型原動機付自転車について当分の間、保安基準第66条の15第1項並びに細目告示第298条第1項、第311条第1項および第2項並びに第324条第1項の規定は適用しなくてもよいと定めている。"}
 ];
+const BADGE={
+  "保安基準":["badge-h","H系"],
+  "保安基準細目":["badge-s","S系"],
+  "保安基準別添":["badge-b","B系"],
+  "保安基準適用関係":["badge-t","T系"]
+};
+let currentQuestions=[],currentIndex=0,score=0,answered=false;
 
-let currentQuestions=[], currentIndex=0, score=0, answered=false;
-
-function updateLabels() {
-  const sec = document.getElementById('sel-section').value;
-  const sel = document.getElementById('sel-label');
-  for (const opt of sel.options) {
-    if (opt.value === 'all') { opt.style.display=''; continue; }
-    const grp = opt.parentElement;
-    if (sec === 'all') { opt.style.display=''; }
-    else if (sec === '保安基準') { opt.style.display = grp.label && grp.label.startsWith('H') ? '' : 'none'; }
-    else { opt.style.display = grp.label && grp.label.startsWith('S') ? '' : 'none'; }
+function updateLabels(){
+  const sec=document.getElementById('sel-section').value;
+  const sel=document.getElementById('sel-label');
+  for(const opt of sel.options){
+    if(opt.value==='all'){opt.style.display='';continue;}
+    const grp=opt.parentElement;
+    if(sec==='all'){opt.style.display='';}
+    else if(sec==='保安基準'){opt.style.display=grp.label&&grp.label.startsWith('H')?'':'none';}
+    else if(sec==='保安基準細目'){opt.style.display=grp.label&&grp.label.startsWith('S')?'':'none';}
+    else if(sec==='保安基準別添'){opt.style.display=grp.label&&grp.label.startsWith('B')?'':'none';}
+    else{opt.style.display=grp.label&&grp.label.startsWith('T')?'':'none';}
   }
-  sel.value = 'all';
+  sel.value='all';
 }
 
-function shuffle(arr) {
-  const a=[...arr];
-  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
-  return a;
-}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-function startQuiz() {
+function startQuiz(){
   const sec=document.getElementById('sel-section').value;
   const lbl=document.getElementById('sel-label').value;
   const cnt=document.getElementById('sel-count').value;
-  let filtered=QUESTIONS.filter(q=>
-    (sec==='all'||q.section===sec) && (lbl==='all'||q.label===lbl)
-  );
+  let filtered=QUESTIONS.filter(q=>(sec==='all'||q.section===sec)&&(lbl==='all'||q.label===lbl));
   if(filtered.length===0){document.getElementById('no-questions').classList.add('show');document.getElementById('quiz-area').innerHTML='';document.getElementById('stats-bar').classList.add('hidden');return;}
   document.getElementById('no-questions').classList.remove('show');
   filtered=shuffle(filtered);
   if(cnt!=='all') filtered=filtered.slice(0,parseInt(cnt));
-  currentQuestions=filtered; currentIndex=0; score=0;
+  currentQuestions=filtered;currentIndex=0;score=0;
   document.getElementById('stats-bar').classList.remove('hidden');
   renderQuestion();
 }
 
-function renderQuestion() {
+function renderQuestion(){
   if(currentIndex>=currentQuestions.length){renderResult();return;}
   answered=false;
   const q=currentQuestions[currentIndex];
@@ -1050,11 +1534,10 @@ function renderQuestion() {
     const text=(q.choices[orig]||'').replace(/^[A-D]\. ?/,'');
     return `<button class="choice-btn" onclick="selectAnswer(${orig},${ansIdx})" id="cb-${orig}">${letter}. ${text}</button>`;
   }).join('');
-  const badgeClass=q.section==='保安基準'?'badge-h':'badge-s';
-  const badgeLabel=q.section==='保安基準'?'H系':'S系';
+  const [bc,bl]=BADGE[q.section]||['badge-h','H系'];
   document.getElementById('quiz-area').innerHTML=`
     <div class="quiz-card">
-      <div class="badges"><span class="badge ${badgeClass}">${badgeLabel}</span><span class="badge" style="background:#f7fafc;color:#4a5568">${q.label}</span></div>
+      <div class="badges"><span class="badge ${bc}">${bl}</span><span class="badge" style="background:#f7fafc;color:#4a5568;font-size:0.68rem">${q.label}</span></div>
       <div class="question-text">${q.q}</div>
       ${choicesHtml}
       <div class="explanation" id="exp">${q.exp}</div>
@@ -1062,8 +1545,8 @@ function renderQuestion() {
     </div>`;
 }
 
-function selectAnswer(selected,correct) {
-  if(answered) return;
+function selectAnswer(selected,correct){
+  if(answered)return;
   answered=true;
   document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
   if(selected===correct){score++;document.getElementById('cb-'+selected).classList.add('correct');}
@@ -1075,14 +1558,14 @@ function selectAnswer(selected,correct) {
 
 function nextQuestion(){currentIndex++;renderQuestion();}
 
-function renderResult() {
+function renderResult(){
   const total=currentQuestions.length;
   const pct=Math.round(score/total*100);
   const rank=pct>=80?'🏆 合格圏！':pct>=60?'📚 もう少し！':'💪 要復習';
   document.getElementById('stats-bar').classList.add('hidden');
   document.getElementById('quiz-area').innerHTML=`
     <div class="result-card">
-      <div style="font-size:1.1rem;color:#4a5568">結果</div>
+      <div style="font-size:1.05rem;color:#4a5568">結果</div>
       <div class="result-score">${score} / ${total}</div>
       <div class="result-pct">正答率 ${pct}%　${rank}</div>
       <button class="retry-btn" onclick="startQuiz()">🔄 もう一度</button>
