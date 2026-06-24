@@ -769,6 +769,7 @@ function _updateReviewBadge() {
       + '<div style="font-size:1.25rem;font-weight:900;color:' + col + ';margin:8px 0">' + msg + '</div>'
       + ansHtml + expHtml
       + '<a href="./mypage.html" style="display:inline-block;margin-top:20px;padding:12px 28px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">📁 マイページへ戻る</a>'
+      + (function(){var _rq=JSON.parse(sessionStorage.getItem('reviewQueue')||'[]');var _rNext=_rq.length?_rq[0]:null;if(_rNext){_rq.shift();sessionStorage.setItem('reviewQueue',JSON.stringify(_rq));}var _rTotal=parseInt(sessionStorage.getItem('reviewTotal')||'0');var _rLeft=_rq.length;return _rNext?'<a href="'+_rNext+'" style="display:inline-block;margin-top:10px;margin-left:8px;padding:12px 28px;background:#059669;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">▶ 次の復習問題（残'+_rLeft+'問）</a>':'';})()
       + '<br><button onclick="document.getElementById('_review_overlay').remove()" style="margin-top:10px;padding:8px 20px;background:transparent;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:.82rem;color:#64748b;font-family:inherit">✏️ 続けて解く</button>'
       + '</div>';
     document.body.appendChild(ov);
