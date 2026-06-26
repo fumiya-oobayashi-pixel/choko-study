@@ -1504,6 +1504,25 @@ function updateLabels(){
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
+window.addEventListener('DOMContentLoaded', function(){
+  const p = new URLSearchParams(location.search);
+  const sec = p.get('section');
+  const cnt = p.get('count');
+  if(sec){
+    const sel = document.getElementById('sel-section');
+    for(let o of sel.options){ if(o.value===sec){ sel.value=sec; break; } }
+    if(typeof updateLabels === 'function') updateLabels();
+  }
+  if(cnt){
+    const cs = document.getElementById('sel-count');
+    for(let o of cs.options){ if(o.value===cnt){ cs.value=cnt; break; } }
+  }
+  if(sec || cnt){
+    document.querySelector('.filter-card').style.display='none';
+    startQuiz();
+  }
+});
+
 function startQuiz(){
   const sec=document.getElementById('sel-section').value;
   const lbl=document.getElementById('sel-label').value;
@@ -1561,17 +1580,4 @@ function nextQuestion(){currentIndex++;renderQuestion();}
 function renderResult(){
   const total=currentQuestions.length;
   const pct=Math.round(score/total*100);
-  const rank=pct>=80?'🏆 合格圏！':pct>=60?'📚 もう少し！':'💪 要復習';
-  document.getElementById('stats-bar').classList.add('hidden');
-  document.getElementById('quiz-area').innerHTML=`
-    <div class="result-card">
-      <div style="font-size:1.05rem;color:#4a5568">結果</div>
-      <div class="result-score">${score} / ${total}</div>
-      <div class="result-pct">正答率 ${pct}%　${rank}</div>
-      <button class="retry-btn" onclick="startQuiz()">🔄 もう一度</button>
-      <button class="retry-btn" style="background:#4a5568" onclick="location.reload()">🏠 最初から</button>
-    </div>`;
-}
-</script>
-</body>
-</html>
+  const rank=pct>=80?'🏆 合�
