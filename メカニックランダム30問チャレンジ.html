@@ -98,7 +98,7 @@ function shuffle(arr) {
 }
 
 function getWrongKey(q) {
-  return q.source.replace(/[^a-zA-Z0-9年]/g,'_') + '_q' + q.no;
+  return 'mechPool_q' + q.no;
 }
 
 function startQuiz() {
@@ -174,12 +174,14 @@ function selectAns(idx, key) {
       wrongAnswerKeys.add(wkey);
       import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({doc, setDoc, deleteDoc, serverTimestamp, increment}) => {
         setDoc(doc(db, 'users', currentUid, 'wrongAnswers', wkey), {
-          source: q.source, qNo: q.no, label: q.label,
+          source: 'mechPool', qNo: q.no, label: q.label||('Q'+q.no),
+          url: '/choko-study/メカニックランダム30問チャレンジ.html',
           stem: q.stem.substring(0,120), timestamp: serverTimestamp(),
           url: window.location.pathname
         }, {merge:true}).catch(()=>{});
         setDoc(doc(db, 'users', currentUid, 'wrongHistory', wkey), {
-          source: q.source, qNo: q.no, label: q.label,
+          source: 'mechPool', qNo: q.no, label: q.label||('Q'+q.no),
+          url: '/choko-study/メカニックランダム30問チャレンジ.html',
           stem: q.stem.substring(0,120), firstWrong: serverTimestamp(),
           url: window.location.pathname
         }, {merge:true}).catch(()=>{});

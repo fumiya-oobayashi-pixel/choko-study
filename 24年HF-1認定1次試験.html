@@ -770,6 +770,26 @@ render();
     var correctAns = q.answer !== undefined ? q.answer : _L[q.ans !== undefined ? q.ans : 0];
     var isCorrect = (choice === correctAns);
     _showReviewResult(q, isCorrect, correctAns);
+    // Firebase: 復習モードでの正解削除・不正解登録
+    (function(){
+      var fbUser = window._fbUser;
+      var fbDb = window._fbDb;
+      var fbSrc = window._fbSrc;
+      if (!fbUser || !fbDb || !fbSrc) return;
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js')
+        .then(function(m) {
+          var key = fbSrc + '_q' + no;
+          if (isCorrect) {
+            m.deleteDoc(m.doc(fbDb, 'users', fbUser.uid, 'wrongAnswers', key)).catch(function(){});
+          } else {
+            m.setDoc(m.doc(fbDb, 'users', fbUser.uid, 'wrongAnswers', key), {
+              source: fbSrc, qNo: no, label: q.label||('Q'+no),
+              stem: (q.stem||'').substring(0,120), timestamp: m.serverTimestamp(),
+              url: window.location.pathname
+            }, {merge:true}).catch(function(){});
+          }
+        });
+    })();
   };
 
   function _showReviewResult(q, isCorrect, correctAns) {

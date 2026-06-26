@@ -213,15 +213,15 @@ try {
     if (!q) return;
     const isCorrect = c === q.answer;
     // sourceはランダムプールのsourceフィールド（例: "25年 1次"）
-    const src = (q.source || 'フロントランダム').replace(/[\s　]/g,'_').replace(/[^\w\u3040-\u9FFF]/g,'');
-    const key = src + '_q' + (q.no || i);
+    const key = 'frontPool_q' + q.no;
     if (isCorrect) {
       deleteDoc(doc(dbInst,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
     } else {
       setDoc(doc(dbInst,'users',user.uid,'wrongAnswers',key),{
-        source: q.source||'フロントランダム', qNo: q.no||i,
-        label: q.label||('Q'+(q.no||i)),
-        stem: (q.stem||'').substring(0,120), timestamp: serverTimestamp()
+        source: 'frontPool', qNo: q.no,
+        label: q.label||('Q'+q.no),
+        stem: (q.stem||'').substring(0,120), timestamp: serverTimestamp(),
+        url: '/choko-study/フロントランダム30問チャレンジ.html'
       },{merge:true}).catch(()=>{});
     }
   };

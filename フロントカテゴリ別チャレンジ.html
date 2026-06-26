@@ -206,12 +206,26 @@ function selectAnswer(chosen, btn, keys) {
     expEl.style.display = 'none';
   }
 
-  // Firebaseカテゴリ統計
+  // Firebase: catStats + wrongAnswers
   try {
     const user = window._fbUser, db = window._fbDb;
     if (user && db) {
       setDoc(doc(db,'users',user.uid,'catStats',q.cat),
         {total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
+      // 復習フォルダ管理
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js')
+        .then(({doc:d, deleteDoc, setDoc:sd, serverTimestamp}) => {
+          const key = 'frontPool_q' + q.id;
+          if (isCorrect) {
+            deleteDoc(d(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
+          } else {
+            sd(d(db,'users',user.uid,'wrongAnswers',key),{
+              source:'frontPool', qNo:q.id, label:q.cat+' Q'+q.id,
+              stem:(q.stem||'').substring(0,120), timestamp:serverTimestamp(),
+              url:'/choko-study/フロントカテゴリ別チャレンジ.html'
+            },{merge:true}).catch(()=>{});
+          }
+        });
     }
   } catch(e){}
 
