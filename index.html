@@ -20,6 +20,8 @@ header p{font-size:.8rem;opacity:.8;letter-spacing:.08em;}
 .tab-btn.newcar{background:#dcfce7;color:#166534;}
 .tab-btn.newcar.active{background:#bbf7d0;box-shadow:0 4px 12px rgba(22,101,52,.3);}
 .tab-btn.front.active{background:#fde68a;box-shadow:0 4px 12px rgba(180,83,9,.3);}
+.tab-btn.hoan{background:#f5f3ff;color:#4c1d95;}
+.tab-btn.hoan.active{background:#ede9fe;box-shadow:0 4px 12px rgba(109,40,217,.3);}
 main{padding:14px;max-width:640px;margin:0 auto;}
 .section{display:none;}
 .section.active{display:block;}
@@ -95,6 +97,7 @@ main{padding:14px;max-width:640px;margin:0 auto;}
   <button class="tab-btn mechanic active" onclick="showSection('mechanic')"><span class="icon">🔧</span>メカニック</button>
   <button class="tab-btn front" onclick="showSection('front')"><span class="icon">📋</span>フロント</button>
   <button class="tab-btn newcar" onclick="showSection('newcar')"><span class="icon">🚗</span>新型車</button>
+  <button class="tab-btn hoan" onclick="showSection('hoan')"><span class="icon">⚖️</span>保安基準</button>
 </div>
 <main>
 <div class="section active" id="section-mechanic">
@@ -280,9 +283,18 @@ main{padding:14px;max-width:640px;margin:0 auto;}
       <a class="cat-card" href="./フロントカテゴリ別チャレンジ.html?cat=%E5%AE%89%E5%85%A8%2F%E6%B3%95%E4%BB%A4" target="_blank"><div class="cat-card-name">⚠️ 安全/法令</div><div class="cat-card-count">302問のプールから10問</div></a>
       <a class="cat-card" href="./フロントカテゴリ別チャレンジ.html?cat=%E8%A8%88%E7%AE%97" target="_blank"><div class="cat-card-name">🔢 計算</div><div class="cat-card-count">31問のプールから10問</div></a>
     </div>
+  </div></div>
+    <span>›</span>
+  </a>
+  <div class="card-list">
+    <a class="qcard" href="./保安基準テスト.html" target="_blank" style="border-left-color:#1e3a5f"><span class="qcard-icon">📗</span><div class="qcard-body"><div class="qcard-title">H系（保安基準 本体）</div><div class="qcard-meta">条文ごとに出題</div></div><span class="qcard-arr">›</span></a>
+    <a class="qcard" href="./保安基準テスト.html" target="_blank" style="border-left-color:#0f5499"><span class="qcard-icon">📘</span><div class="qcard-body"><div class="qcard-title">S系（細目告示）</div><div class="qcard-meta">条文ごとに出題</div></div><span class="qcard-arr">›</span></a>
+    <a class="qcard" href="./保安基準テスト.html" target="_blank" style="border-left-color:#0891b2"><span class="qcard-icon">📙</span><div class="qcard-body"><div class="qcard-title">B系（別添技術基準）</div><div class="qcard-meta">別添ごとに出題</div></div><span class="qcard-arr">›</span></a>
+    <a class="qcard" href="./保安基準テスト.html" target="_blank" style="border-left-color:#6366f1"><span class="qcard-icon">📕</span><div class="qcard-body"><div class="qcard-title">T系（適用関係告示）</div><div class="qcard-meta">条文ごとに出題</div></div><span class="qcard-arr">›</span></a>
   </div>
-  <div class="sec-label">⚖️ 保安基準テスト</div>
-  <a class="random-banner" href="./保安基準テスト.html" target="_blank" style="background:linear-gradient(135deg,#1e3a5f,#0f5499);">
+</div>
+<div class="section" id="section-hoan">
+  <a class="random-banner" href="./保安基準テスト.html" target="_blank" style="background:linear-gradient(135deg,#4c1d95,#6d28d9);">
     <span class="rb-icon">⚖️</span>
     <div class="rb-body"><div class="rb-title">保安基準テスト</div><div class="rb-sub">H系（本体）＋S系（細目告示）＋B系（別添）＋T系（適用関係）／ 全921問</div></div>
     <span>›</span>

@@ -303,6 +303,21 @@ const QUESTIONS=[
 ];
 let currentQuestions=[],currentIndex=0,score=0,answered=false;
 
+
+window.addEventListener('DOMContentLoaded', function(){
+  const p = new URLSearchParams(location.search);
+  const v = p.get('vehicle');
+  const c = p.get('count');
+  if(v){
+    const sel = document.getElementById('sel-vehicle');
+    for(let o of sel.options){ if(o.value===v){ sel.value=v; break; } }
+  }
+  if(c){
+    const cs = document.getElementById('sel-count');
+    for(let o of cs.options){ if(o.value===c){ cs.value=c; break; } }
+  }
+  if(v || c){ startQuiz(); }
+});
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 function startQuiz(){
