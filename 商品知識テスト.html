@@ -316,7 +316,10 @@ window.addEventListener('DOMContentLoaded', function(){
     const cs = document.getElementById('sel-count');
     for(let o of cs.options){ if(o.value===c){ cs.value=c; break; } }
   }
-  if(v || c){ startQuiz(); }
+  if(v || c){
+    document.querySelector('.filter-card').style.display='none';
+    startQuiz();
+  }
 });
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -384,9 +387,4 @@ function renderResult(){
       <div class="result-score">${score} / ${total}</div>
       <div class="result-pct">正答率 ${pct}%　${rank}</div>
       <button class="retry-btn" onclick="startQuiz()">🔄 もう一度</button>
-      <button class="retry-btn" style="background:#4a5568" onclick="location.reload()">🏠 最初から</button>
-    </div>`;
-}
-</script>
-</body>
-</html>
+      <button class="retry-btn" style="background:#4a5568" onclick="location.reload
