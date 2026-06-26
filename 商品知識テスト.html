@@ -387,4 +387,55 @@ function renderResult(){
       <div class="result-score">${score} / ${total}</div>
       <div class="result-pct">正答率 ${pct}%　${rank}</div>
       <button class="retry-btn" onclick="startQuiz()">🔄 もう一度</button>
-      <button class="retry-btn" style="background:#4a5568" onclick="location.reload
+      <button class="retry-btn" style="background:#4a5568" ());  // ←途中で切れていた renderResult の末尾を補完
+}
+
+</script>
+<script src="./firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, deleteDoc, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const SOURCE_KEY = '商品知識テスト';
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  onAuthStateChanged(auth, user => {
+    window._fbUser = user;
+    window._fbDb = db;
+  });
+
+  const _origSel = window.selectAnswer;
+  window.selectAnswer = function(selected, correct) {
+    _origSel(selected, correct);
+    const user = window._fbUser; const db = window._fbDb;
+    if (!user || !db) return;
+    const q = currentQuestions[currentIndex];
+    if (!q) return;
+    const key = SOURCE_KEY + '_q' + q.id;
+    const isCorrect = (selected === correct);
+    if (isCorrect) {
+      deleteDoc(doc(db, 'users', user.uid, 'wrongAnswers', key)).catch(()=>{});
+    } else {
+      setDoc(doc(db, 'users', user.uid, 'wrongAnswers', key), {
+        source: SOURCE_KEY, qNo: q.id,
+        label: (q.vehicle || '') + ' ' + (q.topic || ''),
+        stem: (q.q || '').substring(0, 120),
+        timestamp: serverTimestamp(),
+        url: window.location.pathname
+      }, {merge: true}).catch(()=>{});
+      setDoc(doc(db, 'users', user.uid, 'wrongHistory', key), {
+        source: SOURCE_KEY, qNo: q.id,
+        label: (q.vehicle || '') + ' ' + (q.topic || ''),
+        stem: (q.q || '').substring(0, 120),
+        firstWrong: serverTimestamp(),
+        url: window.location.pathname
+      }, {merge: true}).catch(()=>{});
+    }
+  };
+} catch(e){ console.warn('Firebase:', e.message); }
+</script>
+</body>
+</html>
