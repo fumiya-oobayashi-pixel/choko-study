@@ -26,3 +26,49 @@ const MASTER_ADMIN_EMAIL = MASTER_ADMIN_EMAILS[0];
 function isAdmin(email) {
   return MASTER_ADMIN_EMAILS.includes(email);
 }
+
+// ============================================================
+// コンテンツ保護（コピー・印刷・右クリック禁止）
+// ============================================================
+(function(){
+  // CSSで選択・印刷をブロック
+  var style = document.createElement('style');
+  style.textContent = [
+    '* { -webkit-user-select: none !important; user-select: none !important; }',
+    'input, textarea { -webkit-user-select: text !important; user-select: text !important; }',
+    '@media print { html, body { display: none !important; } }'
+  ].join('\n');
+  document.head ? document.head.appendChild(style) : document.addEventListener('DOMContentLoaded', function(){ document.head.appendChild(style); });
+
+  // 右クリック禁止
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); return false; });
+
+  // ドラッグ禁止
+  document.addEventListener('dragstart', function(e){ e.preventDefault(); return false; });
+
+  // キーボードショートカット禁止
+  document.addEventListener('keydown', function(e){
+    var k = e.key.toLowerCase();
+    // Ctrl/Cmd + C, A, S, P, U（ソース表示）
+    if ((e.ctrlKey || e.metaKey) && ['c','a','s','p','u'].includes(k)) {
+      e.preventDefault();
+      return false;
+    }
+    // F12（DevTools）
+    if (e.key === 'F12') {
+      e.preventDefault();
+      return false;
+    }
+    // PrintScreen
+    if (e.key === 'PrintScreen') {
+      e.preventDefault();
+      // クリップボードを上書き（対応ブラウザのみ）
+      try { navigator.clipboard.writeText(''); } catch(err){}
+      return false;
+    }
+  });
+
+  // コピーイベント禁止
+  document.addEventListener('copy', function(e){ e.preventDefault(); return false; });
+  document.addEventListener('cut',  function(e){ e.preventDefault(); return false; });
+})();
