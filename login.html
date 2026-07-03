@@ -16,8 +16,11 @@ input{width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;f
 input:focus{border-color:#2563eb;background:#eff6ff}
 .btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#1e3a5f,#2d5a8e);color:white;font-size:1rem;font-weight:700;cursor:pointer;margin-top:24px;font-family:inherit;transition:.15s}
 .btn:hover{opacity:.9;transform:translateY(-1px)}
+.btn-guest{background:linear-gradient(135deg,#059669,#10b981)}
 .error{background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:10px 12px;border-radius:8px;font-size:.85rem;margin-top:12px;display:none}
 .loading{text-align:center;color:#64748b;padding:10px;display:none}
+.divider{display:flex;align-items:center;gap:10px;margin:24px 0 0;color:#94a3b8;font-size:.8rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#e2e8f0}
 </style>
 </head>
 <body>
@@ -35,12 +38,25 @@ input:focus{border-color:#2563eb;background:#eff6ff}
     <div class="loading" id="loading">ログイン中...</div>
     <button class="btn" onclick="login()">ログイン</button>
   </div>
+
+  <div class="divider">または</div>
+
+  <div style="margin-top:0">
+    <label>合言葉でアクセス（IDなしの方）</label>
+    <input type="password" id="guestpw" placeholder="合言葉を入力" autocomplete="off" onkeydown="if(event.key==='Enter')guestLogin()">
+    <div class="error" id="guest-err"></div>
+    <div class="loading" id="guest-loading">アクセス中...</div>
+    <button class="btn btn-guest" onclick="guestLogin()" style="margin-top:12px">🔑 合言葉でログイン</button>
+  </div>
 </div>
 
 <script src="firebase-config.js"></script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getAuth, signInWithEmailAndPassword, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+// 合言葉（変更する場合はここを書き換える）
+const GUEST_PASSCODE = 'Truck2026';
 
 const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
@@ -69,6 +85,27 @@ window.login = async function() {
     else if (e.code === 'auth/user-not-found') msg = 'ユーザーが見つかりません';
     else if (e.code === 'auth/too-many-requests') msg = 'ログイン試行が多すぎます。しばらく待ってください';
     errEl.textContent = msg;
+    errEl.style.display = 'block';
+  }
+};
+
+window.guestLogin = async function() {
+  const pw = document.getElementById('guestpw').value;
+  const errEl = document.getElementById('guest-err');
+  const loadEl = document.getElementById('guest-loading');
+  errEl.style.display = 'none';
+  if (pw !== GUEST_PASSCODE) {
+    errEl.textContent = '合言葉が違います';
+    errEl.style.display = 'block';
+    return;
+  }
+  loadEl.style.display = 'block';
+  try {
+    await signInAnonymously(auth);
+    // onAuthStateChanged will redirect
+  } catch(e) {
+    loadEl.style.display = 'none';
+    errEl.textContent = 'アクセスに失敗しました。しばらく待ってください';
     errEl.style.display = 'block';
   }
 };
