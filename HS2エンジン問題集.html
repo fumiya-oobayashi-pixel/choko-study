@@ -699,6 +699,76 @@ function showResult() {
 
 render();
 </script>
+// ?q=N 復習モード（マイページ復習フォルダから遷移時）
+(function(){
+  var qParam = new URLSearchParams(location.search).get('q');
+  if (!qParam) return;
+  var qi = questions.findIndex(function(q){ return q.no === parseInt(qParam); });
+  if (qi < 0) return;
+  current = qi;
+  render();
+
+  // 選択後に即時フィードバックオーバーレイを表示
+  var _origSelect = select;
+  select = function(k) {
+    if (answers[current] !== null) return;
+    _origSelect(k);
+    var q = questions[current];
+    var isCorrect = k === q.answer;
+    // Firebase更新（正解→削除、不正解→保存）
+    (function(){
+      var u=window._fbUser, d=window._fbDb, s=window._fbSrc;
+      if(!u||!d||!s) return;
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(function(m){
+        var key=s+'_q'+q.no;
+        if(isCorrect){
+          m.deleteDoc(m.doc(d,'users',u.uid,'wrongAnswers',key)).catch(function(){});
+        } else {
+          m.setDoc(m.doc(d,'users',u.uid,'wrongAnswers',key),{
+            source:s,qNo:q.no,label:'Q'+q.no,
+            stem:(q.stem||'').substring(0,120),
+            timestamp:m.serverTimestamp(),
+            url:window.location.pathname
+          },{merge:true}).catch(function(){});
+        }
+      });
+    })();
+    _showElReviewOverlay(q, isCorrect);
+  };
+
+  function _showElReviewOverlay(q, isCorrect) {
+    var old=document.getElementById('_el_rov'); if(old) old.remove();
+    var col=isCorrect?'#059669':'#dc2626';
+    var ansHtml=!isCorrect
+      ?'<div style="margin:8px 0;font-size:.9rem;color:#1d4ed8;font-weight:700">正解: '+q.answer+'　'+(q.choices[q.answer]||'')+'</div>'
+      :'';
+    var expHtml=q.explanation
+      ?'<div style="margin-top:12px;text-align:left;background:#f8fafc;border-radius:8px;padding:12px;font-size:.82rem;line-height:1.7;color:#374151;max-height:200px;overflow-y:auto">'+q.explanation.replace(/\n/g,'<br>')+'</div>'
+      :'';
+    var nextBtn=(function(){
+      var rq=JSON.parse(sessionStorage.getItem('reviewQueue')||'[]');
+      var next=rq.length?rq[0]:null;
+      if(next){rq.shift();sessionStorage.setItem('reviewQueue',JSON.stringify(rq));}
+      var left=rq.length;
+      return next
+        ?'<a href="'+next+'" style="display:inline-block;margin-top:10px;margin-left:8px;padding:12px 24px;background:#059669;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">▶ 次の復習問題（残'+left+'問）</a>'
+        :'<div style="margin-top:12px;font-size:.85rem;color:#059669;font-weight:700">✅ この単元の復習完了！</div>';
+    })();
+    var ov=document.createElement('div');
+    ov.id='_el_rov';
+    ov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
+    ov.innerHTML='<div style="background:white;border-radius:16px;padding:24px;max-width:480px;width:100%;text-align:center;font-family:-apple-system,Meiryo,sans-serif">'
+      +'<div style="font-size:2.4rem">'+(isCorrect?'✅':'❌')+'</div>'
+      +'<div style="font-size:1.25rem;font-weight:900;color:'+col+';margin:8px 0">'+(isCorrect?'正解！':'不正解')+'</div>'
+      +ansHtml+expHtml
+      +'<div style="margin-top:20px">'
+      +'<a href="./mypage.html" style="display:inline-block;padding:12px 24px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">📁 マイページへ戻る</a>'
+      +nextBtn
+      +'</div></div>';
+    document.body.appendChild(ov);
+  }
+})();
+
 <script src="./firebase-config.js"></script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
