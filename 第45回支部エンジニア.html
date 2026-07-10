@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第45回支部エンジニア スマホ問題集</title>
+<style>
+body{margin:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Yu Gothic',Meiryo,sans-serif;color:#111}
+header{position:relative;position:sticky;top:0;background:#fff;padding:10px 14px;border-bottom:1px solid #ddd;z-index:10}
+header .title{font-weight:900;font-size:15px;margin-bottom:6px}
+.wrap{max-width:900px;margin:auto;padding:10px 10px 90px}
+.card{background:#fff;border-radius:14px;padding:16px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:10px}
+.qtitle{font-size:13px;color:#666;font-weight:700;margin-bottom:4px}
+.qstem{font-size:16px;font-weight:700;line-height:1.6;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #eee}
+.choices{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.choice{padding:14px 16px;font-size:15px;font-weight:700;border-radius:12px;border:2px solid #c7d2fe;background:#ffffff;color:#111;text-align:left;line-height:1.5;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.choice .label{min-width:24px;font-size:18px;font-weight:900;color:#6366f1}
+.choice.selected{background:#e8f0ff;border-color:#2563eb}
+.choice.selected .label{color:#2563eb}
+.nav{position:fixed;left:0;right:0;bottom:0;max-width:900px;margin:auto;display:flex;gap:10px;padding:10px 14px;background:#f3f4f6ee;border-top:1px solid #ddd}
+.nav button{flex:1;padding:14px;border:none;border-radius:12px;background:#2563eb;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.nav button.secondary{background:#6b7280}
+.result{background:#fff;border-radius:14px;padding:18px;border:1px solid #ddd}
+.bar{height:8px;background:#ddd;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar div{height:100%;background:#2563eb;transition:width 0.3s;width:0%}
+.small{font-size:12px;color:#666;margin-top:3px}
+.actions{display:grid;gap:10px;margin-top:16px}
+.score-big{font-size:32px;font-weight:900;color:#2563eb;margin:10px 0}
+.section-badge{display:inline-block;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-bottom:8px}
+.calc-note{background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px;font-size:13px;margin-bottom:12px;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <div class="title">第45回 支部フロントエンジニア資格試験</div>
+  <div class="bar"><div id="barfill"></div></div>
+  <div class="small" id="prog"></div>
+<div id="fb-login-badge" style="position:absolute;top:14px;right:14px"></div></header>
+
+<div class="wrap">
+  <div class="card" id="quiz"></div>
+  <div id="result" style="display:none"></div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="secondary" onclick="prevQ()">◀ 前へ</button>
+  <button onclick="nextQ()" id="nextBtn">次へ ▶</button>
+</div>
+
+<script>
+const L3=['A','B','C'];
+const L4=['A','B','C','D'];
+const L5=['A','B','C','D','E'];
+const LABELS3=L3;
+const LABELS4=L4;
+const LABELS5=L5;
+const questions = [
+  // ===== 問1 =====
+  {no:1, section:"問1", label:"問1(1)", points:2, answer:"A",
+   cat:"",
+   stem:"下の図に示す回路において、抵抗４Ω に流れる電流が３Ａのとき、 電源電圧Ｅ を求めなさい。 ただし電池、配線の内部抵抗は無視するものとする。 （答えは小数点以下第１位を四捨五入すること） 答え[　　　]Ｖ",
+   choices:{A:"",B:"",C:"",D:""}},
+  {no:2, section:"問1", label:"問1(2)", points:2, answer:"A",
+   cat:"",
+   stem:"ある車両のスピードメーターの指示速度を７５ｋｍ／ｈにあわせて一定速度で走行したところ、 ３００ｍを１５秒で通過しました。 このときのスピードメーターの誤差を求めなさい。 （答えは小数点以下第１位を四捨五入すること） 答え[　　　]％",
+   choices:{A:"",B:"",C:"",D:""}},
+  {no:3, section:"問1", label:"問1(3)", points:2, answer:"A",
+   cat:"",
+   stem:"ＢＤＧ付デュトロのＤＰＲ状態表示に関する記述として、不適切なものはどれか。",
+   choices:{A:"「目詰まり危険レベル」の判定フラグは、計算スス堆積量が限界を超えている場合 にＯＮし、７５％の出力制限がかかる。",B:"「ＤＰＲ異常加熱」の判定フラグは、前側温度センサーで異常高温を検出した場合 にＯＮする。",C:"「触媒劣化」の判定フラグは、ＤＰＲ制御でＤＰＲ温度が上がらない（手動再生が終 わらない）場合にＯＮする。",D:"「昇温不良」の判定フラグは、自動再生時のポスト噴射量が一定値に達した場合に ＯＮする。"}},
+  {no:4, section:"問1", label:"問1(4)", points:2, answer:"D",
+   cat:"",
+   stem:"プロフィア（２０１４年モデル）のＰ２０７Ｆ／尿素水質異常を判定するための条件に関する記述 として、不適切なものはどれか。",
+   choices:{A:"尿素水タンクの尿素水が凍結していないこと。",B:"キーＯＮから３秒経過後。",C:"車速が０ｋｍ／ｈで車速センサが正常であること。",D:"マルチインフォメーションのＡｄＢｌｕｅ残量が２目盛り以上。"}},
+  {no:5, section:"問1", label:"問1(5)", points:2, answer:"D",
+   cat:"",
+   stem:"プロフィア（２０１４年モデル）の後処理変更点についての記述として、不適切なものはどれ か。",
+   choices:{A:"燃料添加弁、ＦＣＶが追加された。",B:"サーミスター式の温度センサーをＤＯＣ前に追加。排出ガス温度を検出して再生制 御時の軽油添加開始を判定する。",C:"エンジンＥＣＵのソフト改善によるＮＯｘ値の計算精度向上に伴い、ＳＣＲ上流ＮＯｘ センサーを廃止した。",D:"尿素の濃度を比重で測定する、尿素水質センサーを追加した。"}},
+  {no:6, section:"問1", label:"問1(6)", points:2, answer:"B",
+   cat:"",
+   stem:"新型ブルーリボンハイブリッド（ＨＬ２Ａ）のハイブリッドシステムに関する記述として、不適切な ものはどれか。",
+   choices:{A:"サービスプラグを取り外してから高電圧のコネクターおよび端子に触れるまで１０分 間の時間を確保する",B:"モータージェネレーターは交流同期電動機を採用し、冷却方式は油冷式でモーター オイルは定期交換すること。",C:"インバーターなどの車両電装品へ電力を供給するため、ＤＣ２８８ＶをＤＣ２４Ｖに降 圧するＤＣ/ＤＣコンバーターを床下ＨＶユニットに２つ搭載した。",D:"高圧ケーブルとは、ＨＶバッテリーとインバーターおよびインバーターと永久磁石式 同期電動機を結ぶ高電圧大電流の電線のことである。"}},
+  {no:7, section:"問1", label:"問1(7)", points:2, answer:"A",
+   cat:"",
+   stem:"新型ブルーリボンハイブリッド（ＨＬ２Ａ）のハイブリッドシステムに関する記述として、不適切な ものはどれか。",
+   choices:{A:"道路勾配が急でＨＶバッテリー容量が多い時は、クラッチを使用して２速発進する。",B:"道路勾配が緩やかでＨＶバッテリー容量が少ない時は、クラッチを使用して２速発 進する。",C:"道路勾配が緩やかでＨＶバッテリー容量が多い時は、モーターのみで３速発進す る。",D:"道路勾配が急でＨＶバッテリー容量が少ない時は、クラッチを使用して１速発進す る。"}},
+  {no:8, section:"問1", label:"問1(8)", points:2, answer:"B",
+   cat:"",
+   stem:"ＳＪＧ付デュトロハイブリッド車において、故障コード「インバーター冷却系異常／冷却水温セ ンサー温度上昇異常（ＤＴＣコードＰ０Ａ９３／ＴＣ７Ａ）」に関する記述として、適切なものはどれ か。",
+   choices:{A:"故障検出条件は、水温センサーが７５℃以上を１０秒以上継続して感知した時。",B:"故障検出条件は、水温センサーが７５℃以上を１５秒以上継続して感知した時。",C:"故障検出条件は、水温センサーが８５℃以上を１０秒以上継続して感知した時。",D:"故障検出条件は、水温センサーが８５℃以上を１５秒以上継続して感知した時。"}},
+  {no:9, section:"問1", label:"問1(9)", points:2, answer:"C",
+   cat:"",
+   stem:"プロフィア（２０１４年モデル）でプロシフト１２車のオートシフトダウン機能に関する記述として、 適切なものはどれか。",
+   choices:{A:"トラクター非連結状態でも作動する。",B:"セレクトレバーは「Ｄ」位置、または「ホールド」位置の時のみ作動する。",C:"補助ブレーキコントロールレバーを最下段にし、作動条件が成立した際に、オート シフトダウンが作動する。",D:"セレクトレバー横のオートシフトダウンスイッチをＯＦＦにすることで、機能を停止す ることができる。"}},
+  {no:10, section:"問1", label:"問1(10)", points:2, answer:"B",
+   cat:"",
+   stem:"ＱＰＧ付ＦＥ２Ａのトランスミッションに関する記述として、不適切なものはどれか。",
+   choices:{A:"ＭＸ０６（前進６段）とＭＸ０７（前進７段）が採用されているが、１速から５速までは共 通機構となっている。",B:"ＭＸ０６は前進６速のＯＤ（オーバードライブ）、ＭＸ０７は６速までＭＸ０６と同ギヤレ シオのＷＯＤ（ダブルオーバードライブ）となっている。",C:"ＭＸ０６、ＭＸ０７共にオイルポンプを内蔵することにより潤滑性能を上げ、信頼性を 向上した。",D:"ＭＸ０６、ＭＸ０７共に２速以上にシンクロメッシュ式を採用し、１速とリバースはコン スタントメッシュ式となっている。"}},
+  {no:11, section:"問1", label:"問1(11)", points:2, answer:"C",
+   cat:"",
+   stem:"ＱＰＧ付ＦＥ２Ａのトランスミッションに関する記述として、不適切なものはどれか。",
+   choices:{A:"シンクロのストロークを短縮することにより、操作力の低減を図りパワーシフトを廃 止した。",B:"インターロックピン式の二重かみ合い防止機構を廃止した。",C:"ロックボール式のギヤ抜け防止機構を廃止した。",D:"作業性向上のため、リバーススイッチを横向きに配置した。"}},
+  {no:12, section:"問1", label:"問1(12)", points:2, answer:"C",
+   cat:"",
+   stem:"ＬＤＧ付プロフィアのプロシフト１６に関する記述として、不適切なものはどれか。",
+   choices:{A:"スプリッタ２段、メイン４段、レンジ２段の組み合わせにより前進１６段の変速を可能 にしている。",B:"セレクトレバーを操作すると、レバー本体からＣＡＮ通信によりプロシフトＥＣＵに電 気信号が送られ変速が行われる。",C:"プロシフトＥＣＵは助手席側インパネ内右下に搭載されており、各センサーなどの情 報を元に変速制御を行っている。",D:"断・接用にそれぞれＦａｓｔ・Ｓｌｏｗの２系統（計４つ）のマグネチックバルブを備え、ク ラッチ制御を行っている。"}},
+  {no:13, section:"問1", label:"問1(13)", points:2, answer:"B",
+   cat:"",
+   stem:"ＭＺ１２トランスミッションオーバーホール時の説明として、不適切なものはどれか。",
+   choices:{A:"レンジＨｉのときに前側ＳＷ導通あり、後側ＳＷ導通なしであればポジションスイッチ は正常である。",B:"シンクロナイザーリングとコーンの隙間が基準値よりも大きい場合はセットで交換す る。",C:"リバースアイドラギヤのエンドプレー不良時はスラストワッシャーを交換する。",D:"シフトフォークとシンクロナイザースリーブの隙間が基準値よりも大きな場合はセッ トで交換する。"}},
+  {no:14, section:"問1", label:"問1(14)", points:2, answer:"B",
+   cat:"",
+   stem:"フレーム補強作業に関する記述として、不適切なものはどれか。",
+   choices:{A:"フレーム補強材は、フレームの厚さ以上の物は使わない。",B:"サイド・メンバの片側だけに亀裂が発生した場合、重量増加を防ぐため片側のみ補 強する。",C:"補強材の溶接方法については、熱ひずみをできだけ少なくするために、一般的に ３０ｍｍ程度の断続溶接又はせん断溶接を行う。",D:"補強材をボルト締めする場合は、確実な締め付けを行なうためにリーマ・ボルトを 使用する。"}},
+  {no:15, section:"問1", label:"問1(15)", points:2, answer:"B",
+   cat:"",
+   stem:"エア・スプリング型サスペンションに関する記述として、不適切なものはどれか。",
+   choices:{A:"スプリングの硬さが荷重に対しほぼ比例して変化するので、空車時、積車時の乗り 心地の差が少ない。",B:"非常に軟らかいばね特性が比較的容易に得られる事により、上下動による振動を 減衰させる事が出来る。",C:"前後、左右方向の剛性がないので、コイル・スプリングと同様にアクスルを支持す るための機構を備える必要がある。",D:"荷重の増減に応じて、レべリングバルブやレべライザなどの動きでボデーの高さを 一定に保ち、かつ、前後左右の傾きを防ぐ。"}},
+  {no:16, section:"問1", label:"問1(16)", points:2, answer:"D",
+   cat:"",
+   stem:"プロペラシャフトに関する記述として、不適切なものはどれか。",
+   choices:{A:"プロペラシャフトは、エンジンの強力な動力を伝えるため、ねじれ強度、曲げ剛性が 大きく、高回転にも優れた特性をもつ鋼管が用いられている。",B:"プロペラシャフトは、製作時に回転時のバランスをとるためのバランスピースが取り 付けられる。",C:"大型車は、プロペラシャフトが共振するのを防ぐために、プロペラシャフトを２本、あ るいは３本に分割している。",D:"ユニバーサルジョイントは、駆動軸及び受動軸の取り付け角度が変化すると回転 速度及びトルクが変動する。"}},
+  {no:17, section:"問1", label:"問1(17)", points:2, answer:"C",
+   cat:"",
+   stem:"ファイナルギヤに関する記述として、適切なものはどれか。",
+   choices:{A:"スパイラルべベルギヤは、ドライブピニオンの軸と、リングギヤの軸が交わらず、オ フセットしてかみ合わせたもので、乗用車から大型トラックまで広く用いられる。",B:"ハイポイドギヤは、ドライブピニオンとリングギヤ軸が交わっておりそれぞれの歯 は、斜めにねじれており、歯と歯の接触面積が大きく、強度が大きい。",C:"ハイポイドギヤは、ドライブピニオンをオフセットしているため、プロペラシャフトの位 置を低くすることができるので、車両の重心が下がり安定性が増す。",D:"ハイポイドギヤの減速比が等しく、大きさが同じリングギヤの場合、スパイラルべベ ルギヤに比較してドライブピニオンが小さくなり、接触面積が減少して強度が弱くな る。"}},
+  {no:18, section:"問1", label:"問1(18)", points:2, answer:"D",
+   cat:"",
+   stem:"タイヤのころがり抵抗に関する記述として、不適切なものはどれか。",
+   choices:{A:"空気圧が低くなるほど、タイヤ自体の変形が進むため、ころがり抵抗は大きくなる。",B:"偏平率が小さいタイヤほど、トレッド剛性が高く、タイヤの変形による抵抗が小さい ため、ころがり抵抗は小さくなる。",C:"速度が上がるほど、ころがり抵抗は大きくなる。",D:"ラジアルタイヤはバイヤスタイヤに比べてトレッド面の剛性が低いため、タイヤ変形 による抵抗が大きくなり、ころがり抵抗は大きくなる。"}},
+  {no:19, section:"問1", label:"問1(19)", points:2, answer:"A",
+   cat:"",
+   stem:"ＬＫＧ／ＬＤＧ付プロフィアのＥＢＳに関する記述として、不適切なものはどれか。",
+   choices:{A:"バックアップバルブはＥＢＳ失陥時にリレーバルブとして働き、ブレーキシグナルトラ ンスミッターからのエア信号圧をプロポーショナルリレーバルブへ送る。",B:"ブレーキシグナルトランスミッターはブレーキペダルの踏込量をペダルストローク信 号としてＥＢＳ ＥＣＵに送信する。",C:"ＥＢＳが故障により非作動となっている場合には、ブレーキペダルの踏力が重く感じ られたり、踏み代が増加する。",D:"バッテリーの電圧が低下していると、ＥＢＳの作動に影響を及ぼす場合があるた め、定期的にバッテリーの点検を行なう。"}},
+  {no:20, section:"問1", label:"問1(20)", points:2, answer:"C",
+   cat:"",
+   stem:"デュトロ（２０１３年モデル）の電動パーキングブレーキに関する記述として、不適切なものはど れか。",
+   choices:{A:"Ｇセンサーは車両の傾きを算出し、駐車勾配に合わせたケーブルけん引力の制御 をする。",B:"パーキングブレーキシューの摩耗や、アクチュエータモータの寿命が近くなった場 合、電動パーキングブレーキウォーニングランプが点灯する。",C:"故障などにより、パーキングブレーキが作動／解除しない場合、非常操作ケーブル を右回転させて作動、左回転させて解除する。",D:"温度センサーは外気温を測定し、温度変化によるケーブル効率変化分を加味した ケーブルけん引力の制御をする。"}},
+  {no:21, section:"問1", label:"問1(21)", points:2, answer:"D",
+   cat:"",
+   stem:"ＳＫＧ／ＳＤＧ付レンジャーのエアオーバーＡＢＳアクチュエータに関する記述として、不適切な ものはどれか。",
+   choices:{A:"ＥＳスタート作動時、ＥＳソレノイドバルブの制御信号はＯＮとなり、バルブは閉じて いる。",B:"減圧時は保持ソレノイドバルブが閉じ、減圧ソレノイドバルブが開き、ホイールシリ ンダーの液圧を減圧する。",C:"保持時は保持ソレノイドバルブが閉じると同時に、減圧ソレノイドバルブも閉じ、ホ イールシリンダーの油圧が保持される。",D:"増圧時は各ソレノイドバルブの制御信号はＯＦＦとなり、全てのポートは開いてい る。"}},
+  {no:22, section:"問1", label:"問1(22)", points:2, answer:"D",
+   cat:"",
+   stem:"ＴＤＧ／ＴＫＧ付デュトロのブレーキ点検に関する記述として、不適切なものはどれか。",
+   choices:{A:"ディスクブレーキのブレーキディスクとブレーキパッドのすき間は自動的に適正に 保たれるため、すき間の調整は不要である。",B:"ドラムブレーキのブレーキライニング端面の段差がなくなっている場合は、使用限 度を超えているため、交換が必要である。",C:"エンジン回転中にブレーキペダルを踏み込み、その状態でエンジンを止めて３０秒 間保持した際に、ペダル高さが変化しなかったので、負荷気密の簡易点検は正常 である。",D:"バキュームチェックバルブを点検したところ、バキュームポンプ側からバキュームリ ザーバー側に通気があったので、バキュームチェックバルブは正常である。"}},
+  {no:23, section:"問1", label:"問1(23)", points:2, answer:"C",
+   cat:"",
+   stem:"ポスト新長期規制対応レンジャーのブレーキ点検整備に関する記述として、適切なものはど れか。",
+   choices:{A:"フルエアブレーキまたはエアオーバーブレーキが装着されているため、点検時には ブレーキペダルを踏み込んだ時の床板とのすき間の測定を実施する。",B:"エアオーバーブレーキ車のホイールパーキング用ブレーキチャンバーを取り外す時 は、リリースボルトでパワースプリングが圧縮されていることを確認する。",C:"ブレーキチャンバーのロッド機構が外部から目視できないため、ロッドのストローク 点検は不要である。",D:"フルエアブレーキ車のパーキングブレーキ機構付チャンバーのピギーバック部は、 パワースプリングの突発的な開放による重大な事故の危険があるので、分解作業 を行う際には十分注意する。"}},
+  {no:24, section:"問1", label:"問1(24)", points:2, answer:"C",
+   cat:"",
+   stem:"ＬＫＧ付レンジャーに使用されている統合化ユニットに盛り込まれている機能として、不適切な ものはどれか。",
+   choices:{A:"ターン・ハザード機能",B:"ストップランプ断線検出機能",C:"データロガー機能",D:"ドアロック制御機能"}},
+  {no:25, section:"問1", label:"問1(25)", points:2, answer:"C",
+   cat:"",
+   stem:"ＳＪＧ付デュトロのプロシフトⅤ車のアイドルストップシステム非作動の前提条件として、適切 なものはどれか。",
+   choices:{A:"ＰＴＯ非作動",B:"アイドルストップキャンセルインジケーターランプ消灯",C:"ウインカー信号、ハザード信号あり",D:""}},
+  {no:26, section:"問1", label:"問1(26)", points:2, answer:"B",
+   cat:"",
+   stem:"ＬＫＧ付プロフィアのＰＣＳが衝突以外で作動する場合があるケースについて、不適切なもの はどれか。",
+   choices:{A:"狭い鉄橋",B:"悪天候（雨、霧、雪など）",C:"道路上の標識、看板など",D:"右折時の対向車"}},
+  {no:27, section:"問1", label:"問1(27)", points:2, answer:"D",
+   cat:"",
+   stem:"ＳＫＧ付デュトロのオド・トリップメーターの表示の項目として、不適切なものはどれか。",
+   choices:{A:"スターターカウンター（アイドルストップ作動回数）",B:"瞬間燃費",C:"平均燃費",D:"平均速度"}},
+  {no:28, section:"問1", label:"問1(28)", points:2, answer:"D",
+   cat:"",
+   stem:"ＬＫＧ付プロフィアのマルチインフォメーションの故障診断でメーターの割り込みウォーニング 対応をしている電子制御装置として、不適切なものはどれか。",
+   choices:{A:"エアサス",B:"車両制御",C:"プロシフト",D:"統合化ユニット"}},
+  {no:29, section:"問1", label:"問1(29)", points:2, answer:"C",
+   cat:"",
+   stem:"運転席エアバック・アセンブリを脱着する際の注意事項に関する記述として、不適切なものは どれか。",
+   choices:{A:"エアバック・アセンブリは、必ず、パット面を上に向けて保管しておく。",B:"エアバック・アセンブリの分解は、絶対に行わないこと。",C:"システムの点検をするときは、アナログ・サーキット・テスタを使用する。",D:"エアバック・アセンブリ交換時は、他の車で使用したものは絶対に使用しないこと。"}},
+  {no:30, section:"問1", label:"問1(30)", points:2, answer:"A",
+   cat:"",
+   stem:"自動車の材料に関する記述として、不適切なものはどれか。",
+   choices:{A:"焼き入れは、鋼の硬さおよび強さを増すため、ある温度まで加熱した後、徐々に冷 却する。",B:"鋳鉄は、比較的低い温度で溶け、流動性に優れているので、鋳物を作るのに適し ている。また鋼に比べて耐摩耗性に優れているが、衝撃に弱い。",C:"炭素鋼は、軟鋼と硬鋼に大別され、軟鋼は硬鋼より軟らかくてねばり強く、延性お よび展性に優れている。",D:"部分強化ガラスは、破損したときに運転視野を確保するため、破片の一部がやや 粗片になるように特殊加工を施した強化ガラスである。"}},
+  {no:31, section:"問1", label:"問1(31)", points:2, answer:"A",
+   cat:"",
+   stem:"リヤダブルタイヤ間に挟まった石などの異物の除去方法に関する記述として、適切なものは どれか。",
+   choices:{A:"両方のタイヤのエアを完全に抜いてから除去する。",B:"片方のタイヤのエアを抜いてから除去する。",C:"エアを抜かずにハンマーで石を細かく砕いてから除去する。",D:"石などの異物にガタツキが無くしっかり挟まっていれば除去する必要は無い。"}},
+  {no:32, section:"問1", label:"問1(32)", points:2, answer:"A",
+   cat:"",
+   stem:"「道路運送車両の保安基準」および「道路運送車両の保安基準の細目を定める告示」に照ら し、消火器を備えなければならない車両に関する記述として、適切なものはどれか。",
+   choices:{A:"わら類２，１００ｋｇを運送する自動車。",B:"マッチ１４０ｋｇを運送する自動車。",C:"可燃性液体類１，８００ｋｇを運送する自動車。",D:"油かす１，８００ｋｇを運送する自動車。"}},
+  {no:33, section:"問1", label:"問1(33)", points:2, answer:"B",
+   cat:"",
+   stem:"「道路運送車両の保安基準」および「道路運送車両の保安基準の細目を定める告示」に照ら し、燃料タンクの注入行及びガス抜口が、露出した電気端子及び電気開閉器から離れている ことが必要な数値の記述として、適切なものはどれか。",
+   choices:{A:"１５０ｍｍ以上",B:"２００ｍｍ以上",C:"２５０ｍｍ以上",D:"３００ｍｍ以上"}},
+  {no:34, section:"問1", label:"問1(34)", points:2, answer:"D",
+   cat:"",
+   stem:"「道路運送車両の保安基準」および「道路運送車両の保安基準の細目を定める告示」に照ら し、前面ガラスに貼り付けるものとして、不適切なものはどれか。",
+   choices:{A:"保険標章",B:"運転者が交通状況を確認するために必要な視野の範囲以外に、貼り付けられた 可視透過率２０％のフィルム",C:"整備命令標章",D:"運転者席の前面付近に貼付した幅１ｍｍのアンテナ線"}},
+  {no:35, section:"問1", label:"問1(35)", points:2, answer:"C",
+   cat:"",
+   stem:"「道路運送車両法」に照らし点検整備記録簿に記載しなければならない事項として、不適切な ものはどれか。",
+   choices:{A:"点検の結果",B:"整備の概要",C:"整備に入庫した年月日",D:"点検の年月日"}},
+  {no:36, section:"問1", label:"問1(36)", points:2, answer:"D",
+   cat:"",
+   stem:"ＨＩＷＡＹ内の安全に関する記述の「安全はすべての業務に優先する」という安全理念につい て、適切なものはどれか。",
+   choices:{A:"安全風土つくらずして、企業の発展なし",B:"互いのコミュニケーションなくして、安全なし",C:"法令を守らずして、企業の発展なし",D:"プロとしての自覚なくして、安全なし"}},
+  {no:37, section:"問1", label:"問1(37)", points:2, answer:"B",
+   cat:"",
+   stem:"ＨＩＷＡＹ内の安全に関する記述の「共同作業の５原則」について、適切なものはどれか。",
+   choices:{A:"指示は大声ではっきりと",B:"二人以上はリーダーの指示で",C:"是非確かめよう安全作業",D:"『運転』はまず合図で確認"}},
+  {no:38, section:"問1", label:"問1(38)", points:2, answer:"A",
+   cat:"",
+   stem:"５Ｓ活動の項目の「整理」「整頓」以外の３つの項目について、不適切なものはどれか。",
+   choices:{A:"指導",B:"躾（しつけ）",C:"清潔",D:"清掃"}},
+  {no:39, section:"問1", label:"問1(39)", points:2, answer:"B",
+   cat:"",
+   stem:"ＨＩＷＡＹ内の安全に関する記述のうち、出張作業時の対応について、不適切なものはどれ か。",
+   choices:{A:"路肩へ進入する場合は左ウインカ－を出し、路肩進入後はハザードランプを点灯さ せて、車両停車後はハンドルを左に切って危険回避処置を行う。",B:"作業者は安全対策を施す前に、必ず故障車より最低５０ｍ以上後方に発煙筒を設 置して、後続車に危険を知らせる。",C:"故障車と出張作業車両との車間距離は、最低２０ｍ以上は離し、夜間・カーブ等の 視界が悪い場合はそれ以上の安全な車間距離で停車する。",D:"お客様の誘導場所は、作業車のハンドルが左へ切れていることを条件に、作業車 両の前方で５ｍ以上離れた所とし、カラーコーンでの安全対策内とする。"}},
+  {no:40, section:"問1", label:"問1(40)", points:2, answer:"C",
+   cat:"",
+   stem:"車両の発進・移動・誘導時の遵守事項について、不適切なものはどれか。",
+   choices:{A:"エンジンを掛ける前に必ず車を一回りし、周囲の安全を確認し合図をする。",B:"運転者はギアの入れ間違いをしていないかシフトレバーの位置や表示を目視で確 認。",C:"車両誘導の際、誘導者は車両の進行方向の正面に立ち、笛又は大きな声により誘 導を行う。",D:"車両誘導の誘導者は、運転者に指示を明確に伝えるために、原則１名のみで行 う。"}},
+  {no:41, section:"問1", label:"問1(41)", points:2, answer:"A",
+   cat:"",
+   stem:"車両をリフトアップする作業でのリフト操作の注意として、不適切なものはどれか。",
+   choices:{A:"リフト昇降中に車両下作業を行う場合は、ヘルメットを着用する。",B:"操作開始前に周囲の人への声掛けを実施する。",C:"車両の下に人がいる場合、リフト操作を行わない。",D:"リフトアップ後は、リモコンの電源を「切」にする。"}},
+  {no:42, section:"問1", label:"問1(42)", points:2, answer:"C",
+   cat:"",
+   stem:"販売会社工場内における協力会社（外注業者）の作業者への対応について、不適切なもの はどれか。",
+   choices:{A:"外注作業者が、２ｍ以上の高所で決められた保護具を着用しないで作業を行って いた為、作業を中断させた。",B:"外注作業者が車両誘導の際、運転者の死角に立ち危険であった為、運転者の見 える位置に立つように指導した。",C:"資格を取得していない外注作業者に対して、フォークリフト有資格者指揮の元、 フォークリフト（最大荷重３ｔ）の運転を伴う作業をさせた。",D:"安全活動推進のために、日野の朝礼及び昼礼に外注作業者もできるだけ参加す るように、外注業者の安全管理責任者に要請した。"}},
+  {no:43, section:"問1", label:"問1(43)", points:2, answer:"B",
+   cat:"",
+   stem:"グラインダ（卓上）作業時のワークレストと砥石の隙間基準について、適切なものはどれか。",
+   choices:{A:"～０.９mm",B:"１mm～３mm",C:"４mm～６mm",D:"７mm～９mm"}},
+  {no:44, section:"問1", label:"問1(44)", points:2, answer:"D",
+   cat:"",
+   stem:"ＨＩＷＡＹ上のＩｎｆｏｒｍａｔｉｏｎＰｌａｚａの記述について、不適切なものはどれか。",
+   choices:{A:"整備ヒント、問合せ回答を閲覧できる。",B:"過去のサービスニュースを閲覧できる。",C:"ＥＣＵの個別制御プログラムをダウンロードすることができる。",D:"サービスマニュアル、ドライバーズメモの閲覧ができる。"}},
+  {no:45, section:"問1", label:"問1(45)", points:2, answer:"D",
+   cat:"",
+   stem:"ポスト新長期規制対応（２０１３年モデル）のデュトロハイブリッドのエコツリーレポートに関する 記述として、不適切なものはどれか。",
+   choices:{A:"アクセルの踏み込み状況が分かる。",B:"排気ブレーキ使用率が分かる。",C:"エンジン回転使用範囲が分かる。",D:"急ハンドル操作回数が分かる。"}},
+  {no:46, section:"問1", label:"問1(46)", points:2, answer:"A",
+   cat:"",
+   stem:"ＨＩＷＡＹの記述について、不適切なものはどれか。",
+   choices:{A:"販社支援室のページより、架装要領書を閲覧できる。",B:"国内企画部のページからオプションマニュアル、セールスマニュアルを閲覧できる。",C:"ＩＴ推進部のページよりＨＩＴＯＳＳ関係のマニュアルを閲覧できる。",D:"ＴＳ技術部のページより品番問合せを行うことが出来る。"}},
+  {no:47, section:"問1", label:"問1(47)", points:2, answer:"A",
+   cat:"",
+   stem:"部品返却（市場技術速報、保証申請、一般部品）に関する記述として、不適切なものはどれ か。",
+   choices:{A:"市場技術速報を発行した交換部品は６０日間保管する。",B:"保証申請を行い、許可された交換部品は許可後３０日間保管する。",C:"スカニア車部品は交換より７５日間保管する。",D:"部品返却の際は送り状を作成し、元払いで発送する。"}},
+  {no:48, section:"問1", label:"問1(48)", points:2, answer:"B",
+   cat:"",
+   stem:"大型車両でも寿命が長く消費電力の少ない「ＬＥＤ」の採用が増えているが この「ＬＥＤ」の正式な名前について、適切なものはどれか。",
+   choices:{A:"ＨＩＤランプ",B:"発光ダイオード",C:"ハロゲンランプ",D:"グローランプ"}},
+  {no:49, section:"問1", label:"問1(49)", points:2, answer:"C",
+   cat:"",
+   stem:"「トントントントンヒノノニトン」の日野デュトロＣＭに出演している俳優について、適切な組み合 わせはどれか。",
+   choices:{A:"柳沢　慎吾 佐々木　蔵之介",B:"堤　真一 佐々木　蔵之介",C:"リリー・フランキー 堤　真一",D:"リリー・フランキー 佐々木　蔵之介"}},
+  {no:50, section:"問1", label:"問1(50)", points:2, answer:"B",
+   cat:"",
+   stem:"２０１４年１０月からサービスが開始したＥＴＣ２．０の記述について、不適切なものはどれか。",
+   choices:{A:"ＥＴＣ２．０の新機能を活用するためには、カーナビまたはスマートフォンなど、ＥＴＣ ２．０と連動出来る機器が必要。",B:"ＥＴＣ２．０は、通行料金の支払いだけの機能しかない。新しい呼び方で市場を活性 化させるために意図的に付けられた呼称。",C:"ＥＴＣ２．０とは、通行料金の支払いだけではなく、渋滞回避支援や安全運転支援と いった、ドライバーに有益な情報を提供するサービス。",D:"従来、ＤＳＲＣサービス（=ＩＴＳスポットサービス）と呼ばれていたサービスを２０１４年 １０月よりＥＴＣ２．０サービスと呼んでいる。"}},
+  // ===== 問2 計算問題 =====
+  {no:51, section:"問2", label:"問2(1)", points:5, freeAnswer:true,
+   cat:"計算",
+   stem:"下の図に示す回路において、抵抗4Ωに流れる電流が3Aのとき、電源電圧Eを求めなさい。ただし電池、配線の内部抵抗は無視するものとする。（答えは小数点以下第1位を四捨五入すること）答え[　　　]V",
+   answer:"22"},
+  {no:52, section:"問2", label:"問2(2)", points:5, freeAnswer:true,
+   cat:"計算",
+   stem:"ある車両のスピードメーターの指示速度を75km/hにあわせて一定速度で走行したところ、300mを15秒で通過しました。このときのスピードメーターの誤差を求めなさい。（答えは小数点以下第1位を四捨五入すること）答え[　　　]%",
+   answer:"4"},
+  {no:53, section:"問2", label:"問2(3)", points:5, freeAnswer:true,
+   cat:"計算",
+   stem:"レッカー車の空車時の前軸荷重が10,000N、後軸荷重が4,500Nである場合、ワイヤに6,000Nの荷重をかけたときの後軸荷重を求めなさい。吊上げによるレッカー車の姿勢は変化はないものとする。（答えは小数点以下第2位を四捨五入すること）答え[　　　]N",
+   answer:"12500"},
+  {no:54, section:"問2", label:"問2(4)", points:5, freeAnswer:true,
+   cat:"計算",
+   stem:"図のパワー・シリンダーに600kPaの圧力をかけたとき、ハイドロリック・ピストンを押す力を求めなさい。パワー・シリンダーの内径 180mm、ハイドロリック・シリンダの内径 30mm、円周率 3.14。ただし、リターンスプリングの張力は無視してよい。（答えは小数点以下第1位を四捨五入すること）答え[　　　]N",
+   answer:"15260"},
+];
+
+function norm(q) {
+  if (q.o !== undefined && Array.isArray(q.o)) {
+    var labs = q.o.length <= 3 ? L3 : q.o.length === 4 ? L4 : L5;
+    var ch = {};
+    q.o.forEach(function(v, i) { ch[labs[i]] = v; });
+    return {no:q.n, section:q.s||'', label:(q.s||'問'+q.n), points:q.p, answer:labs[q.a], stem:q.q, choices:ch, explanation:q.exp||'', invalid:false, multi:false, freeAnswer:false};
+  }
+  if (q.opts !== undefined && Array.isArray(q.opts)) {
+    var labs2 = q.labels || L4;
+    var ch2 = {};
+    q.opts.forEach(function(v, i) { if (labs2[i]) ch2[labs2[i]] = v; });
+    var sec = q.section || q.s || '';
+    var lbl = q.label || (sec ? sec + '(' + (q.no||q.n) + ')' : '問' + (q.no||q.n));
+    var ansVal = Array.isArray(q.ans) ? q.ans.map(function(i){return labs2[i];}).join(',') : labs2[q.ans];
+    return {no:q.no||q.n, section:sec, label:lbl, points:q.pts||q.points||1, answer:ansVal, stem:q.text||q.stem||q.q||'', choices:ch2, explanation:q.exp||q.explanation||'', invalid:false, multi:q.multi||false, freeAnswer:false, fig:q.fig||''};
+  }
+  return {no:q.no, section:q.section||q.s||'', label:q.label||('問'+q.no), points:q.points||q.pts||1, answer:q.answer, stem:q.stem||q.text||q.q||'', choices:q.choices||{}, explanation:q.explanation||q.exp||'', invalid:q.invalid||false, multi:false, freeAnswer:q.freeAnswer||false, fig:q.fig||''};
+}
+
+const totalQ = questions.length;
+let idx = 0;
+const ans = {};
+var reviewMode = false, reviewList = [], reviewPos = 0;
+
+function updateProg() {
+  const answered = Object.keys(ans).length;
+  document.getElementById('barfill').style.width = (answered/totalQ*100)+'%';
+  document.getElementById('prog').textContent = (idx+1)+' / '+totalQ+' 問  （回答済み '+answered+' 問）';
+}
+
+function checkFree() {
+  const q = norm(questions[idx]);
+  const input = document.getElementById('freeInput').value.trim();
+  const result = document.getElementById('freeResult');
+  const correct = String(q.answer).replace(/[,，　 ]/g,'');
+  const inputClean = input.replace(/[,，　 ]/g,'');
+  result.style.display = 'block';
+  if (inputClean === correct || input === String(q.answer)) {
+    result.style.background = '#f0fdf4';
+    result.style.border = '1px solid #86efac';
+    result.style.color = '#166534';
+    result.innerHTML = '✅ 正解！ 正解：'+q.answer+(q.explanation?'<br><span style="font-size:13px;color:#333">'+q.explanation.replace(/\n/g,'<br>')+'</span>':'');
+  } else {
+    result.style.background = '#fef2f2';
+    result.style.border = '1px solid #fca5a5';
+    result.style.color = '#991b1b';
+    result.innerHTML = '❌ 不正解 正解：'+q.answer+(q.explanation?'<br><span style="font-size:13px;color:#333">'+q.explanation.replace(/\n/g,'<br>')+'</span>':'');
+  }
+}
+
+function render() {
+  const _q = questions[idx];
+  const q = norm(_q);
+  const isCalc = q.section === '問2' || q.section === '問２';
+  const choiceKeys = Object.keys(q.choices);
+  let html = '';
+  if (q.section) html += '<div class="section-badge">'+q.section+'</div>';
+  html += '<div class="qtitle">'+q.label+'（'+q.points+'点）</div>';
+  if (q.invalid) html += '<div class="calc-note" style="background:#fff5f5;border-color:#fca5a5;color:#dc2626">⚠️ この問題は試験では無効問題でした（採点対象外）</div>';
+  if (q.freeAnswer) html += '<div class="calc-note" style="background:#eff6ff;border-color:#93c5fd;color:#1d4ed8">📝 記述問題 — 計算して答えを確認してください（採点対象外）</div>';
+  if (q.multi) html += '<div class="calc-note" style="background:#fff7ed;border-color:#fdba74;color:#c2410c">☑️ 複数選択問題（採点対象外）</div>';
+  if (isCalc && !q.freeAnswer) html += '<div class="calc-note">📝 計算問題 — 電卓使用可</div>';
+  if (q.fig) html += '<div style="text-align:center;margin-bottom:12px">'+q.fig+'</div>';
+  html += '<div class="qstem">'+q.stem.replace(/\n/g,'<br>')+'</div>';
+  if (q.freeAnswer) {
+    html += '<div style="margin-top:12px">';
+    html += '<input type="text" id="freeInput" placeholder="答えを入力..." style="width:100%;padding:12px;font-size:16px;border:2px solid #93c5fd;border-radius:10px;box-sizing:border-box;margin-bottom:10px">';
+    html += '<button onclick="checkFree()" style="width:100%;padding:12px;background:#3b82f6;color:#fff;font-size:16px;font-weight:700;border:none;border-radius:10px;cursor:pointer">答え合わせ</button>';
+    html += '<div id="freeResult" style="display:none;margin-top:10px;padding:12px;border-radius:10px"></div>';
+    html += '</div>';
+  } else {
+    html += '<div class="choices">';
+    choiceKeys.forEach(function(c) {
+      if (!q.choices[c]) return;
+      const sel = ans[q.no] === c ? ' selected' : '';
+      html += '<button class="choice'+sel+'" onclick="selectAns('+q.no+',\'' + c + '\')"><span class="label">'+c+'</span><span>'+q.choices[c]+'</span></button>';
+    });
+    html += '</div>';
+  }
+  document.getElementById('quiz').innerHTML = html;
+  document.getElementById('nextBtn').textContent = idx === totalQ - 1 ? '採点する ✓' : '次へ ▶';
+  updateProg();
+  window.scrollTo(0, 0);
+}
+
+function selectAns(no, c) { ans[no] = c; updateProg(); render(); }
+function prevQ() {
+  if (reviewMode) {
+    if (reviewPos > 0) { reviewPos--; idx = reviewList[reviewPos]; render(); _updateReviewBadge(); }
+  } else {
+    if (idx > 0) { idx--; render(); }
+  }
+}
+function nextQ() {
+  if (reviewMode) {
+    if (reviewPos < reviewList.length - 1) { reviewPos++; idx = reviewList[reviewPos]; render(); _updateReviewBadge(); }
+    else { reviewMode = false; reviewList = []; showResult(); }
+  } else {
+    if (idx < totalQ - 1) { idx++; render(); } else { showResult(); }
+  }
+}
+
+function showResult() {
+  let score = 0, max = 0;
+  const norms = questions.map(norm);
+  norms.forEach(function(q) {
+    if (q.invalid || q.freeAnswer || q.multi) return;
+    max += q.points;
+    if (ans[q.no] === q.answer) score += q.points;
+  });
+  let html = '<div class="result"><h2>📊 採点結果</h2><div class="score-big">'+score+' / '+max+' 点</div>';
+  const sections = {}, secOrder = [];
+  norms.forEach(function(q) {
+    if (q.invalid || q.freeAnswer || q.multi) return;
+    if (!sections[q.section]) { sections[q.section] = {score:0,max:0}; secOrder.push(q.section); }
+    sections[q.section].max += q.points;
+    if (ans[q.no] === q.answer) sections[q.section].score += q.points;
+  });
+  const vs = secOrder.filter(function(s) { return s; });
+  if (vs.length > 0) {
+    let sh = '<p style="font-size:14px;color:#555">';
+    vs.forEach(function(s) { sh += s+'：'+sections[s].score+'/'+sections[s].max+'点　'; });
+    html += sh + '</p>';
+  }
+  let hasMiss = false;
+  html += '<h3 style="margin:16px 0 8px;font-size:15px;color:#333">📝 全問解説</h3>';
+  norms.forEach(function(q) {
+    if (q.invalid) {
+      html += '<div style="border-left:5px solid #d1d5db;background:#f9fafb;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#6b7280">'+q.label+' ⚠️ 無効問題（採点対象外）</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    if (q.freeAnswer) {
+      html += '<div style="border-left:5px solid #93c5fd;background:#eff6ff;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#1d4ed8">'+q.label+' 📝 記述問題（採点対象外）</div>';
+      html += '<div style="color:#1d4ed8;font-weight:700;margin-bottom:4px">正解：'+q.answer+'</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    if (q.multi) {
+      html += '<div style="border-left:5px solid #fdba74;background:#fff7ed;padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+      html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#c2410c">'+q.label+' ☑️ 複数選択（採点対象外）</div>';
+      html += '<div style="color:#c2410c;font-weight:700;margin-bottom:4px">正解：'+q.answer+'</div>';
+      if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+      html += '</div>';
+      return;
+    }
+    const wrong = ans[q.no] !== q.answer;
+    if (wrong) hasMiss = true;
+    const bc = wrong ? '#dc2626' : '#d1d5db';
+    const bg = wrong ? '#fff5f5' : '#fff';
+    const correctText = q.choices[q.answer] || '';
+    html += '<div style="border-left:5px solid '+bc+';background:'+bg+';padding:12px;margin:8px 0;border-radius:8px;line-height:1.6;font-size:14px">';
+    html += '<div style="font-weight:700;font-size:15px;margin-bottom:4px;color:'+(wrong?'#dc2626':'#111')+'">'+q.label+(wrong?' ❌':' ✅')+'</div>';
+    if (wrong) {
+      const myText = q.choices[ans[q.no]] || '';
+      html += '<div style="color:#dc2626;font-weight:700;margin-bottom:2px">あなたの答え：'+(ans[q.no]||'未回答')+(myText ? '　'+myText : '')+'</div>';
+      html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
+    } else {
+      html += '<div style="color:#16a34a;font-weight:700;margin-bottom:4px">正解：'+q.answer+(correctText ? '　'+correctText : '')+'</div>';
+    }
+    if (q.explanation) html += '<div style="color:#333;margin-top:4px">'+q.explanation.replace(/\n/g,'<br>')+'</div>';
+    html += '</div>';
+  });
+  if (!hasMiss) html += '<p style="font-size:18px;font-weight:900;color:#16a34a">🎉 全問正解です！</p>';
+  html += '<div class="actions"><button onclick="reviewMistakes()" style="padding:14px;border:none;border-radius:12px;background:#dc2626;color:#fff;font-size:16px;font-weight:700;cursor:pointer">間違えた問題を復習</button><button onclick="resetQuiz()" style="padding:14px;border:none;border-radius:12px;background:#6b7280;color:#fff;font-size:16px;font-weight:700;cursor:pointer">最初からやり直す</button></div></div>';
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('nav').style.display = 'none';
+  const r = document.getElementById('result');
+  r.style.display = 'block';
+  html += '<a href="./index.html" style="display:block;text-align:center;margin-top:16px;padding:12px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.95rem">🏠 ホームへ戻る</a>';
+  r.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function reviewMistakes() {
+  const norms = questions.map(norm);
+  reviewList = [];
+  for (let i = 0; i < norms.length; i++) {
+    const q = norms[i];
+    if (q.invalid || q.freeAnswer || q.multi) continue;
+    const _L = q.labels || ['A','B','C','D'];
+    const correct = q.answer !== undefined ? q.answer : _L[q.ans !== undefined ? q.ans : 0];
+    if (ans[q.no] !== correct) reviewList.push(i);
+  }
+  if (!reviewList.length) return;
+  reviewMode = true;
+  reviewPos = 0;
+  idx = reviewList[0];
+  document.getElementById('quiz').style.display = 'block';
+  document.getElementById('nav').style.display = 'flex';
+  document.getElementById('result').style.display = 'none';
+  render();
+  _updateReviewBadge();
+}
+
+function resetQuiz() {
+  Object.keys(ans).forEach(function(k) { delete ans[k]; });
+  idx = 0; reviewMode = false; reviewList = []; reviewPos = 0;
+  var rb = document.getElementById('_review_badge'); if (rb) rb.remove();
+  document.getElementById('quiz').style.display = 'block';
+  document.getElementById('nav').style.display = 'flex';
+  document.getElementById('result').style.display = 'none';
+  render();
+}
+
+render();
+
+// ?q=N で特定問題から開始（復習モード）
+(function(){
+  var qParam = new URLSearchParams(location.search).get('q');
+  if (!qParam || typeof questions === 'undefined' || typeof render !== 'function') return;
+  var qi = questions.findIndex(function(x){ return x.no === parseInt(qParam); });
+  if (qi < 0) return;
+  idx = qi;
+  render();
+
+  // 復習モード: 答えたら即フィードバックオーバーレイ
+  var _origSel = window.selectAns;
+  window.selectAns = function(no, choice) {
+    if (_origSel) _origSel(no, choice);
+    var q = questions.find(function(x){ return x.no === no; });
+    if (!q) return;
+    var _L = q.labels || ['A','B','C','D'];
+    var correctAns = q.answer !== undefined ? q.answer : _L[q.ans !== undefined ? q.ans : 0];
+    var isCorrect = (choice === correctAns);
+    _showReviewResult(q, isCorrect, correctAns);
+    // Firebase: 復習モードでの正解削除・不正解登録
+    (function(){
+      var fbUser = window._fbUser;
+      var fbDb = window._fbDb;
+      var fbSrc = window._fbSrc;
+      if (!fbUser || !fbDb || !fbSrc) return;
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js')
+        .then(function(m) {
+          var key = fbSrc + '_q' + no;
+          if (isCorrect) {
+            m.deleteDoc(m.doc(fbDb, 'users', fbUser.uid, 'wrongAnswers', key)).catch(function(){});
+          } else {
+            m.setDoc(m.doc(fbDb, 'users', fbUser.uid, 'wrongAnswers', key), {
+              source: fbSrc, qNo: no, label: q.label||('Q'+no),
+              stem: (q.stem||'').substring(0,120), timestamp: m.serverTimestamp(),
+              url: window.location.pathname
+            }, {merge:true}).catch(function(){});
+          }
+        });
+    })();
+  };
+
+  function _showReviewResult(q, isCorrect, correctAns) {
+    var old = document.getElementById('_review_overlay');
+    if (old) old.remove();
+    var isSpecial = q.freeAnswer || q.multi;
+    var icon = isCorrect ? '✅' : (isSpecial ? '📝' : '❌');
+    var msg  = isCorrect ? '正解！'  : (isSpecial ? '記述・複数選択問題' : '不正解');
+    var col  = isCorrect ? '#059669' : (isSpecial ? '#1d4ed8' : '#dc2626');
+    var ansHtml = (!isCorrect && !isSpecial)
+      ? '<div style="margin:8px 0;font-size:.9rem;color:#1d4ed8;font-weight:700">正解: ' + correctAns + '</div>' : '';
+    var expHtml = q.explanation
+      ? '<div style="margin-top:12px;text-align:left;background:#f8fafc;border-radius:8px;padding:12px;font-size:.82rem;line-height:1.7;color:#374151;max-height:220px;overflow-y:auto">'
+        + (q.explanation||'').replace(/\n/g,'<br>') + '</div>' : '';
+    var ov = document.createElement('div');
+    ov.id = '_review_overlay';
+    ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
+    ov.innerHTML = '<div style="background:white;border-radius:16px;padding:24px;max-width:480px;width:100%;text-align:center;font-family:-apple-system,Meiryo,sans-serif">'
+      + '<div style="font-size:2.4rem">' + icon + '</div>'
+      + '<div style="font-size:1.25rem;font-weight:900;color:' + col + ';margin:8px 0">' + msg + '</div>'
+      + ansHtml + expHtml
+      + '<a href="./mypage.html" style="display:inline-block;margin-top:20px;padding:12px 28px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">📁 マイページへ戻る</a>'
+      + (function(){var _rq=JSON.parse(sessionStorage.getItem('reviewQueue')||'[]');var _rNext=_rq.length?_rq[0]:null;if(_rNext){_rq.shift();sessionStorage.setItem('reviewQueue',JSON.stringify(_rq));}var _rTotal=parseInt(sessionStorage.getItem('reviewTotal')||'0');var _rLeft=_rq.length;return _rNext?'<a href="'+_rNext+'" style="display:inline-block;margin-top:10px;margin-left:8px;padding:12px 28px;background:#059669;color:white;border-radius:10px;text-decoration:none;font-weight:700;font-size:.9rem">▶ 次の復習問題（残'+_rLeft+'問）</a>':'';})()
+      + '<br><button onclick="document.getElementById(\'_review_overlay\').remove()" style="margin-top:10px;padding:8px 20px;background:transparent;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:.82rem;color:#64748b;font-family:inherit">✏️ 続けて解く</button>'
+      + '</div>';
+    document.body.appendChild(ov);
+  }
+})();
+</script>
+
+<script src="./firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, deleteDoc, collection, getDocs, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const SOURCE_KEY = document.title.replace(/[\s　]/g,'_').replace(/[^\w\u3040-\u9FFF]/g,'');
+
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async user => {
+    const badge = document.getElementById('fb-login-badge');
+    if (badge) {
+      if (user) {
+        const name = user.displayName || user.email.split('@')[0];
+        badge.innerHTML = `<a href="./index.html" style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;text-decoration:none">👤 ${name}</a>`;
+      } else {
+        badge.innerHTML = `<a href="./login.html" style="font-size:.72rem;background:rgba(255,255,255,.15);color:white;padding:3px 10px;border-radius:999px;text-decoration:none">ログイン</a>`;
+      }
+    }
+    window._fbUser = user;
+    window._fbDb = db;
+    window._fbSrc = SOURCE_KEY;
+    // users/{uid}ドキュメントを作成（管理者ページで一覧表示するため）
+    try {
+      const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      setDoc(doc(db,'users',user.uid),{email:user.email,displayName:user.displayName||user.email.split('@')[0],lastLogin:new Date().toISOString()},{merge:true}).catch(()=>{});
+    } catch(e){}
+  });
+
+  const _orig = window.selectAns;
+  if (typeof _orig === 'function') {
+    window.selectAns = function(no, choice) {
+      _orig(no, choice);
+      const user = window._fbUser; const db = window._fbDb;
+      if (!user || !db) return;
+      const q = (typeof questions!=="undefined"?questions:[]).find(q2 => q2.no === no);
+      if (!q) return;
+      const isCorrect = choice === q.answer;
+      const key = window._fbSrc + '_q' + no;
+      if (isCorrect) {
+        deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
+      }
+
+  const _origResult = window.showResult;
+  if (typeof _origResult === 'function') {
+    window.showResult = function() {
+      _origResult();
+      const user = window._fbUser; const db = window._fbDb;
+      if (!user || !db) return;
+      const norms = (typeof questions!=="undefined"?questions:[]).filter(q=>!q.invalid&&!q.freeAnswer&&!q.multi);
+      const ansObj = (typeof ans!=="undefined"?ans:{});
+      let correct=0,total=0;
+      norms.forEach(q=>{
+        total+=q.points||3;
+        const _L2 = q.labels || ['A','B','C','D'];
+        const correctAns = q.answer !== undefined ? q.answer : _L2[q.ans];
+        const isCorrect2 = ansObj[q.no] === correctAns;
+        if(isCorrect2) correct+=q.points||3;
+        const key = window._fbSrc + '_q' + q.no;
+        if(isCorrect2) {
+          deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
+        } else if(ansObj[q.no] !== undefined) {
+          setDoc(doc(db,'users',user.uid,'wrongAnswers',key),{
+            source:window._fbSrc,qNo:q.no,label:q.label||('Q'+q.no),
+            stem:(q.text||q.stem||'').substring(0,120),timestamp:serverTimestamp(),
+            url:window.location.pathname
+          },{merge:true}).catch(()=>{});
+          setDoc(doc(db,'users',user.uid,'wrongHistory',key),{
+            source:window._fbSrc,qNo:q.no,label:q.label||('Q'+q.no),
+            stem:(q.text||q.stem||'').substring(0,120),firstWrong:serverTimestamp(),
+            url:window.location.pathname
+          },{merge:true}).catch(()=>{});
+        }
+      });
+      setDoc(doc(db,'users',user.uid,'stats',window._fbSrc),{
+        source:window._fbSrc,lastCorrect:correct,lastTotal:total,
+        lastDate:serverTimestamp(),totalAttempts:increment(1)
+      },{merge:true}).catch(()=>{});
+    };
+  }
+} catch(e){ console.warn('Firebase:',e.message); }
+</script>
+
+<script>
+function _updateReviewBadge() {
+  var nav = document.getElementById('nav');
+  if (!nav || typeof reviewMode === 'undefined' || !reviewMode) return;
+  var b = document.getElementById('_review_badge');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = '_review_badge';
+    b.style.cssText = 'position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:#dc2626;color:white;font-size:.75rem;font-weight:700;padding:3px 12px;border-radius:999px;white-space:nowrap';
+    nav.style.position = 'relative';
+    nav.appendChild(b);
+  }
+  b.textContent = '❌ 間違い問題 ' + (reviewPos+1) + ' / ' + reviewList.length;
+}
+</script>
+</body>
+</html>
