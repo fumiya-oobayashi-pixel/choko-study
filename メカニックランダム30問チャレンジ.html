@@ -110,8 +110,8 @@ function startQuiz() {
   let wrongQuestions = normalPool.filter(q => wrongAnswerKeys.has(getWrongKey(q)));
   let otherQuestions = normalPool.filter(q => !wrongAnswerKeys.has(getWrongKey(q)));
   
-  // Take up to 24 from wrong, fill rest from others (total 30 normal + 2 calc = 32)
-  let selected = shuffle(wrongQuestions).slice(0, 24);
+  // Take up to 30 from wrong, fill rest from others (total 30 normal + 2 calc = 32)
+  let selected = shuffle(wrongQuestions).slice(0, 30);
   let remaining = 30 - selected.length;
   selected = [...selected, ...shuffle(otherQuestions).slice(0, remaining)];
   const calc = shuffle(calcPool).slice(0, 2);
