@@ -238,6 +238,7 @@
 <header style="background:linear-gradient(135deg,#166534,#16a34a);color:white;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.2)">
   <a href="./index.html" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:5px 12px;border-radius:8px;text-decoration:none;font-size:.78rem;font-weight:700">← ホーム</a>
   <h1 style="font-size:1rem;font-weight:800;flex:1">🚗 新型車解説確認テスト</h1>
+  <span id="fb-login-badge"></span>
 </header>
 <div class="container">
   <h1>🚛 新型車解説書 確認テスト</h1>
@@ -2228,11 +2229,30 @@ function renderQuestion() {
 function selectAnswer(selected, correct) {
   if (answered) return;
   answered = true;
+  const q = currentQuestions[currentIndex];
+  const isCorrect = selected === correct;
+
+  // Firebase記録
+  if (window._fbUser && window._fbDb) {
+    const user = window._fbUser, db = window._fbDb;
+    const src = '新型車解説確認テスト_スマホ問題集';
+    const wkey = src + '_q' + q.id;
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({doc, setDoc, deleteDoc, serverTimestamp, increment}) => {
+      setDoc(doc(db,'users',user.uid,'catStats',q.category),{total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
+      if (isCorrect) {
+        deleteDoc(doc(db,'users',user.uid,'wrongAnswers',wkey)).catch(()=>{});
+      } else {
+        const stemTxt = (q.stem||'').substring(0,120);
+        setDoc(doc(db,'users',user.uid,'wrongAnswers',wkey),{source:src,qNo:q.id,label:'Q'+q.id,stem:stemTxt,timestamp:serverTimestamp(),url:window.location.pathname},{merge:true}).catch(()=>{});
+        setDoc(doc(db,'users',user.uid,'wrongHistory',wkey),{source:src,qNo:q.id,label:'Q'+q.id,stem:stemTxt,firstWrong:serverTimestamp(),url:window.location.pathname},{merge:true}).catch(()=>{});
+      }
+    });
+  }
 
   const btns = document.querySelectorAll('.choice-btn');
   btns.forEach(b => b.disabled = true);
 
-  if (selected === correct) {
+  if (isCorrect) {
     score++;
     btns[selected].classList.add('correct');
     document.getElementById('score-text').textContent = `正解: ${score}`;
@@ -2257,44 +2277,7 @@ function nextQuestion() {
 function renderResult() {
   const total = currentQuestions.length;
   const pct = Math.round((score / total) * 100);
-  let msg = '';
-  if (pct === 100) msg = '🎉 パーフェクト！素晴らしい！';
-  else if (pct >= 80) msg = '👍 よく解けています！';
-  else if (pct >= 60) msg = '📖 もう少し復習してみましょう';
-  else msg = '💪 解説書をよく読み直してみましょう';
-
-  document.getElementById('stats-bar').classList.add('hidden');
-  document.getElementById('quiz-area').innerHTML = `
-    <div class="result-card">
-      <div class="result-label">最終スコア</div>
-      <div class="result-score">${score} / ${total}</div>
-      <div class="result-label">正解率 ${pct}%</div>
-      <div class="result-msg">${msg}</div>
-      <button class="btn-retry" onclick="startQuiz()">もう一度挑戦する</button>
-    </div>
-  `;
-}
-
-  // URLパラメータで初期値を設定
-  (function() {
-    const p = new URLSearchParams(location.search);
-    const v = p.get('vehicle');
-    const c = p.get('category');
-    if (v) {
-      const sel = document.getElementById('sel-vehicle');
-      for (let i = 0; i < sel.options.length; i++) {
-        if (sel.options[i].value === v) { sel.selectedIndex = i; break; }
-      }
-    }
-    if (c) {
-      const sel = document.getElementById('sel-category');
-      for (let i = 0; i < sel.options.length; i++) {
-        if (sel.options[i].value === c) { sel.selectedIndex = i; break; }
-      }
-    }
-    if (v || c) startQuiz();
-  })();
-
-</script>
-</body>
-</html>
+  // Firebase stats記録
+  if (window._fbUser && window._fbDb) {
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({doc, setDoc, serverTimestamp, increment}) => {
+      setDoc(doc(window._fbDb,'u
