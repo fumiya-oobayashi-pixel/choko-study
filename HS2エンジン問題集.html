@@ -659,18 +659,90 @@ function showResult() {
   document.getElementById('quiz').style.display = 'none';
   const correct = answers.filter(function(a,i){ return a === questions[i].answer; }).length;
   const total = questions.length;
+  const pct = Math.round(correct / total * 100);
+
+  // Firebase保存
+  if (typeof window._saveELResult === 'function') window._saveELResult(correct, total);
+
+  // 間違い問題リスト
+  let wrongHtml = '';
+  const wrongs = questions.filter(function(q,i){ return answers[i] !== q.answer; });
+  if (wrongs.length > 0) {
+    wrongHtml = '<div style="margin-top:16px;border-top:1px solid #eee;padding-top:12px">' +
+      '<div style="font-weight:700;font-size:13px;color:#dc2626;margin-bottom:8px">❌ 間違えた問題 (' + wrongs.length + '問)</div>';
+    wrongs.forEach(function(q, i) {
+      wrongHtml += '<div style="background:#fff5f5;border-left:3px solid #dc2626;padding:8px 10px;border-radius:6px;margin-bottom:6px;font-size:12px">';
+      wrongHtml += '<div style="font-weight:700;color:#dc2626;margin-bottom:3px">Q' + q.no + '.</div>';
+      wrongHtml += '<div style="color:#333;line-height:1.5">' + q.stem.substring(0, 60) + (q.stem.length > 60 ? '…' : '') + '</div>';
+      wrongHtml += '<div style="color:#16a34a;font-weight:700;margin-top:3px">正解：' + q.answer + '　' + (q.choices[q.answer] || '') + '</div>';
+      wrongHtml += '</div>';
+    });
+    wrongHtml += '</div>';
+  } else {
+    wrongHtml = '<div style="margin-top:12px;color:#16a34a;font-weight:700;font-size:15px">🎉 全問正解！</div>';
+  }
+
   document.getElementById('result').style.display = 'block';
   document.getElementById('result').innerHTML =
     '<div class="result">' +
-    '<div style="font-weight:900;font-size:18px">結果</div>' +
+    '<div style="font-weight:900;font-size:18px">📊 結果</div>' +
     '<div class="score-big">' + correct + ' / ' + total + '</div>' +
-    '<div style="font-size:14px;color:#666">' + Math.round(correct/total*100) + '点</div>' +
-    '<div class="actions">' +
-    '<button onclick="location.reload()" style="padding:14px;border:none;border-radius:12px;background:#2563eb;color:#fff;font-size:16px;font-weight:700;cursor:pointer">もう一度</button>' +
-    '</div></div>';
+    '<div style="font-size:14px;color:#666">' + pct + '点</div>' +
+    wrongHtml +
+    '<div class="actions" style="margin-top:16px;display:grid;gap:10px">' +
+    '<button onclick="location.reload()" style="padding:14px;border:none;border-radius:12px;background:#2563eb;color:#fff;font-size:15px;font-weight:700;cursor:pointer;width:100%">🔄 もう一度</button>' +
+    '<a href="./index.html" style="display:block;padding:14px;border-radius:12px;background:#1e3a5f;color:#fff;font-size:15px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none">🏠 ホームへ戻る</a>' +
+    '</div>' +
+    '</div>';
+  window.scrollTo(0, 0);
 }
 
 render();
+</script>
+<script src="./firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, deleteDoc, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+const SOURCE_KEY = document.title.replace(/[\s\u3000]/g,'_').replace(/[^\w\u3040-\u9FFF_]/g,'');
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  onAuthStateChanged(auth, user => {
+    window._fbUser = user;
+    window._fbDb = db;
+    window._fbSrc = SOURCE_KEY;
+  });
+} catch(e) { console.warn('Firebase init:', e.message); }
+window._saveELResult = function(correct, total) {
+  const user = window._fbUser, db = window._fbDb, src = window._fbSrc;
+  if (!user || !db) return;
+  questions.forEach(function(q, i) {
+    const isCorrect = answers[i] === q.answer;
+    const key = src + '_q' + q.no;
+    if (isCorrect) {
+      deleteDoc(doc(db, 'users', user.uid, 'wrongAnswers', key)).catch(function(){});
+    } else if (answers[i] !== null && answers[i] !== undefined) {
+      setDoc(doc(db, 'users', user.uid, 'wrongAnswers', key), {
+        source: src, qNo: q.no, label: 'Q' + q.no,
+        stem: (q.stem || '').substring(0, 120),
+        timestamp: serverTimestamp(),
+        url: window.location.pathname
+      }, {merge: true}).catch(function(){});
+      setDoc(doc(db, 'users', user.uid, 'wrongHistory', key), {
+        source: src, qNo: q.no, label: 'Q' + q.no,
+        stem: (q.stem || '').substring(0, 120),
+        firstWrong: serverTimestamp(),
+        url: window.location.pathname
+      }, {merge: true}).catch(function(){});
+    }
+  });
+  setDoc(doc(db, 'users', user.uid, 'stats', src), {
+    source: src, lastCorrect: correct, lastTotal: total,
+    lastDate: serverTimestamp(), totalAttempts: increment(1)
+  }, {merge: true}).catch(function(){});
+};
 </script>
 </body>
 </html>
