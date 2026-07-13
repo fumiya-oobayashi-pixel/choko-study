@@ -210,11 +210,11 @@ function selectAnswer(chosen, btn, keys) {
   try {
     const user = window._fbUser, db = window._fbDb;
     if (user && db) {
-      setDoc(doc(db,'users',user.uid,'catStats',q.cat),
-        {total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
       // 復習フォルダ管理
       import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js')
-        .then(({doc:d, deleteDoc, setDoc:sd, serverTimestamp}) => {
+        .then(({doc:d, deleteDoc, setDoc:sd, serverTimestamp, increment:inc}) => {
+          sd(d(db,'users',user.uid,'catStats',q.cat),
+            {total:inc(1),correct:inc(isCorrect?1:0)},{merge:true}).catch(()=>{});
           const key = 'frontPool_q' + q.id;
           if (isCorrect) {
             deleteDoc(d(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
