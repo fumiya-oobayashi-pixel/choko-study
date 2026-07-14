@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ちょこスタ マイページ</title>
+<title>ã¡ããã¹ã½ ãã¤ãã¼ã¸</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -49,112 +49,125 @@ main{max-width:900px;margin:0 auto;padding:16px}
 .loading{text-align:center;color:#64748b;padding:24px}
 .no-login{text-align:center;padding:60px 20px}
 .no-login .icon{font-size:3rem;margin-bottom:12px}
-/* 大タブ（サービス編/部品編） */
 .main-tabs{display:flex;gap:0;margin-bottom:16px;border-radius:12px;overflow:hidden;border:2px solid #1e3a5f;background:#1e3a5f}
 .main-tab{flex:1;padding:12px;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;color:rgba(255,255,255,.6);background:transparent;transition:.15s}
 .main-tab.active{background:white;color:#1e3a5f}
+
+.weak-item{background:#fff5f5;border-left:4px solid #dc2626;border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.weak-item.ok{background:#f0fdf4;border-left-color:#16a34a}
+.weak-item.mid{background:#fffbeb;border-left-color:#f59e0b}
+.weak-cat{font-weight:700;font-size:.95rem;margin-bottom:4px}
+.weak-bar-wrap{height:8px;background:#e5e7eb;border-radius:999px;margin:4px 0 6px;overflow:hidden}
+.weak-bar{height:100%;border-radius:999px;transition:width .4s}
+.weak-advice{font-size:.78rem;color:#374151;line-height:1.6;margin-top:6px}
+.weak-ref{font-size:.72rem;color:#6b7280;margin-top:4px}
+.weak-el-cats{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+.weak-el-tag{font-size:.68rem;background:#fee2e2;color:#dc2626;padding:2px 7px;border-radius:999px;font-weight:700}
 </style>
 </head>
 <body>
 <header>
-  <h1>📊 マイページ</h1>
-  <a href="./index.html" class="home-btn">🏠 ホーム</a>
+<h1>ð ãã¤ãã¼ã¸</h1>
+<a href="./index.html" class="home-btn">ð  ãã¼ã </a>
 </header>
 
 <main>
-  <div class="loading" id="loading">読み込み中...</div>
-  <div id="no-login" class="no-login" style="display:none">
-    <div class="icon">🔒</div>
-    <div style="font-weight:700;font-size:1.1rem;margin-bottom:8px">ログインが必要です</div>
-    <a href="./login.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700">ログインする</a>
-  </div>
-  <div id="content" style="display:none">
+<div class="loading" id="loading">èª­ã¿è¾¼ã¿ä¸­...</div>
+<div id="no-login" class="no-login" style="display:none">
+<div class="icon">ð</div>
+<div style="font-weight:700;font-size:1.1rem;margin-bottom:8px">ã­ã°ã¤ã³ãå¿è¦ã§ã</div>
+<a href="./login.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:#1e3a5f;color:white;border-radius:10px;text-decoration:none;font-weight:700">ã­ã°ã¤ã³ãã</a>
+</div>
+<div id="content" style="display:none">
 
-    <!-- 大タブ -->
-    <div class="main-tabs">
-      <button class="main-tab active" onclick="switchMainTab('service')">🔧 サービス編</button>
-      <button class="main-tab" onclick="switchMainTab('parts')">⚙️ 部品編</button>
-    </div>
+<div class="main-tabs">
+<button class="main-tab active" onclick="switchMainTab('service')">ð§ ãµã¼ãã¹ç·¨</button>
+<button class="main-tab" onclick="switchMainTab('parts')">âï¸ é¨åç·¨</button>
+</div>
 
-    <!-- ========== サービス編 ========== -->
-    <div id="service-section">
+<div id="service-section">
 
-      <div class="card">
-        <h2>📈 あなたの記録</h2>
-        <div class="stats-row">
-          <div class="stat-box"><div class="stat-num" id="total-attempts">0</div><div class="stat-label">総受験回数</div></div>
-          <div class="stat-box"><div class="stat-num red" id="wrong-count">0</div><div class="stat-label">復習フォルダ</div></div>
-          <div class="stat-box"><div class="stat-num" style="color:#7e22ce" id="history-count">0</div><div class="stat-label">全履歴フォルダ</div></div>
-          <div class="stat-box"><div class="stat-num green" id="total-q">0</div><div class="stat-label">累計解答問数</div></div>
-        </div>
-      </div>
+<div class="card">
+<h2>ð ããªãã®è¨é²</h2>
+<div class="stats-row">
+<div class="stat-box"><div class="stat-num" id="total-attempts">0</div><div class="stat-label">ç·åé¨åæ°</div></div>
+<div class="stat-box"><div class="stat-num red" id="wrong-count">0</div><div class="stat-label">å¾©ç¿ãã©ã«ã</div></div>
+<div class="stat-box"><div class="stat-num" style="color:#7e22ce" id="history-count">0</div><div class="stat-label">å¨å±¥æ­´ãã©ã«ã</div></div>
+<div class="stat-box"><div class="stat-num green" id="total-q">0</div><div class="stat-label">ç´¯è¨è§£ç­åæ°</div></div>
+</div>
+</div>
 
-      <div class="card">
-        <h2>📉 カテゴリ別 正答率</h2>
-        <div class="tabs">
-          <button class="tab active" onclick="showChart(this,'mech')">🔧 メカニック</button>
-          <button class="tab" onclick="showChart(this,'front')">🪟 フロント</button>
-          <button class="tab" onclick="showChart(this,'shingatasha')">🚌 新型車</button>
-        </div>
-        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
-      </div>
+<div class="card">
+<h2>ð ã«ãã´ãªå¥ æ­£ç­ç</h2>
+<div class="tabs">
+<button class="tab active" onclick="showChart(this,'mech')">ð§ ã¡ã«ããã¯</button>
+<button class="tab" onclick="showChart(this,'front')">ðª ãã­ã³ã</button>
+<button class="tab" onclick="showChart(this,'shingatasha')">ð æ°åè»</button>
+</div>
+<div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+</div>
 
-      <div class="card">
-        <h2>📋 試験別 詳細</h2>
-        <div class="perf-list" id="perf-list"></div>
-      </div>
 
-      <div class="card">
-        <h2>📁 間違い問題フォルダ</h2>
-        <div class="folder-tabs">
-          <button class="folder-tab review active" onclick="showFolder(this,'review','svc')">🔄 復習フォルダ（正解で消える）<span id="review-badge"></span></button>
-          <button class="folder-tab history" onclick="showFolder(this,'history','svc')">📚 全履歴フォルダ（永久記録）<span id="history-badge"></span></button>
-        </div>
-        <div id="svc-folder-review">
-          <div class="wrong-list" id="wrong-list-review"><div class="empty">間違い問題なし！</div></div>
-        </div>
-        <div id="svc-folder-history" style="display:none">
-          <div class="wrong-list" id="wrong-list-history"><div class="empty">履歴なし</div></div>
-        </div>
-      </div>
+<div class="card">
+<h2>ð¯ è¦æåéåæ</h2>
+<div id="weakness-section"><div class="empty">åé¡ãè§£ãã¨ãã¼ã¿ãåæ ããã¾ã</div></div>
+</div>
 
-    </div><!-- /service-section -->
+<div class="card">
+<h2>ð è©¦é¨å¥ è©³ç´°</h2>
+<div class="perf-list" id="perf-list"></div>
+</div>
 
-    <!-- ========== 部品編 ========== -->
-    <div id="parts-section" style="display:none">
+<div class="card">
+<h2>ð ééãåé¡ãã©ã«ã</h2>
+<div class="folder-tabs">
+<button class="folder-tab review active" onclick="showFolder(this,'review','svc')">ð å¾©ç¿ãã©ã«ãï¼æ­£è§£ã§æ¶ããï¼<span id="review-badge"></span></button>
+<button class="folder-tab history" onclick="showFolder(this,'history','svc')">ð å¨å±¥æ­´ãã©ã«ãï¼æ°¸ä¹è¨é²ï¼<span id="history-badge"></span></button>
+</div>
+<div id="svc-folder-review">
+<div class="wrong-list" id="wrong-list-review"><div class="empty">ééãåé¡ãªãï¼</div></div>
+</div>
+<div id="svc-folder-history" style="display:none">
+<div class="wrong-list" id="wrong-list-history"><div class="empty">å±¥æ­´ãªã</div></div>
+</div>
+</div>
 
-      <div class="card">
-        <h2>📈 あなたの記録（部品編）</h2>
-        <div class="stats-row">
-          <div class="stat-box"><div class="stat-num" id="p-total-attempts">0</div><div class="stat-label">総受験回数</div></div>
-          <div class="stat-box"><div class="stat-num red" id="p-wrong-count">0</div><div class="stat-label">復習フォルダ</div></div>
-          <div class="stat-box"><div class="stat-num" style="color:#7e22ce" id="p-history-count">0</div><div class="stat-label">全履歴フォルダ</div></div>
-          <div class="stat-box"><div class="stat-num green" id="p-total-q">0</div><div class="stat-label">累計解答問数</div></div>
-        </div>
-      </div>
+</div><!-- /service-section -->
 
-      <div class="card">
-        <h2>📋 試験別 詳細（部品編）</h2>
-        <div class="perf-list" id="p-perf-list"></div>
-      </div>
+<div id="parts-section" style="display:none">
 
-      <div class="card">
-        <h2>📁 間違い問題フォルダ（部品編）</h2>
-        <div class="folder-tabs">
-          <button class="folder-tab review active" onclick="showFolder(this,'review','parts')">🔄 復習フォルダ（正解で消える）<span id="p-review-badge"></span></button>
-          <button class="folder-tab history" onclick="showFolder(this,'history','parts')">📚 全履歴フォルダ（永久記録）<span id="p-history-badge"></span></button>
-        </div>
-        <div id="parts-folder-review">
-          <div class="wrong-list" id="p-wrong-list-review"><div class="empty">間違い問題なし！</div></div>
-        </div>
-        <div id="parts-folder-history" style="display:none">
-          <div class="wrong-list" id="p-wrong-list-history"><div class="empty">履歴なし</div></div>
-        </div>
-      </div>
+<div class="card">
+<h2>ð ããªãã®è¨é²ï¼é¨åç·¨ï¼</h2>
+<div class="stats-row">
+<div class="stat-box"><div class="stat-num" id="p-total-attempts">0</div><div class="stat-label">ç·åé¨åæ°</div></div>
+<div class="stat-box"><div class="stat-num red" id="p-wrong-count">0</div><div class="stat-label">å¾©ç¿ãã©ã«ã</div></div>
+<div class="stat-box"><div class="stat-num" style="color:#7e22ce" id="p-history-count">0</div><div class="stat-label">å¨å±¥æ­´ãã©ã«ã</div></div>
+<div class="stat-box"><div class="stat-num green" id="p-total-q">0</div><div class="stat-label">ç´¯è¨è§£ç­åæ°</div></div>
+</div>
+</div>
 
-    </div><!-- /parts-section -->
+<div class="card">
+<h2>ð è©¦é¨å¥ è©³ç´°ï¼é¨åç·¨ï¼</h2>
+<div class="perf-list" id="p-perf-list"></div>
+</div>
 
-  </div>
+<div class="card">
+<h2>ð ééãåé¡ãã©ã«ãï¼é¨åç·¨ï¼</h2>
+<div class="folder-tabs">
+<button class="folder-tab review active" onclick="showFolder(this,'review','parts')">ð å¾©ç¿ãã©ã«ãï¼æ­£è§£ã§æ¶ããï¼<span id="p-review-badge"></span></button>
+<button class="folder-tab history" onclick="showFolder(this,'history','parts')">ð å¨å±¥æ­´ãã©ã«ãï¼æ°¸ä¹è¨é²ï¼<span id="p-history-badge"></span></button>
+</div>
+<div id="parts-folder-review">
+<div class="wrong-list" id="p-wrong-list-review"><div class="empty">ééãåé¡ãªãï¼</div></div>
+</div>
+<div id="parts-folder-history" style="display:none">
+<div class="wrong-list" id="p-wrong-list-history"><div class="empty">å±¥æ­´ãªã</div></div>
+</div>
+</div>
+
+</div><!-- /parts-section -->
+
+</div>
 </main>
 
 <script src="./firebase-config.js"></script>
@@ -167,342 +180,350 @@ const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// サービス編データ
 let allStats=[], allWrong=[], allHistory=[], allCatStats=[], radarChart=null;
-// 部品編データ
 let partsStats=[], partsWrong=[], partsHistory=[], partsCatStats=[];
 
 const SOURCE_TO_URL = {
-  '18年HF1認定1次試験_スマホ問題集':'/choko-study/18年HF-1認定1次試験.html',
-  '18年HF1認定2次試験_スマホ問題集':'/choko-study/18年HF-1認定2次試験.html',
-  '19年HF1認定1次試験_スマホ問題集':'/choko-study/19年HF-1認定1次試験.html',
-  '19年HF1認定2次試験_スマホ問題集':'/choko-study/19年HF-1認定2次試験.html',
-  '19年HF2認定試験_スマホ問題集':'/choko-study/19年HF-2認定試験.html',
-  '19年HF3認定試験_スマホ問題集':'/choko-study/19年HF-3認定試験.html',
-  '19年HS1認定1次試験_スマホ問題集':'/choko-study/19年HS-1認定1次試験.html',
-  '19年HS1認定2次試験_スマホ問題集':'/choko-study/19年HS-1認定2次試験.html',
-  '18年HS1認定1次試験_スマホ問題集':'/choko-study/18年HS-1認定1次試験.html',
-  '18年HS1認定2次試験_スマホ問題集':'/choko-study/18年HS-1認定2次試験.html',
-  '17年HS1認定1次試験_スマホ問題集':'/choko-study/17年HS-1認定1次試験.html',
-  '17年HS1認定2次試験_スマホ問題集':'/choko-study/17年HS-1認定2次試験.html',
-  '16年HS1認定1次試験_スマホ問題集':'/choko-study/16年HS-1認定1次試験.html',
-  '15年HS1認定1次試験_スマホ問題集':'/choko-study/15年HS-1認定1次試験.html',
-  '21年HS2認定試験_スマホ問題集':'/choko-study/21年HS-2認定試験.html',
-  '20年HS2認定試験_スマホ問題集':'/choko-study/20年HS-2認定試験.html',
-  '19年HS2認定試験_スマホ問題集':'/choko-study/19年HS-2認定試験.html',
-  '18年HS2認定試験_スマホ問題集':'/choko-study/18年HS-2認定試験.html',
-  '17年HS2認定試験_スマホ問題集':'/choko-study/17年HS-2認定試験.html',
-  '16年HS2認定試験_スマホ問題集':'/choko-study/16年HS-2認定試験.html',
-  '15年HS2認定試験_スマホ問題集':'/choko-study/15年HS-2認定試験.html',
-  '17年HS3認定試験_スマホ問題集':'/choko-study/17年HS-3認定試験.html',
-  '16年HS3認定試験_スマホ問題集':'/choko-study/16年HS-3認定試験.html',
-  '15年HS3認定試験_スマホ問題集':'/choko-study/15年HS-3認定試験.html',
-  '2023新人試験_スマホ問題集':'/choko-study/2023新人試験.html',
-  '2024年度フロント資格試験_スマホ問題集':'/choko-study/2024年度フロント資格試験.html',
-  '2024年度メカニック_スマホ問題集':'/choko-study/2024年度メカニック.html',
-  '2025年度フロント資格試験_スマホ問題集':'/choko-study/2025年度フロント資格試験.html',
-  '2025年度メカニック_スマホ問題集':'/choko-study/2025年度メカニック.html',
-  '2025新人試験_スマホ問題集':'/choko-study/2025新人試験.html',
-  '20年HF1認定1次試験_スマホ問題集':'/choko-study/20年HF-1認定1次試験.html',
-  '20年HF2認定試験_スマホ問題集':'/choko-study/20年HF-2認定試験.html',
-  '20年HF3認定試験_スマホ問題集':'/choko-study/20年HF-3認定試験.html',
-  '20年HS1認定1次試験_スマホ問題集':'/choko-study/20年HS-1認定1次試験.html',
-  '20年HS1認定2次試験_スマホ問題集':'/choko-study/20年HS-1認定2次試験.html',
-  '21年HF1認定1次試験_スマホ問題集':'/choko-study/21年HF-1認定1次試験.html',
-  '21年HF2認定試験_スマホ問題集':'/choko-study/21年HF-2認定試験.html',
-  '21年HF3認定試験_スマホ問題集':'/choko-study/21年HF-3認定試験.html',
-  '21年HS1認定1次試験_スマホ問題集':'/choko-study/21年HS-1認定1次試験.html',
-  '21年HS1認定2次試験_スマホ問題集':'/choko-study/21年HS-1認定2次試験.html',
-  '22年HF1認定1次試験_スマホ問題集':'/choko-study/22年HF-1認定1次試験.html',
-  '22年HF2認定試験_スマホ問題集':'/choko-study/22年HF-2認定試験.html',
-  '22年HF3認定試験_スマホ問題集':'/choko-study/22年HF-3認定試験.html',
-  '22年HS1認定1次試験_スマホ問題集':'/choko-study/22年HS-1認定1次試験.html',
-  '22年HS1認定2次試験_スマホ問題集':'/choko-study/22年HS-1認定2次試験.html',
-  '23年HF1認定1次試験_スマホ問題集':'/choko-study/23年HF-1認定1次試験.html',
-  '23年HF2認定試験_スマホ問題集':'/choko-study/23年HF-2認定試験.html',
-  '23年HF3認定試験_スマホ問題集':'/choko-study/23年HF-3認定試験.html',
-  '23年HS1認定1次試験_スマホ問題集':'/choko-study/23年HS-1認定1次試験.html',
-  '23年HS1認定2次試験_スマホ問題集':'/choko-study/23年HS-1認定2次試験.html',
-  '24年HF1認定1次試験_スマホ問題集':'/choko-study/24年HF-1認定1次試験.html',
-  '24年HF2認定試験_スマホ問題集':'/choko-study/24年HF-2認定試験.html',
-  '24年HF3認定試験_スマホ問題集':'/choko-study/24年HF-3認定試験.html',
-  '24年HS1認定1次試験_スマホ問題集':'/choko-study/24年HS-1認定1次試験.html',
-  '24年HS1認定2次試験_スマホ問題集':'/choko-study/24年HS-1認定2次試験.html',
-  '25年HF1認定1次試験_スマホ問題集':'/choko-study/25年HF-1認定1次試験.html',
-  '25年HF2認定試験_スマホ問題集':'/choko-study/25年HF-2認定試験.html',
-  '25年HF3認定試験_スマホ問題集':'/choko-study/25年HF-3認定試験.html',
-  '25年HS1認定1次試験_スマホ問題集':'/choko-study/25年HS-1認定1次試験.html',
-  '第49回全国エンジニア_スマホ問題集':'/choko-study/第49回全国エンジニア.html',
-  '第49回全国フロント資格試験_スマホ問題集':'/choko-study/第49回全国フロント資格試験.html',
-  '第49回支部エンジニア_スマホ問題集':'/choko-study/第49回支部エンジニア.html',
-  '第49回支部フロント資格試験_スマホ問題集':'/choko-study/第49回支部フロント資格試験.html',
-  '第48回全国エンジニア_スマホ問題集':'/choko-study/第48回全国エンジニア.html',
-  '第48回全国フロント資格試験_スマホ問題集':'/choko-study/第48回全国フロント資格試験.html',
-  '第48回支部エンジニア_スマホ問題集':'/choko-study/第48回支部エンジニア.html',
-  '第48回支部フロント資格試験_スマホ問題集':'/choko-study/第48回支部フロント資格試験.html',
-  '第47回全国エンジニア_スマホ問題集':'/choko-study/第47回全国エンジニア.html',
-  '第47回支部エンジニア_スマホ問題集':'/choko-study/第47回支部エンジニア.html',
-  '第46回全国エンジニア_スマホ問題集':'/choko-study/第46回全国エンジニア.html',
-  '第46回支部エンジニア_スマホ問題集':'/choko-study/第46回支部エンジニア.html',
-  '第45回全国エンジニア_スマホ問題集':'/choko-study/第45回全国エンジニア.html',
-  '第45回支部エンジニア_スマホ問題集':'/choko-study/第45回支部エンジニア.html',
-  '第44回全国エンジニア_スマホ問題集':'/choko-study/第44回全国エンジニア.html',
-  '第44回支部エンジニア_スマホ問題集':'/choko-study/第44回支部エンジニア.html',
-  'mechPool':'/choko-study/メカニックランダム30問チャレンジ.html',
-  'frontPool':'/choko-study/フロントランダム30問チャレンジ.html',
-  '新型車解説確認テスト_スマホ問題集':'/choko-study/新型車解説確認テスト.html',
+'18å¹´HF1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/18å¹´HF-1èªå®1æ¬¡è©¦é¨.html',
+'18å¹´HF1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/18å¹´HF-1èªå®2æ¬¡è©¦é¨.html',
+'19å¹´HF1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/19å¹´HF-1èªå®1æ¬¡è©¦é¨.html',
+'19å¹´HF1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/19å¹´HF-1èªå®2æ¬¡è©¦é¨.html',
+'19å¹´HF2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/19å¹´HF-2èªå®è©¦é¨.html',
+'19å¹´HF3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/19å¹´HF-3èªå®è©¦é¨.html',
+'19å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/19å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'19å¹´HS1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/19å¹´HS-1èªå®2æ¬¡è©¦é¨.html',
+'18å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/18å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'18å¹´HS1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/18å¹´HS-1èªå®2æ¬¡è©¦é¨.html',
+'17å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/17å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'17å¹´HS1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/17å¹´HS-1èªå®2æ¬¡è©¦é¨.html',
+'16å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/16å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'15å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/15å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'21å¹´HS2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/21å¹´HS-2èªå®è©¦é¨.html',
+'20å¹´HS2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/20å¹´HS-2èªå®è©¦é¨.html',
+'19å¹´HS2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/19å¹´HS-2èªå®è©¦é¨.html',
+'18å¹´HS2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/18å¹´HS-2èªå®è©¦é¨.html',
+'17å¹´HS2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/17å¹´HS-2èªå®è©¦é¨.html',
+'16å¹´HS2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/16å¹´HS-2èªå®è©¦é¨.html',
+'15å¹´HS2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/15å¹´HS-2èªå®è©¦é¨.html',
+'17å¹´HS3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/17å¹´HS-3èªå®è©¦é¨.html',
+'16å¹´HS3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/16å¹´HS-3èªå®è©¦é¨.html',
+'15å¹´HS3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/15å¹´HS-3èªå®è©¦é¨.html',
+'2023æ°äººè©¦é¨_ã¹ããåé¡é':'/choko-study/2023æ°äººè©¦é¨.html',
+'2024å¹´åº¦ãã­ã³ãè³æ ¼è©¦é¨_ã¹ããåé¡é':'/choko-study/2024å¹´åº¦ãã­ã³ãè³æ ¼è©¦é¨.html',
+'2024å¹´åº¦ã¡ã«ããã¯_ã¹ããåé¡é':'/choko-study/2024å¹´åº¦ã¡ã«ããã¯.html',
+'2025å¹´åº¦ãã­ã³ãè³æ ¼è©¦é¨_ã¹ããåé¡é':'/choko-study/2025å¹´åº¦ãã­ã³ãè³æ ¼è©¦é¨.html',
+'2025å¹´åº¦ã¡ã«ããã¯_ã¹ããåé¡é':'/choko-study/2025å¹´åº¦ã¡ã«ããã¯.html',
+'2025æ°äººè©¦é¨_ã¹ããåé¡é':'/choko-study/2025æ°äººè©¦é¨.html',
+'20å¹´HF1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/20å¹´HF-1èªå®1æ¬¡è©¦é¨.html',
+'20å¹´HF2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/20å¹´HF-2èªå®è©¦é¨.html',
+'20å¹´HF3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/20å¹´HF-3èªå®è©¦é¨.html',
+'20å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/20å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'20å¹´HS1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/20å¹´HS-1èªå®2æ¬¡è©¦é¨.html',
+'21å¹´HF1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/21å¹´HF-1èªå®1æ¬¡è©¦é¨.html',
+'21å¹´HF2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/21å¹´HF-2èªå®è©¦é¨.html',
+'21å¹´HF3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/21å¹´HF-3èªå®è©¦é¨.html',
+'21å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/21å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'21å¹´HS1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/21å¹´HS-1èªå®2æ¬¡è©¦é¨.html',
+'22å¹´HF1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/22å¹´HF-1èªå®1æ¬¡è©¦é¨.html',
+'22å¹´HF2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/22å¹´HF-2èªå®è©¦é¨.html',
+'22å¹´HF3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/22å¹´HF-3èªå®è©¦é¨.html',
+'22å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/22å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'22å¹´HS1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/22å¹´HS-1èªå®2æ¬¡è©¦é¨.html',
+'23å¹´HF1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/23å¹´HF-1èªå®1æ¬¡è©¦é¨.html',
+'23å¹´HF2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/23å¹´HF-2èªå®è©¦é¨.html',
+'23å¹´HF3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/23å¹´HF-3èªå®è©¦é¨.html',
+'23å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/23å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'23å¹´HS1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/23å¹´HS-1èªå®2æ¬¡è©¦é¨.html',
+'24å¹´HF1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/24å¹´HF-1èªå®1æ¬¡è©¦é¨.html',
+'24å¹´HF2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/24å¹´HF-2èªå®è©¦é¨.html',
+'24å¹´HF3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/24å¹´HF-3èªå®è©¦é¨.html',
+'24å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/24å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'24å¹´HS1èªå®2æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/24å¹´HS-1èªå®2æ¬¡è©¦é¨.html',
+'25å¹´HF1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/25å¹´HF-1èªå®1æ¬¡è©¦é¨.html',
+'25å¹´HF2èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/25å¹´HF-2èªå®è©¦é¨.html',
+'25å¹´HF3èªå®è©¦é¨_ã¹ããåé¡é':'/choko-study/25å¹´HF-3èªå®è©¦é¨.html',
+'25å¹´HS1èªå®1æ¬¡è©¦é¨_ã¹ããåé¡é':'/choko-study/25å¹´HS-1èªå®1æ¬¡è©¦é¨.html',
+'ç¬¬49åå¨å½ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬49åå¨å½ã¨ã³ã¸ãã¢.html',
+'ç¬¬49åå¨å½ãã­ã³ãè³æ ¼è©¦é¨_ã¹ããåé¡é':'/choko-study/ç¬¬49åå¨å½ãã­ã³ãè³æ ¼è©¦é¨.html',
+'ç¬¬49åæ¯é¨ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬49åæ¯é¨ã¨ã³ã¸ãã¢.html',
+'ç¬¬49åæ¯é¨ãã­ã³ãè³æ ¼è©¦é¨_ã¹ããåé¡é':'/choko-study/ç¬¬49åæ¯é¨ãã­ã³ãè³æ ¼è©¦é¨.html',
+'ç¬¬48åå¨å½ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬48åå¨å½ã¨ã³ã¸ãã¢.html',
+'ç¬¬48åå¨å½ãã­ã³ãè³æ ¼è©¦é¨_ã¹ããåé¡é':'/choko-study/ç¬¬48åå¨å½ãã­ã³ãè³æ ¼è©¦é¨.html',
+'ç¬¬48åæ¯é¨ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬48åæ¯é¨ã¨ã³ã¸ãã¢.html',
+'ç¬¬48åæ¯é¨ãã­ã³ãè³æ ¼è©¦é¨_ã¹ããåé¡é':'/choko-study/ç¬¬48åæ¯é¨ãã­ã³ãè³æ ¼è©¦é¨.html',
+'ç¬¬47åå¨å½ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬47åå¨å½ã¨ã³ã¸ãã¢.html',
+'ç¬¬47åæ¯é¨ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬47åæ¯é¨ã¨ã³ã¸ãã¢.html',
+'ç¬¬46åå¨å½ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬46åå¨å½ã¨ã³ã¸ãã¢.html',
+'ç¬¬46åæ¯é¨ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬46åæ¯é¨ã¨ã³ã¸ãã¢.html',
+'ç¬¬45åå¨å½ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬45åå¨å½ã¨ã³ã¸ãã¢.html',
+'ç¬¬45åæ¯é¨ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬45åæ¯é¨ã¨ã³ã¸ãã¢.html',
+'ç¬¬44åå¨å½ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬44åå¨å½ã¨ã³ã¸ãã¢.html',
+'ç¬¬44åæ¯é¨ã¨ã³ã¸ãã¢_ã¹ããåé¡é':'/choko-study/ç¬¬44åæ¯é¨ã¨ã³ã¸ãã¢.html',
+'mechPool':'/choko-study/ã¡ã«ããã¯ã©ã³ãã 30åãã£ã¬ã³ã¸.html',
+'frontPool':'/choko-study/ãã­ã³ãã©ã³ãã 30åãã£ã¬ã³ã¸.html',
+'æ°åè»è§£èª¬ç¢ºèªãã¹ã_ã¹ããåé¡é':'/choko-study/æ°åè»è§£èª¬ç¢ºèªãã¹ã.html',
 };
-const MECH_CATS = ["エンジン","HV","T/M","ブレーキ","シャシ・フレーム","電気装置","法令","新装置・一般","計算"];
-const FRONT_CATS = ["保証制度","外注（下請法含む）","見積り（事故見積含む）","受付/苦情/電話対応",
-                    "ハイトス系/ICT","引渡対応/売上/回収","手形/小切手/領収書/売掛",
-                    "通過車両関連","商品知識・車両知識","一般/保険","安全/法令","計算"];
-const SHINGATASHA_CATS = ["安全装置","エンジン","シャシ","電気","ボデー"];
+const MECH_CATS = ["ã¨ã³ã¸ã³","HV","T/M","ãã¬ã¼ã­","ã·ã£ã·ã»ãã¬ã¼ã ","é»æ°è£ç½®","æ³ä»¤","æ°è£ç½®ã»ä¸è¬","è¨ç®"];
+const FRONT_CATS = ["ä¿è¨¼å¶åº¦","å¤æ³¨ï¼ä¸è«æ³å«ãï¼","è¦ç©ãï¼äºæè¦ç©å«ãï¼","åä»/è¦æ/é»è©±å¯¾å¿","ãã¤ãã¹ç³»/ICT","å¼æ¸¡å¯¾å¿/å£²ä¸/åå","æå½¢/å°åæ/é åæ¸/å£²æ","ééè»ä¸¡é¢é£","ååç¥è­ã»è»ä¸¡ç¥è­","ä¸è¬/ä¿éº","å®å¨/æ³ä»¤","è¨ç®"];
+const SHINGATASHA_CATS = ["å®å¨è£ç½®","ã¨ã³ã¸ã³","ã·ã£ã·","é»æ°","ããã¼"];
 
 const PARTS_USERS = ['naoya-okada@aichi-hino.co.jp','fumiya-oobayashi@aichi-hino.co.jp','junya-yoshida@aichi-hino.co.jp','michio-sakae@aichi-hino.co.jp'];
 
 onAuthStateChanged(auth, async user => {
-  document.getElementById('loading').style.display='none';
-  if(!user){document.getElementById('no-login').style.display='block';return;}
-  document.getElementById('content').style.display='block';
-
-  const hasPartsTab = PARTS_USERS.includes(user.email);
-
-  if(!hasPartsTab){
-    // 部品編タブ非表示・サービス編のみ
-    document.querySelector('.main-tabs').style.display='none';
-    document.getElementById('parts-section').style.display='none';
-  }
-
-  const fetches = [
-    getDocs(collection(db,'users',user.uid,'wrongAnswers')),
-    getDocs(collection(db,'users',user.uid,'wrongHistory')),
-    getDocs(collection(db,'users',user.uid,'stats')),
-    getDocs(collection(db,'users',user.uid,'catStats')),
-  ];
-  if(hasPartsTab){
-    fetches.push(
-      getDocs(collection(db,'users',user.uid,'partsWrongAnswers')),
-      getDocs(collection(db,'users',user.uid,'partsWrongHistory')),
-      getDocs(collection(db,'users',user.uid,'partsStats')),
-      getDocs(collection(db,'users',user.uid,'partsCatStats')),
-    );
-  }
-  const results = await Promise.all(fetches).catch(()=>fetches.map(()=>({docs:[]})));
-
-  const [ws,hs,ss,cs,pws,phs,pss,pcs] = [...results, ...Array(8).fill({docs:[]})];
-  allWrong=(ws.docs||[]).map(d=>({id:d.id,...d.data()}));
-  allHistory=(hs.docs||[]).map(d=>({id:d.id,...d.data()}));
-  allStats=(ss.docs||[]).map(d=>({id:d.id,...d.data()}));
-  allCatStats=(cs.docs||[]).map(d=>({id:d.id,...d.data()}));
-  if(hasPartsTab){
-    partsWrong=(pws.docs||[]).map(d=>({id:d.id,...d.data()}));
-    partsHistory=(phs.docs||[]).map(d=>({id:d.id,...d.data()}));
-    partsStats=(pss.docs||[]).map(d=>({id:d.id,...d.data()}));
-    partsCatStats=(pcs.docs||[]).map(d=>({id:d.id,...d.data()}));
-  }
-
-  renderService();
-  if(hasPartsTab) renderParts();
+document.getElementById('loading').style.display='none';
+if(!user){document.getElementById('no-login').style.display='block';return;}
+document.getElementById('content').style.display='block';
+const hasPartsTab = PARTS_USERS.includes(user.email);
+if(!hasPartsTab){document.querySelector('.main-tabs').style.display='none';document.getElementById('parts-section').style.display='none';}
+const fetches = [getDocs(collection(db,'users',user.uid,'wrongAnswers')),getDocs(collection(db,'users',user.uid,'wrongHistory')),getDocs(collection(db,'users',user.uid,'stats')),getDocs(collection(db,'users',user.uid,'catStats')),];
+if(hasPartsTab){fetches.push(getDocs(collection(db,'users',user.uid,'partsWrongAnswers')),getDocs(collection(db,'users',user.uid,'partsWrongHistory')),getDocs(collection(db,'users',user.uid,'partsStats')),getDocs(collection(db,'users',user.uid,'partsCatStats')),);}
+const results = await Promise.all(fetches).catch(()=>fetches.map(()=>({docs:[]})));
+const [ws,hs,ss,cs,pws,phs,pss,pcs] = [...results, ...Array(8).fill({docs:[]})];
+allWrong=(ws.docs||[]).map(d=>({id:d.id,...d.data()}));
+allHistory=(hs.docs||[]).map(d=>({id:d.id,...d.data()}));
+allStats=(ss.docs||[]).map(d=>({id:d.id,...d.data()}));
+allCatStats=(cs.docs||[]).map(d=>({id:d.id,...d.data()}));
+if(hasPartsTab){partsWrong=(pws.docs||[]).map(d=>({id:d.id,...d.data()}));partsHistory=(phs.docs||[]).map(d=>({id:d.id,...d.data()}));partsStats=(pss.docs||[]).map(d=>({id:d.id,...d.data()}));partsCatStats=(pcs.docs||[]).map(d=>({id:d.id,...d.data()}));}
+renderService();
+if(hasPartsTab) renderParts();
 });
 
-// ========== サービス編レンダリング ==========
-
 function renderService(){
-  const tot=allStats.reduce((s,x)=>s+(x.totalAttempts||0),0);
-  const totalQ=allCatStats.reduce((s,x)=>s+(x.total||0),0);
-  document.getElementById('total-attempts').textContent=tot;
-  document.getElementById('wrong-count').textContent=allWrong.length;
-  document.getElementById('history-count').textContent=allHistory.length;
-  document.getElementById('total-q').textContent=totalQ;
-  document.getElementById('review-badge').textContent=' ('+allWrong.length+'問)';
-  document.getElementById('history-badge').textContent=' ('+allHistory.length+'問)';
-  renderWrongList('wrong-list-review',allWrong,'review','mech',false);
-  renderWrongList('wrong-list-history',allHistory,'history','mech',false);
-  renderPerfList('mech');
-  showChartData('mech');
+const tot=allStats.reduce((s,x)=>s+(x.totalAttempts||0),0);
+const totalQ=allCatStats.reduce((s,x)=>s+(x.total||0),0);
+document.getElementById('total-attempts').textContent=tot;
+document.getElementById('wrong-count').textContent=allWrong.length;
+document.getElementById('history-count').textContent=allHistory.length;
+document.getElementById('total-q').textContent=totalQ;
+document.getElementById('review-badge').textContent=' ('+allWrong.length+'å)';
+document.getElementById('history-badge').textContent=' ('+allHistory.length+'å)';
+renderWrongList('wrong-list-review',allWrong,'review','mech',false);
+renderWrongList('wrong-list-history',allHistory,'history','mech',false);
+renderPerfList('mech');
+showChartData('mech');
+renderWeaknessAnalysis();
 }
 
 const _reviewQueues={};
 
 function renderWrongList(elId,list,type,tabType,isParts){
-  const el=document.getElementById(elId);
-  let filtered=list;
-  if(!isParts){
-    if(tabType==='front') filtered=list.filter(w=>isFrontSource(w.source||w.id||''));
-    else if(tabType==='mech') filtered=list.filter(w=>isMechSource(w.source||w.id||''));
-    else if(tabType==='shingatasha') filtered=list.filter(w=>isShingataShaSource(w.source||w.id||''));
-  }
-  if(!filtered.length){
-    el.innerHTML='<div class="empty">'+(type==='review'?'✅ 間違い問題なし！':'まだ履歴なし')+'</div>';
-    return;
-  }
-  const sorted=[...filtered].sort((a,b)=>(b.timestamp?.seconds||b.firstWrong?.seconds||0)-(a.timestamp?.seconds||a.firstWrong?.seconds||0));
-  if(type==='review'){
-    _reviewQueues[elId]=sorted.map(w=>{
-      const b=isParts?(w.url||null):(w.url||(w.source&&SOURCE_TO_URL[w.source])||null);
-      return b?`${b}?q=${w.qNo}`:null;
-    });
-  }
-  el.innerHTML=sorted.map((w,i)=>{
-    const baseUrl=isParts?(w.url||null):(w.url||(w.source&&SOURCE_TO_URL[w.source])||null);
-    const href=baseUrl?`${baseUrl}?q=${w.qNo}`:'#';
-    const isLink=type==='review'&&!!baseUrl;
-    const tag=isLink?`<a href="${href}" onclick="_startReview('${elId}',${i},'${baseUrl}')" style="display:block;text-decoration:none;color:inherit">`:'<div>';
-    const endTag=isLink?'</a>':'</div>';
-    return `${tag}<div class="wrong-item ${type}" style="${isLink?'':'cursor:default'}">
-      <div class="wi-label ${type}">
-        <span>${type==='review'?'❌':'📚'} ${w.label||'Q'+w.qNo}</span>
-        ${isLink?'<span class="wi-go">▶ 問題へ</span>':''}
-      </div>
-      <div class="wi-stem">${w.stem||''}</div>
-      <div class="wi-src">📁 ${(w.source||'').replace(/_/g,' ')}</div>
-    </div>${endTag}`;
-  }).join('');
+const el=document.getElementById(elId);
+let filtered=list;
+if(!isParts){
+if(tabType==='front') filtered=list.filter(w=>isFrontSource(w.source||w.id||''));
+else if(tabType==='mech') filtered=list.filter(w=>isMechSource(w.source||w.id||''));
+else if(tabType==='shingatasha') filtered=list.filter(w=>isShingataShaSource(w.source||w.id||''));
+}
+if(!filtered.length){el.innerHTML='<div class="empty">'+(type==='review'?'â ééãåé¡ãªãï¼':'ã¾ã å±¥æ­´ãªã')+'</div>';return;}
+const sorted=[...filtered].sort((a,b)=>(b.timestamp?.seconds||b.firstWrong?.seconds||0)-(a.timestamp?.seconds||a.firstWrong?.seconds||0));
+if(type==='review'){_reviewQueues[elId]=sorted.map(w=>{const b=isParts?(w.url||null):(w.url||(w.source&&SOURCE_TO_URL[w.source])||null);return b?`${b}?q=${w.qNo}`:null;});}
+el.innerHTML=sorted.map((w,i)=>{
+const baseUrl=isParts?(w.url||null):(w.url||(w.source&&SOURCE_TO_URL[w.source])||null);
+const href=baseUrl?`${baseUrl}?q=${w.qNo}`:'#';
+const isLink=type==='review'&&!!baseUrl;
+const tag=isLink?`<a href="${href}" onclick="_startReview('${elId}',${i},'${baseUrl}')" style="display:block;text-decoration:none;color:inherit">`:'<div>';
+const endTag=isLink?'</a>':'</div>';
+return `${tag}<div class="wrong-item ${type}" style="${isLink?'':'cursor:default'}">
+<div class="wi-label ${type}"><span>${type==='review'?'â':'ð'} ${w.label||'Q'+w.qNo}</span>${isLink?'<span class="wi-go">â¶ åé¡ã¸</span>':''}</div>
+<div class="wi-stem">${w.stem||''}</div>
+<div class="wi-src">ð ${(w.source||'').replace(/_/g,' ')}</div>
+</div>${endTag}`;
+}).join('');
 }
 
 function _startReview(elId,clickedIdx,filterUrl){
-  const all=_reviewQueues[elId]||[];
-  let queue,total;
-  if(filterUrl){
-    const sameFile=all.filter(u=>u&&u.split('?')[0]===filterUrl);
-    const clicked=all[clickedIdx];
-    const pos=sameFile.indexOf(clicked);
-    queue=pos>=0?sameFile.slice(pos+1):[];
-    total=sameFile.length;
-  } else {
-    queue=all.slice(clickedIdx+1).filter(Boolean);
-    total=all.filter(Boolean).length;
-  }
-  sessionStorage.setItem('reviewQueue',JSON.stringify(queue));
-  sessionStorage.setItem('reviewTotal',String(total));
+const all=_reviewQueues[elId]||[];
+let queue,total;
+if(filterUrl){const sameFile=all.filter(u=>u&&u.split('?')[0]===filterUrl);const clicked=all[clickedIdx];const pos=sameFile.indexOf(clicked);queue=pos>=0?sameFile.slice(pos+1):[];total=sameFile.length;}
+else{queue=all.slice(clickedIdx+1).filter(Boolean);total=all.filter(Boolean).length;}
+sessionStorage.setItem('reviewQueue',JSON.stringify(queue));
+sessionStorage.setItem('reviewTotal',String(total));
 }
 
-function isMechSource(src){return /メカニック|エンジニア|新人|HS/.test(src);}
-function isFrontSource(src){return !isMechSource(src)&&/HF|フロント|48回|49回/.test(src);}
-function isShingataShaSource(src){return /新型車/.test(src);}
+function isMechSource(src){return /ã¡ã«ããã¯|ã¨ã³ã¸ãã¢|æ°äºº|HS/.test(src);}
+function isFrontSource(src){return !isMechSource(src)&&/HF|ãã­ã³ã|48å|49å/.test(src);}
+function isShingataShaSource(src){return /æ°åè»/.test(src);}
 
 function renderPerfList(type){
-  const el=document.getElementById('perf-list');
-  if(!allStats.length){el.innerHTML='<div class="empty">受験データなし</div>';return;}
-  let filtered=allStats;
-  if(type==='front') filtered=allStats.filter(s=>isFrontSource(s.source||s.id));
-  else if(type==='mech') filtered=allStats.filter(s=>isMechSource(s.source||s.id));
-  else if(type==='shingatasha') filtered=allStats.filter(s=>isShingataShaSource(s.source||s.id));
-  if(!filtered.length){el.innerHTML='<div class="empty">受験データなし</div>';return;}
-  const sorted=[...filtered].sort((a,b)=>(b.lastDate?.seconds||0)-(a.lastDate?.seconds||0));
-  el.innerHTML=sorted.map(s=>{
-    const pct=s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0;
-    const color=pct>=70?'#059669':pct>=50?'#f59e0b':'#dc2626';
-    return `<div class="perf-item">
-      <div class="perf-source">${(s.source||s.id).replace(/_/g,' ')}</div>
-      <div class="perf-bar-wrap"><div class="perf-bar" style="width:${pct}%;background:${color}"></div></div>
-      <div class="perf-pct" style="color:${color}">${pct}%</div>
-    </div>`;
-  }).join('');
+const el=document.getElementById('perf-list');
+if(!allStats.length){el.innerHTML='<div class="empty">åé¨ãã¼ã¿ãªã</div>';return;}
+let filtered=allStats;
+if(type==='front') filtered=allStats.filter(s=>isFrontSource(s.source||s.id));
+else if(type==='mech') filtered=allStats.filter(s=>isMechSource(s.source||s.id));
+else if(type==='shingatasha') filtered=allStats.filter(s=>isShingataShaSource(s.source||s.id));
+if(!filtered.length){el.innerHTML='<div class="empty">åé¨ãã¼ã¿ãªã</div>';return;}
+const sorted=[...filtered].sort((a,b)=>(b.lastDate?.seconds||0)-(a.lastDate?.seconds||0));
+el.innerHTML=sorted.map(s=>{
+const pct=s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0;
+const color=pct>=70?'#059669':pct>=50?'#f59e0b':'#dc2626';
+return `<div class="perf-item"><div class="perf-source">${(s.source||s.id).replace(/_/g,' ')}</div><div class="perf-bar-wrap"><div class="perf-bar" style="width:${pct}%;background:${color}"></div></div><div class="perf-pct" style="color:${color}">${pct}%</div></div>`;
+}).join('');
 }
 
 window.showChart=function(btn,type){
-  document.querySelectorAll('#service-section .tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  showChartData(type);
+document.querySelectorAll('#service-section .tab').forEach(t=>t.classList.remove('active'));
+btn.classList.add('active');
+showChartData(type);
 };
 
 function showChartData(type){
-  if(radarChart){radarChart.destroy();radarChart=null;}
-  const wrap=document.querySelector('#service-section .chart-wrap');
-  if(!wrap) return;
-  const cats=type==='mech'?MECH_CATS:type==='front'?FRONT_CATS:SHINGATASHA_CATS;
-  const catMap={};
-  allCatStats.forEach(c=>{catMap[c.id]=c;});
-  const hasData=cats.some(c=>catMap[c]&&catMap[c].total>0);
-  renderPerfList(type);
-  const srcFilter=type==='front'?isFrontSource:type==='shingatasha'?isShingataShaSource:isMechSource;
-  const fw=allWrong.filter(w=>srcFilter(w.source||w.id||''));
-  const fh=allHistory.filter(w=>srcFilter(w.source||w.id||''));
-  renderWrongList('wrong-list-review',fw,'review',type,false);
-  renderWrongList('wrong-list-history',fh,'history',type,false);
-  document.getElementById('review-badge').textContent=' ('+fw.length+'問)';
-  document.getElementById('history-badge').textContent=' ('+fh.length+'問)';
-  if(!hasData){
-    wrap.innerHTML='<canvas id="radarChart"></canvas>';
-    wrap.innerHTML='<div class="empty">まだデータなし<br><small>問題を解くと反映されます</small></div>';
-    return;
-  }
-  if(!document.getElementById('radarChart')){
-    const c=document.createElement('canvas');c.id='radarChart';wrap.innerHTML='';wrap.appendChild(c);
-  }
-  const data=cats.map(c=>{
-    const d=catMap[c];
-    return d&&d.total>0?Math.round(d.correct/d.total*100):0;
-  });
-  radarChart=new Chart(document.getElementById('radarChart'),{
-    type:'radar',
-    data:{
-      labels:cats,
-      datasets:[{
-        label:'正答率(%)',
-        data:data,
-        backgroundColor:'rgba(30,58,95,.15)',
-        borderColor:'#1e3a5f',
-        pointBackgroundColor:'#1e3a5f',
-        borderWidth:2,
-      }]
-    },
-    options:{
-      responsive:true,
-      scales:{r:{min:0,max:100,ticks:{stepSize:20,font:{size:10}},pointLabels:{font:{size:11}}}},
-      plugins:{legend:{display:false}}
-    }
-  });
+if(radarChart){radarChart.destroy();radarChart=null;}
+const wrap=document.querySelector('#service-section .chart-wrap');
+if(!wrap) return;
+const cats=type==='mech'?MECH_CATS:type==='front'?FRONT_CATS:SHINGATASHA_CATS;
+const catMap={};
+allCatStats.forEach(c=>{catMap[c.id]=c;});
+const hasData=cats.some(c=>catMap[c]&&catMap[c].total>0);
+renderPerfList(type);
+const srcFilter=type==='front'?isFrontSource:type==='shingatasha'?isShingataShaSource:isMechSource;
+const fw=allWrong.filter(w=>srcFilter(w.source||w.id||''));
+const fh=allHistory.filter(w=>srcFilter(w.source||w.id||''));
+renderWrongList('wrong-list-review',fw,'review',type,false);
+renderWrongList('wrong-list-history',fh,'history',type,false);
+renderWeaknessAnalysis();
+document.getElementById('review-badge').textContent=' ('+fw.length+'å)';
+document.getElementById('history-badge').textContent=' ('+fh.length+'å)';
+if(!hasData){wrap.innerHTML='<div class="empty">ã¾ã ãã¼ã¿ãªã<br><small>åé¡ãè§£ãã¨åæ ããã¾ã</small></div>';return;}
+if(!document.getElementById('radarChart')){const c=document.createElement('canvas');c.id='radarChart';wrap.innerHTML='';wrap.appendChild(c);}
+const data=cats.map(c=>{const d=catMap[c];return d&&d.total>0?Math.round(d.correct/d.total*100):0;});
+radarChart=new Chart(document.getElementById('radarChart'),{type:'radar',data:{labels:cats,datasets:[{label:'æ­£ç­ç(%)',data:data,backgroundColor:'rgba(30,58,95,.15)',borderColor:'#1e3a5f',pointBackgroundColor:'#1e3a5f',borderWidth:2}]},options:{responsive:true,scales:{r:{min:0,max:100,ticks:{stepSize:20,font:{size:10}},pointLabels:{font:{size:11}}}},plugins:{legend:{display:false}}}});
 }
 
-// ========== 部品編レンダリング ==========
-
 function renderParts(){
-  const tot=partsStats.reduce((s,x)=>s+(x.totalAttempts||0),0);
-  const totalQ=partsCatStats.reduce((s,x)=>s+(x.total||0),0);
-  document.getElementById('p-total-attempts').textContent=tot;
-  document.getElementById('p-wrong-count').textContent=partsWrong.length;
-  document.getElementById('p-history-count').textContent=partsHistory.length;
-  document.getElementById('p-total-q').textContent=totalQ;
-  document.getElementById('p-review-badge').textContent=' ('+partsWrong.length+'問)';
-  document.getElementById('p-history-badge').textContent=' ('+partsHistory.length+'問)';
-  renderWrongList('p-wrong-list-review',partsWrong,'review','',true);
-  renderWrongList('p-wrong-list-history',partsHistory,'history','',true);
-  renderPartsPerfList();
+const tot=partsStats.reduce((s,x)=>s+(x.totalAttempts||0),0);
+const totalQ=partsCatStats.reduce((s,x)=>s+(x.total||0),0);
+document.getElementById('p-total-attempts').textContent=tot;
+document.getElementById('p-wrong-count').textContent=partsWrong.length;
+document.getElementById('p-history-count').textContent=partsHistory.length;
+document.getElementById('p-total-q').textContent=totalQ;
+document.getElementById('p-review-badge').textContent=' ('+partsWrong.length+'å)';
+document.getElementById('p-history-badge').textContent=' ('+partsHistory.length+'å)';
+renderWrongList('p-wrong-list-review',partsWrong,'review','',true);
+renderWrongList('p-wrong-list-history',partsHistory,'history','',true);
+renderPartsPerfList();
 }
 
 function renderPartsPerfList(){
-  const el=document.getElementById('p-perf-list');
-  if(!partsStats.length){el.innerHTML='<div class="empty">受験データなし</div>';return;}
-  const sorted=[...partsStats].sort((a,b)=>(b.lastDate?.seconds||0)-(a.lastDate?.seconds||0));
-  el.innerHTML=sorted.map(s=>{
-    const pct=s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0;
-    const color=pct>=70?'#059669':pct>=50?'#f59e0b':'#dc2626';
-    return `<div class="perf-item">
-      <div class="perf-source">${(s.source||s.id).replace(/_/g,' ')}</div>
-      <div class="perf-bar-wrap"><div class="perf-bar" style="width:${pct}%;background:${color}"></div></div>
-      <div class="perf-pct" style="color:${color}">${pct}%</div>
-    </div>`;
-  }).join('');
+const el=document.getElementById('p-perf-list');
+if(!partsStats.length){el.innerHTML='<div class="empty">åé¨ãã¼ã¿ãªã</div>';return;}
+const sorted=[...partsStats].sort((a,b)=>(b.lastDate?.seconds||0)-(a.lastDate?.seconds||0));
+el.innerHTML=sorted.map(s=>{const pct=s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0;const color=pct>=70?'#059669':pct>=50?'#f59e0b':'#dc2626';return `<div class="perf-item"><div class="perf-source">${(s.source||s.id).replace(/_/g,' ')}</div><div class="perf-bar-wrap"><div class="perf-bar" style="width:${pct}%;background:${color}"></div></div><div class="perf-pct" style="color:${color}">${pct}%</div></div>`;}).join('');
 }
 
-// ========== タブ切り替え ==========
-
 window.switchMainTab=function(tab){
-  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelector(`.main-tab[onclick*="${tab}"]`).classList.add('active');
-  document.getElementById('service-section').style.display=tab==='service'?'':'none';
-  document.getElementById('parts-section').style.display=tab==='parts'?'':'none';
+document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+document.querySelector(`.main-tab[onclick*="${tab}"]`).classList.add('active');
+document.getElementById('service-section').style.display=tab==='service'?'':'none';
+document.getElementById('parts-section').style.display=tab==='parts'?'':'none';
 };
 
 window.showFolder=function(btn,type,ns){
-  const prefix=ns==='parts'?'parts':'svc';
-  btn.closest('.folder-tabs').querySelectorAll('.folder-tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(prefix+'-folder-review').style.display=type==='review'?'':'none';
-  document.getElementById(prefix+'-folder-history').style.display=type==='history'?'':'none';
+const prefix=ns==='parts'?'parts':'svc';
+btn.closest('.folder-tabs').querySelectorAll('.folder-tab').forEach(t=>t.classList.remove('active'));
+btn.classList.add('active');
+document.getElementById(prefix+'-folder-review').style.display=type==='review'?'':'none';
+document.getElementById(prefix+'-folder-history').style.display=type==='history'?'':'none';
 };
+// ====== è¦æåéåæ ======
+const ADVICE_MAP = {
+'ã¨ã³ã¸ã³': {
+  advice: 'ã¨ã³ã¸ã³å¶å¾¡ã·ã¹ãã ï¼å¥åç³»ã»æ¼ç®å¦çç³»ã»åºåç³»ï¼ã»ã³ã¢ã³ã¬ã¼ã«å´å°ã»DPR/å°¿ç´ SCR/HC-SCRå¶å¾¡ã®ä»çµã¿ãéç¹çã«å¾©ç¿ãã¦ãã ããã',
+  refs: [{label:'HS-2 ã¨ã³ã¸ã³å¶å¾¡ãã­ã¹ã',page:'P.1ã20'},{label:'HS-2 DPRå¶å¾¡ãã­ã¹ã',page:'P.21ã45'},{label:'HS-2 å°¿ç´ SCR/HC-SCRãã­ã¹ã',page:'P.46ã70'},{label:'HS-3 ãã£ã¼ã¼ã«ã¨ã³ã¸ã³ãã­ã¹ã',page:'P.1ã30'}]
+},
+'T/M': {
+  advice: 'ãã­ã·ããã»ATMã»ã¯ã©ããå¶å¾¡ã®åä½åçã»ã·ããæä½ã®ä»çµã¿ãç¢ºèªãã¦ãã ããã',
+  refs: [{label:'HS-2 ã·ã£ã· ååä¼éãã­ã¹ã',page:'P.1ã25'},{label:'HS-3 ååä¼éè£ç½®ãã­ã¹ã',page:'P.60ã80'}]
+},
+'ãã¬ã¼ã­': {
+  advice: 'EBSã»ABSã»VSCã»ãªã¿ã¼ãã¼ï¼æ°¸ä¹ç£ç³ã»æµä½ï¼ã®æ§æã¨ä½åæ¡ä»¶ãéç¹çã«ç¢ºèªãã¦ãã ããã',
+  refs: [{label:'HS-2 ã·ã£ã· å¶åè£ç½®ãã­ã¹ã',page:'P.26ã55'}]
+},
+'ã·ã£ã·ã»ãã¬ã¼ã ': {
+  advice: 'ã¨ã¢ãµã¹ãã³ã·ã§ã³ã»éåº¦æå¿åãã¯ã¼ã¹ãã¢ãªã³ã°ã»è»é«å¶å¾¡ã®æ§é ã¨ç¹æ¤æ¹æ³ãç¢ºèªãã¦ãã ããã',
+  refs: [{label:'HS-2 ã·ã£ã· æèµèµ°è¡ãã­ã¹ã',page:'P.56ã80'},{label:'HS-3 ã·ã£ã·ãã­ã¹ã',page:'P.81ã110'}]
+},
+'é»æ°è£ç½®': {
+  advice: 'é»æ°åè·¯ã®åºç¤ï¼ãªã¼ã ã®æ³åï¼ã»ã»ã³ãµã¼ã»ã¢ã¯ãã¥ã¨ã¼ã¿ã¼ã»CANéä¿¡ã®å½¹å²ãå¾©ç¿ãã¦ãã ããã',
+  refs: [{label:'HS-2 ã·ã£ã· é»æ°è£ç½®ãã­ã¹ã',page:'P.81ã100'},{label:'HS-3 é»æ°ãã­ã¹ã',page:'P.111ã130'}]
+},
+'æ³ä»¤': {
+  advice: 'éè·¯ééè»ä¸¡æ³ã»æ´åå£«æ³ã»ä¿å®åºæºã®æ°å¤ã¨æ¡æãä¸­å¿ã«ç¢ºèªãã¦ãã ããã',
+  refs: [{label:'HS-4 æ³å¾ãã­ã¹ã',page:'P.1ã20'}]
+},
+'æ°è£ç½®ã»ä¸è¬': {
+  advice: 'å®å¨è£ç½®ï¼PCSã»LCSã»ESCï¼ã»åé²éè»¢æ¯æ´ã·ã¹ãã ã®æ©è½ã¨ä½åæ¡ä»¶ãå¹åºãå¾©ç¿ãã¦ãã ããã',
+  refs: [{label:'HS-4 å®å¨ã»ä»æ§ãã­ã¹ã',page:'P.40ã70'}]
+},
+'è¨ç®': {
+  advice: 'ãªã¼ã ã®æ³åã»åææµæã»ãã«ã¯è¨ç®ãªã©ã®è¨ç®åé¡ãåå¾©ç·´ç¿ãã¦ãã ããã',
+  refs: [{label:'è¨ç®åé¡é',page:'P.å¨è¬'}]
+},
+};
+
+const EL_DISPLAY_CAT = {
+'ã¨ã³ã¸ã³å¶å¾¡':'ã¨ã³ã¸ã³','ã³ã¢ã³ã¬ã¼ã«çæå´å°':'ã¨ã³ã¸ã³','DPRå¶å¾¡':'ã¨ã³ã¸ã³',
+'å°¿ç´ SCRå¶å¾¡':'ã¨ã³ã¸ã³','å°¿ç´ SCR':'ã¨ã³ã¸ã³','HC-SCRå¶å¾¡':'ã¨ã³ã¸ã³','HC-SCR':'ã¨ã³ã¸ã³',
+'æéè¨ºæ­':'ã¨ã³ã¸ã³','ãã£ã¼ã¼ã«ã¨ã³ã¸ã³':'ã¨ã³ã¸ã³','ã¨ã³ã¸ã³æ¬ä½':'ã¨ã³ã¸ã³',
+'æ½¤æ»ã»å·å´':'ã¨ã³ã¸ã³','çæè£ç½®':'ã¨ã³ã¸ã³','ã¨ã³ã¸ã³':'ã¨ã³ã¸ã³',
+'æ¸¬å®å·':'ã¨ã³ã¸ã³','æ²¹è':'ã¨ã³ã¸ã³','å®æç¹æ¤æ´å':'ã¨ã³ã¸ã³',
+'ååä¼éè£ç½®':'T/M','ååä¼é':'T/M',
+'å¶åè£ç½®':'ãã¬ã¼ã­',
+'æèµèµ°è¡è£ç½®':'ã·ã£ã·ã»ãã¬ã¼ã ','ã·ã£ã·':'ã·ã£ã·ã»ãã¬ã¼ã ',
+'é»æ°è£ç½®':'é»æ°è£ç½®','é»æ°':'é»æ°è£ç½®',
+'æ³å¾':'æ³ä»¤','æ³ä»¤':'æ³ä»¤',
+'å®å¨':'æ°è£ç½®ã»ä¸è¬','ä»æ§':'æ°è£ç½®ã»ä¸è¬','èªåè»æ¦è¦':'æ°è£ç½®ã»ä¸è¬',
+};
+
+function renderWeaknessAnalysis(){
+const el=document.getElementById('weakness-section');
+if(!el) return;
+const catStatMap={};
+allCatStats.forEach(c=>{catStatMap[c.id]=c;});
+// e-learning wrongAnswers ãcatã§éè¨
+const elWrongOrigCount={};
+const elWrongMappedCats={};
+allWrong.filter(w=>w.cat).forEach(w=>{
+  const mapped=EL_DISPLAY_CAT[w.cat]||w.cat;
+  elWrongOrigCount[w.cat]=(elWrongOrigCount[w.cat]||0)+1;
+  if(!elWrongMappedCats[mapped]) elWrongMappedCats[mapped]=[];
+  if(!elWrongMappedCats[mapped].includes(w.cat)) elWrongMappedCats[mapped].push(w.cat);
+});
+const cats=MECH_CATS.map(cat=>{
+  const s=catStatMap[cat];
+  const total=s?(s.total||0):0;
+  const correct=s?(s.correct||0):0;
+  const pct=total>0?Math.round(correct/total*100):null;
+  const elCats=elWrongMappedCats[cat]||[];
+  const elCount=elCats.reduce((sum,oc)=>sum+(elWrongOrigCount[oc]||0),0);
+  return {cat,total,correct,pct,elCats,elCount};
+}).filter(x=>x.total>0||x.elCount>0);
+if(!cats.length){
+  el.innerHTML='<div class="empty">åé¡ãè§£ãã¨ãã¼ã¿ãåæ ããã¾ã</div>';return;
+}
+cats.sort((a,b)=>{
+  const pa=a.pct!==null?a.pct:(a.elCount>0?0:100);
+  const pb=b.pct!==null?b.pct:(b.elCount>0?0:100);
+  return pa-pb;
+});
+el.innerHTML=cats.map(x=>{
+  const pct=x.pct;
+  const color=pct===null?'#94a3b8':pct>=70?'#16a34a':pct>=50?'#f59e0b':'#dc2626';
+  const cls=pct===null?'':(pct>=70?'ok':pct>=50?'mid':'');
+  const adv=ADVICE_MAP[x.cat];
+  const icon=pct===null?'â¬':pct>=70?'â':pct>=50?'â ï¸':'â';
+  const elTags=x.elCats.map(oc=>`<span class="weak-el-tag">${oc} Ã${elWrongOrigCount[oc]||0}</span>`).join('');
+  const refsHtml=adv?adv.refs.map(r=>`ð ${r.label} <strong>${r.page}</strong>`).join('ãï¼ã'):'';
+  const showAdvice=adv&&(x.elCount>0||(pct!==null&&pct<70));
+  return `<div class="weak-item ${cls}">
+<div class="weak-cat" style="color:${color}">${icon} ${x.cat}${pct!==null?` <span style="font-size:.8rem;font-weight:400;color:#64748b">${x.correct}/${x.total}åæ­£è§£ (${pct}%)</span>`:''}${x.elCount>0?` <span style="font-size:.72rem;background:#fee2e2;color:#dc2626;padding:1px 7px;border-radius:999px;margin-left:4px">e-learning ééã${x.elCount}å</span>`:''}</div>
+${pct!==null?`<div class="weak-bar-wrap"><div class="weak-bar" style="width:${pct}%;background:${color}"></div></div>`:''}
+${x.elCats.length?`<div class="weak-el-cats">${elTags}</div>`:''}
+${showAdvice?`<div class="weak-advice">ð¡ ${adv.advice}</div>`:''}
+${showAdvice&&refsHtml?`<div class="weak-ref">ð åèè³æï¼${refsHtml}</div>`:''}
+</div>`;
+}).join('');
+}
+
 </script>
 </body>
-</html>
+</html>                          
