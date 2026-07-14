@@ -49,6 +49,10 @@ main{max-width:900px;margin:0 auto;padding:16px}
 .loading{text-align:center;color:#64748b;padding:24px}
 .no-login{text-align:center;padding:60px 20px}
 .no-login .icon{font-size:3rem;margin-bottom:12px}
+/* 大タブ（サービス編/部品編） */
+.main-tabs{display:flex;gap:0;margin-bottom:16px;border-radius:12px;overflow:hidden;border:2px solid #1e3a5f;background:#1e3a5f}
+.main-tab{flex:1;padding:12px;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;color:rgba(255,255,255,.6);background:transparent;transition:.15s}
+.main-tab.active{background:white;color:#1e3a5f}
 </style>
 </head>
 <body>
@@ -66,44 +70,89 @@ main{max-width:900px;margin:0 auto;padding:16px}
   </div>
   <div id="content" style="display:none">
 
-    <div class="card">
-      <h2>📈 あなたの記録</h2>
-      <div class="stats-row">
-        <div class="stat-box"><div class="stat-num" id="total-attempts">0</div><div class="stat-label">総受験回数</div></div>
-        <div class="stat-box"><div class="stat-num red" id="wrong-count">0</div><div class="stat-label">復習フォルダ</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:#7e22ce" id="history-count">0</div><div class="stat-label">全履歴フォルダ</div></div>
-        <div class="stat-box"><div class="stat-num green" id="total-q">0</div><div class="stat-label">累計解答問数</div></div>
-      </div>
+    <!-- 大タブ -->
+    <div class="main-tabs">
+      <button class="main-tab active" onclick="switchMainTab('service')">🔧 サービス編</button>
+      <button class="main-tab" onclick="switchMainTab('parts')">⚙️ 部品編</button>
     </div>
 
-    <div class="card">
-      <h2>📉 カテゴリ別 正答率</h2>
-      <div class="tabs">
-        <button class="tab active" onclick="showChart(this,'mech')">🔧 メカニック</button>
-        <button class="tab" onclick="showChart(this,'front')">🪟 フロント</button>
-        <button class="tab" onclick="showChart(this,'shingatasha')">🚌 新型車</button>
-      </div>
-      <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
-    </div>
+    <!-- ========== サービス編 ========== -->
+    <div id="service-section">
 
-    <div class="card">
-      <h2>📋 試験別 詳細</h2>
-      <div class="perf-list" id="perf-list"></div>
-    </div>
+      <div class="card">
+        <h2>📈 あなたの記録</h2>
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-num" id="total-attempts">0</div><div class="stat-label">総受験回数</div></div>
+          <div class="stat-box"><div class="stat-num red" id="wrong-count">0</div><div class="stat-label">復習フォルダ</div></div>
+          <div class="stat-box"><div class="stat-num" style="color:#7e22ce" id="history-count">0</div><div class="stat-label">全履歴フォルダ</div></div>
+          <div class="stat-box"><div class="stat-num green" id="total-q">0</div><div class="stat-label">累計解答問数</div></div>
+        </div>
+      </div>
 
-    <div class="card">
-      <h2>📁 間違い問題フォルダ</h2>
-      <div class="folder-tabs">
-        <button class="folder-tab review active" onclick="showFolder(this,'review')">🔄 復習フォルダ（正解で消える）<span id="review-badge"></span></button>
-        <button class="folder-tab history" onclick="showFolder(this,'history')">📚 全履歴フォルダ（永久記録）<span id="history-badge"></span></button>
+      <div class="card">
+        <h2>📉 カテゴリ別 正答率</h2>
+        <div class="tabs">
+          <button class="tab active" onclick="showChart(this,'mech')">🔧 メカニック</button>
+          <button class="tab" onclick="showChart(this,'front')">🪟 フロント</button>
+          <button class="tab" onclick="showChart(this,'shingatasha')">🚌 新型車</button>
+        </div>
+        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
       </div>
-      <div id="folder-review">
-        <div class="wrong-list" id="wrong-list-review"><div class="empty">間違い問題なし！</div></div>
+
+      <div class="card">
+        <h2>📋 試験別 詳細</h2>
+        <div class="perf-list" id="perf-list"></div>
       </div>
-      <div id="folder-history" style="display:none">
-        <div class="wrong-list" id="wrong-list-history"><div class="empty">履歴なし</div></div>
+
+      <div class="card">
+        <h2>📁 間違い問題フォルダ</h2>
+        <div class="folder-tabs">
+          <button class="folder-tab review active" onclick="showFolder(this,'review','svc')">🔄 復習フォルダ（正解で消える）<span id="review-badge"></span></button>
+          <button class="folder-tab history" onclick="showFolder(this,'history','svc')">📚 全履歴フォルダ（永久記録）<span id="history-badge"></span></button>
+        </div>
+        <div id="svc-folder-review">
+          <div class="wrong-list" id="wrong-list-review"><div class="empty">間違い問題なし！</div></div>
+        </div>
+        <div id="svc-folder-history" style="display:none">
+          <div class="wrong-list" id="wrong-list-history"><div class="empty">履歴なし</div></div>
+        </div>
       </div>
-    </div>
+
+    </div><!-- /service-section -->
+
+    <!-- ========== 部品編 ========== -->
+    <div id="parts-section" style="display:none">
+
+      <div class="card">
+        <h2>📈 あなたの記録（部品編）</h2>
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-num" id="p-total-attempts">0</div><div class="stat-label">総受験回数</div></div>
+          <div class="stat-box"><div class="stat-num red" id="p-wrong-count">0</div><div class="stat-label">復習フォルダ</div></div>
+          <div class="stat-box"><div class="stat-num" style="color:#7e22ce" id="p-history-count">0</div><div class="stat-label">全履歴フォルダ</div></div>
+          <div class="stat-box"><div class="stat-num green" id="p-total-q">0</div><div class="stat-label">累計解答問数</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📋 試験別 詳細（部品編）</h2>
+        <div class="perf-list" id="p-perf-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>📁 間違い問題フォルダ（部品編）</h2>
+        <div class="folder-tabs">
+          <button class="folder-tab review active" onclick="showFolder(this,'review','parts')">🔄 復習フォルダ（正解で消える）<span id="p-review-badge"></span></button>
+          <button class="folder-tab history" onclick="showFolder(this,'history','parts')">📚 全履歴フォルダ（永久記録）<span id="p-history-badge"></span></button>
+        </div>
+        <div id="parts-folder-review">
+          <div class="wrong-list" id="p-wrong-list-review"><div class="empty">間違い問題なし！</div></div>
+        </div>
+        <div id="parts-folder-history" style="display:none">
+          <div class="wrong-list" id="p-wrong-list-history"><div class="empty">履歴なし</div></div>
+        </div>
+      </div>
+
+    </div><!-- /parts-section -->
 
   </div>
 </main>
@@ -117,8 +166,11 @@ import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/fireb
 const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
 const db = getFirestore(app);
-let allStats=[], allWrong=[], allHistory=[], allCatStats=[], radarChart=null;
 
+// サービス編データ
+let allStats=[], allWrong=[], allHistory=[], allCatStats=[], radarChart=null;
+// 部品編データ
+let partsStats=[], partsWrong=[], partsHistory=[], partsCatStats=[];
 
 const SOURCE_TO_URL = {
   '18年HF1認定1次試験_スマホ問題集':'/choko-study/18年HF-1認定1次試験.html',
@@ -200,33 +252,45 @@ const SOURCE_TO_URL = {
   'frontPool':'/choko-study/フロントランダム30問チャレンジ.html',
   '新型車解説確認テスト_スマホ問題集':'/choko-study/新型車解説確認テスト.html',
 };
-// メカニック 9カテゴリ
 const MECH_CATS = ["エンジン","HV","T/M","ブレーキ","シャシ・フレーム","電気装置","法令","新装置・一般","計算"];
-// フロント 12カテゴリ
 const FRONT_CATS = ["保証制度","外注（下請法含む）","見積り（事故見積含む）","受付/苦情/電話対応",
                     "ハイトス系/ICT","引渡対応/売上/回収","手形/小切手/領収書/売掛",
                     "通過車両関連","商品知識・車両知識","一般/保険","安全/法令","計算"];
-// 新型車 5カテゴリ
 const SHINGATASHA_CATS = ["安全装置","エンジン","シャシ","電気","ボデー"];
 
 onAuthStateChanged(auth, async user => {
   document.getElementById('loading').style.display='none';
   if(!user){document.getElementById('no-login').style.display='block';return;}
   document.getElementById('content').style.display='block';
-  const [ws,hs,ss,cs]=await Promise.all([
+
+  // サービス編・部品編を同時取得
+  const [ws,hs,ss,cs,pws,phs,pss,pcs]=await Promise.all([
     getDocs(collection(db,'users',user.uid,'wrongAnswers')),
     getDocs(collection(db,'users',user.uid,'wrongHistory')),
     getDocs(collection(db,'users',user.uid,'stats')),
     getDocs(collection(db,'users',user.uid,'catStats')),
-  ]).catch(()=>[{docs:[]},{docs:[]},{docs:[]},{docs:[]}]);
+    getDocs(collection(db,'users',user.uid,'partsWrongAnswers')),
+    getDocs(collection(db,'users',user.uid,'partsWrongHistory')),
+    getDocs(collection(db,'users',user.uid,'partsStats')),
+    getDocs(collection(db,'users',user.uid,'partsCatStats')),
+  ]).catch(()=>[{docs:[]},{docs:[]},{docs:[]},{docs:[]},{docs:[]},{docs:[]},{docs:[]},{docs:[]}]);
+
   allWrong=(ws.docs||[]).map(d=>({id:d.id,...d.data()}));
   allHistory=(hs.docs||[]).map(d=>({id:d.id,...d.data()}));
   allStats=(ss.docs||[]).map(d=>({id:d.id,...d.data()}));
   allCatStats=(cs.docs||[]).map(d=>({id:d.id,...d.data()}));
-  render();
+  partsWrong=(pws.docs||[]).map(d=>({id:d.id,...d.data()}));
+  partsHistory=(phs.docs||[]).map(d=>({id:d.id,...d.data()}));
+  partsStats=(pss.docs||[]).map(d=>({id:d.id,...d.data()}));
+  partsCatStats=(pcs.docs||[]).map(d=>({id:d.id,...d.data()}));
+
+  renderService();
+  renderParts();
 });
 
-function render(){
+// ========== サービス編レンダリング ==========
+
+function renderService(){
   const tot=allStats.reduce((s,x)=>s+(x.totalAttempts||0),0);
   const totalQ=allCatStats.reduce((s,x)=>s+(x.total||0),0);
   document.getElementById('total-attempts').textContent=tot;
@@ -235,36 +299,35 @@ function render(){
   document.getElementById('total-q').textContent=totalQ;
   document.getElementById('review-badge').textContent=' ('+allWrong.length+'問)';
   document.getElementById('history-badge').textContent=' ('+allHistory.length+'問)';
-
-  renderWrongList('wrong-list-review', allWrong, 'review', 'mech');
-  renderWrongList('wrong-list-history', allHistory, 'history', 'mech');
+  renderWrongList('wrong-list-review',allWrong,'review','mech',false);
+  renderWrongList('wrong-list-history',allHistory,'history','mech',false);
   renderPerfList('mech');
   showChartData('mech');
 }
 
-// 復習キュー: elId→href配列 のキャッシュ
 const _reviewQueues={};
 
-function renderWrongList(elId, list, type, tabType){
+function renderWrongList(elId,list,type,tabType,isParts){
   const el=document.getElementById(elId);
   let filtered=list;
-  if(tabType==='front') filtered=list.filter(w=>isFrontSource(w.source||w.id||''));
-  else if(tabType==='mech') filtered=list.filter(w=>isMechSource(w.source||w.id||''));
-  else if(tabType==='shingatasha') filtered=list.filter(w=>isShingataShaSource(w.source||w.id||''));
+  if(!isParts){
+    if(tabType==='front') filtered=list.filter(w=>isFrontSource(w.source||w.id||''));
+    else if(tabType==='mech') filtered=list.filter(w=>isMechSource(w.source||w.id||''));
+    else if(tabType==='shingatasha') filtered=list.filter(w=>isShingataShaSource(w.source||w.id||''));
+  }
   if(!filtered.length){
     el.innerHTML='<div class="empty">'+(type==='review'?'✅ 間違い問題なし！':'まだ履歴なし')+'</div>';
     return;
   }
   const sorted=[...filtered].sort((a,b)=>(b.timestamp?.seconds||b.firstWrong?.seconds||0)-(a.timestamp?.seconds||a.firstWrong?.seconds||0));
-
-  // 復習フォルダのリンクURLリストをキャッシュ（next問題へ機能用・null保持でindexを正確に）
   if(type==='review'){
-    _reviewQueues[elId]=sorted
-      .map(w=>{const b=w.url||(w.source&&SOURCE_TO_URL[w.source])||null;return b?`${b}?q=${w.qNo}`:null;});
+    _reviewQueues[elId]=sorted.map(w=>{
+      const b=isParts?(w.url||null):(w.url||(w.source&&SOURCE_TO_URL[w.source])||null);
+      return b?`${b}?q=${w.qNo}`:null;
+    });
   }
-
   el.innerHTML=sorted.map((w,i)=>{
-    const baseUrl=w.url||(w.source&&SOURCE_TO_URL[w.source])||null;
+    const baseUrl=isParts?(w.url||null):(w.url||(w.source&&SOURCE_TO_URL[w.source])||null);
     const href=baseUrl?`${baseUrl}?q=${w.qNo}`:'#';
     const isLink=type==='review'&&!!baseUrl;
     const tag=isLink?`<a href="${href}" onclick="_startReview('${elId}',${i},'${baseUrl}')" style="display:block;text-decoration:none;color:inherit">`:'<div>';
@@ -280,10 +343,9 @@ function renderWrongList(elId, list, type, tabType){
   }).join('');
 }
 
-// クリックした問題以降のURLをsessionStorageに保存（filterUrl=同じファイルのみ）
-function _startReview(elId, clickedIdx, filterUrl){
+function _startReview(elId,clickedIdx,filterUrl){
   const all=_reviewQueues[elId]||[];
-  let queue, total;
+  let queue,total;
   if(filterUrl){
     const sameFile=all.filter(u=>u&&u.split('?')[0]===filterUrl);
     const clicked=all[clickedIdx];
@@ -298,15 +360,9 @@ function _startReview(elId, clickedIdx, filterUrl){
   sessionStorage.setItem('reviewTotal',String(total));
 }
 
-function isMechSource(src){
-  return /メカニック|エンジニア|新人|HS/.test(src);
-}
-function isFrontSource(src){
-  return !isMechSource(src) && /HF|フロント|48回|49回/.test(src);
-}
-function isShingataShaSource(src){
-  return /新型車/.test(src);
-}
+function isMechSource(src){return /メカニック|エンジニア|新人|HS/.test(src);}
+function isFrontSource(src){return !isMechSource(src)&&/HF|フロント|48回|49回/.test(src);}
+function isShingataShaSource(src){return /新型車/.test(src);}
 
 function renderPerfList(type){
   const el=document.getElementById('perf-list');
@@ -328,28 +384,26 @@ function renderPerfList(type){
   }).join('');
 }
 
-window.showChart=function(btn, type){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+window.showChart=function(btn,type){
+  document.querySelectorAll('#service-section .tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   showChartData(type);
 };
 
 function showChartData(type){
   if(radarChart){radarChart.destroy();radarChart=null;}
-  const wrap=document.querySelector('.chart-wrap');
+  const wrap=document.querySelector('#service-section .chart-wrap');
   if(!wrap) return;
-
   const cats=type==='mech'?MECH_CATS:type==='front'?FRONT_CATS:SHINGATASHA_CATS;
   const catMap={};
   allCatStats.forEach(c=>{catMap[c.id]=c;});
-
   const hasData=cats.some(c=>catMap[c]&&catMap[c].total>0);
   renderPerfList(type);
-  renderWrongList('wrong-list-review', allWrong, 'review', type);
-  renderWrongList('wrong-list-history', allHistory, 'history', type);
   const srcFilter=type==='front'?isFrontSource:type==='shingatasha'?isShingataShaSource:isMechSource;
   const fw=allWrong.filter(w=>srcFilter(w.source||w.id||''));
   const fh=allHistory.filter(w=>srcFilter(w.source||w.id||''));
+  renderWrongList('wrong-list-review',fw,'review',type,false);
+  renderWrongList('wrong-list-history',fh,'history',type,false);
   document.getElementById('review-badge').textContent=' ('+fw.length+'問)';
   document.getElementById('history-badge').textContent=' ('+fh.length+'問)';
   if(!hasData){
@@ -357,6 +411,81 @@ function showChartData(type){
     wrap.innerHTML='<div class="empty">まだデータなし<br><small>問題を解くと反映されます</small></div>';
     return;
   }
-
   if(!document.getElementById('radarChart')){
-    const c=document.createElement('canvas');c.id='radarChart';wrap.innerH
+    const c=document.createElement('canvas');c.id='radarChart';wrap.innerHTML='';wrap.appendChild(c);
+  }
+  const data=cats.map(c=>{
+    const d=catMap[c];
+    return d&&d.total>0?Math.round(d.correct/d.total*100):0;
+  });
+  radarChart=new Chart(document.getElementById('radarChart'),{
+    type:'radar',
+    data:{
+      labels:cats,
+      datasets:[{
+        label:'正答率(%)',
+        data:data,
+        backgroundColor:'rgba(30,58,95,.15)',
+        borderColor:'#1e3a5f',
+        pointBackgroundColor:'#1e3a5f',
+        borderWidth:2,
+      }]
+    },
+    options:{
+      responsive:true,
+      scales:{r:{min:0,max:100,ticks:{stepSize:20,font:{size:10}},pointLabels:{font:{size:11}}}},
+      plugins:{legend:{display:false}}
+    }
+  });
+}
+
+// ========== 部品編レンダリング ==========
+
+function renderParts(){
+  const tot=partsStats.reduce((s,x)=>s+(x.totalAttempts||0),0);
+  const totalQ=partsCatStats.reduce((s,x)=>s+(x.total||0),0);
+  document.getElementById('p-total-attempts').textContent=tot;
+  document.getElementById('p-wrong-count').textContent=partsWrong.length;
+  document.getElementById('p-history-count').textContent=partsHistory.length;
+  document.getElementById('p-total-q').textContent=totalQ;
+  document.getElementById('p-review-badge').textContent=' ('+partsWrong.length+'問)';
+  document.getElementById('p-history-badge').textContent=' ('+partsHistory.length+'問)';
+  renderWrongList('p-wrong-list-review',partsWrong,'review','',true);
+  renderWrongList('p-wrong-list-history',partsHistory,'history','',true);
+  renderPartsPerfList();
+}
+
+function renderPartsPerfList(){
+  const el=document.getElementById('p-perf-list');
+  if(!partsStats.length){el.innerHTML='<div class="empty">受験データなし</div>';return;}
+  const sorted=[...partsStats].sort((a,b)=>(b.lastDate?.seconds||0)-(a.lastDate?.seconds||0));
+  el.innerHTML=sorted.map(s=>{
+    const pct=s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0;
+    const color=pct>=70?'#059669':pct>=50?'#f59e0b':'#dc2626';
+    return `<div class="perf-item">
+      <div class="perf-source">${(s.source||s.id).replace(/_/g,' ')}</div>
+      <div class="perf-bar-wrap"><div class="perf-bar" style="width:${pct}%;background:${color}"></div></div>
+      <div class="perf-pct" style="color:${color}">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ========== タブ切り替え ==========
+
+window.switchMainTab=function(tab){
+  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector(`.main-tab[onclick*="${tab}"]`).classList.add('active');
+  document.getElementById('service-section').style.display=tab==='service'?'':'none';
+  document.getElementById('parts-section').style.display=tab==='parts'?'':'none';
+};
+
+window.showFolder=function(btn,type,ns){
+  const prefix=ns==='parts'?'parts':'svc';
+  btn.closest('.folder-tabs').querySelectorAll('.folder-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(prefix+'-folder-review').style.display=type==='review'?'':'none';
+  document.getElementById(prefix+'-folder-history').style.display=type==='history'?'':'none';
+};
+</script>
+</body>
+</html>
