@@ -105,9 +105,9 @@ main{max-width:900px;margin:0 auto;padding:16px}
       </div>
       <div id="tab-parts" style="display:none">
         <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-          <button class="tab-btn active" id="parts-sub-wrong-btn" onclick="switchPartsTab('wrong')">🔄 復習フォルダ</button>
-          <button class="tab-btn" id="parts-sub-history-btn" onclick="switchPartsTab('history')">📚 全履歴</button>
-          <button class="tab-btn" id="parts-sub-stats-btn" onclick="switchPartsTab('stats')">📋 取り組み履歴</button>
+          <button class="tab-btn ptab active" id="parts-sub-wrong-btn" onclick="switchPartsTab('wrong')">🔄 復習フォルダ</button>
+          <button class="tab-btn ptab" id="parts-sub-history-btn" onclick="switchPartsTab('history')">📚 全履歴</button>
+          <button class="tab-btn ptab" id="parts-sub-stats-btn" onclick="switchPartsTab('stats')">📋 取り組み履歴</button>
         </div>
         <div id="parts-sub-wrong">
           <div id="parts-wrong-reset-area" style="margin-bottom:10px"></div>
@@ -566,7 +566,7 @@ window.resetStats = async function(uid) {
 };
 
 window.showTab = function(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+  document.querySelectorAll('.tab-btn:not(.ptab)').forEach((b,i) => {
     const tabs = ['wrong','history','stats','chart','parts'];
     b.classList.toggle('active', tabs[i] === tab);
   });
