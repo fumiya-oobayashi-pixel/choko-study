@@ -16,6 +16,7 @@ const MASTER_ADMIN_EMAILS = [
   "fumiya-oobayashi@aichi-hino.co.jp",
   "T_SOS@aichi-hino.co.jp",
   "junya-yoshida@aichi-hino.co.jp",
+  "hiroyuki-ishii@aichi-hino.co.jp",
   // 追加する場合はここに追記
   // "xxx@aichi-hino.co.jp",
 ];
