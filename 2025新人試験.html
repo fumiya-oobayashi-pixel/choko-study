@@ -209,7 +209,7 @@ const questions = [
    explanation:"冷却水の点検は冷間時（エンジンが冷えている状態）に行う。正解はA。"},
 
   {no:26, section:"問1", label:"問1(26)", points:2, answer:"C",
-   cat:"一般関連",
+   cat:"新装置・一般",
    stem:"バッテリーに関する記述として、不適切なものはどれか。",
    choices:{A:"正極板には粉状の二酸化鉛が使用されている。",B:"電解液の比重はバッテリーが完全充電状態で約1.280（20°C）である。",C:"負極板には、粉状の純鉛を希硫酸で練った二酸化鉛が使用されている。",D:"光学式バッテリー比重計を読む際は境界線が目盛りを横切る位置の値を読む。"},
    explanation:"正極板に二酸化鉛、負極板に海綿状鉛が使用される。正解はC。"},
@@ -738,6 +738,8 @@ try {
       if (isCorrect) {
         deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
       }
+    };
+  }
 
   const _origResult = window.showResult;
   if (typeof _origResult === 'function') {

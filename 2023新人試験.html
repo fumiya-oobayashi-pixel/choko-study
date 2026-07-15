@@ -740,6 +740,8 @@ try {
       if (isCorrect) {
         deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});
       }
+    };
+  }
 
   const _origResult = window.showResult;
   if (typeof _origResult === 'function') {
