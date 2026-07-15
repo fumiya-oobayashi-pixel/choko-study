@@ -267,25 +267,24 @@ const MECH_CATS = ["エンジン","HV","T/M","ブレーキ","シャシ・フレ�
 const FRONT_CATS = ["保証制度","外注（下請法含む）","見積り（事故見積含む）","受付/苦情/電話対応","ハイトス系/ICT","引渡対応/売上/回収","手形/小切手/領収書/売掛","通過車両関連","商品知識・車両知識","一般/保険","安全/法令","計算"];
 const SHINGATASHA_CATS = ["安全装置","エンジン","シャシ","電気","ボデー"];
 
-const PARTS_USERS = ['naoya-okada@aichi-hino.co.jp','fumiya-oobayashi@aichi-hino.co.jp','junya-yoshida@aichi-hino.co.jp','michio-sakae@aichi-hino.co.jp'];
-
 onAuthStateChanged(auth, async user => {
 document.getElementById('loading').style.display='none';
 if(!user){document.getElementById('no-login').style.display='block';return;}
 document.getElementById('content').style.display='block';
-const hasPartsTab = PARTS_USERS.includes(user.email);
-if(!hasPartsTab){document.querySelector('.main-tabs').style.display='none';document.getElementById('parts-section').style.display='none';}
-const fetches = [getDocs(collection(db,'users',user.uid,'wrongAnswers')),getDocs(collection(db,'users',user.uid,'wrongHistory')),getDocs(collection(db,'users',user.uid,'stats')),getDocs(collection(db,'users',user.uid,'catStats')),];
-if(hasPartsTab){fetches.push(getDocs(collection(db,'users',user.uid,'partsWrongAnswers')),getDocs(collection(db,'users',user.uid,'partsWrongHistory')),getDocs(collection(db,'users',user.uid,'partsStats')),getDocs(collection(db,'users',user.uid,'partsCatStats')),);}
-const results = await Promise.all(fetches).catch(()=>fetches.map(()=>({docs:[]})));
-const [ws,hs,ss,cs,pws,phs,pss,pcs] = [...results, ...Array(8).fill({docs:[]})];
-allWrong=(ws.docs||[]).map(d=>({id:d.id,...d.data()}));
-allHistory=(hs.docs||[]).map(d=>({id:d.id,...d.data()}));
-allStats=(ss.docs||[]).map(d=>({id:d.id,...d.data()}));
-allCatStats=(cs.docs||[]).map(d=>({id:d.id,...d.data()}));
-if(hasPartsTab){partsWrong=(pws.docs||[]).map(d=>({id:d.id,...d.data()}));partsHistory=(phs.docs||[]).map(d=>({id:d.id,...d.data()}));partsStats=(pss.docs||[]).map(d=>({id:d.id,...d.data()}));partsCatStats=(pcs.docs||[]).map(d=>({id:d.id,...d.data()}));}
+const parse = s => (s.docs||[]).map(d=>({id:d.id,...d.data()}));
+const snaps = await Promise.all([
+  getDocs(collection(db,'users',user.uid,'wrongAnswers')),
+  getDocs(collection(db,'users',user.uid,'wrongHistory')),
+  getDocs(collection(db,'users',user.uid,'stats')),
+  getDocs(collection(db,'users',user.uid,'catStats')),
+  getDocs(collection(db,'users',user.uid,'partsWrongAnswers')).catch(()=>({docs:[]})),
+  getDocs(collection(db,'users',user.uid,'partsWrongHistory')).catch(()=>({docs:[]})),
+  getDocs(collection(db,'users',user.uid,'partsStats')).catch(()=>({docs:[]})),
+  getDocs(collection(db,'users',user.uid,'partsCatStats')).catch(()=>({docs:[]})),
+]).catch(()=>Array(8).fill({docs:[]}));
+[allWrong,allHistory,allStats,allCatStats,partsWrong,partsHistory,partsStats,partsCatStats] = snaps.map(parse);
 renderService();
-if(hasPartsTab) renderParts();
+renderParts();
 });
 
 function renderService(){
@@ -299,7 +298,7 @@ document.getElementById('review-badge').textContent=' ('+allWrong.length+'問)';
 document.getElementById('history-badge').textContent=' ('+allHistory.length+'問)';
 renderWrongList('wrong-list-review',allWrong,'review','mech',false);
 renderWrongList('wrong-list-history',allHistory,'history','mech',false);
-renderPerfList('mech');
+renderPerfList(allStats,'perf-list','mech');
 showChartData('mech');
 renderWeaknessAnalysis();
 }
@@ -331,7 +330,7 @@ return `${tag}<div class="wrong-item ${type}" style="${isLink?'':'cursor:default
 }).join('');
 }
 
-function _startReview(elId,clickedIdx,filterUrl){
+window._startReview=function(elId,clickedIdx,filterUrl){
 const all=_reviewQueues[elId]||[];
 let queue,total;
 if(filterUrl){const sameFile=all.filter(u=>u&&u.split('?')[0]===filterUrl);const clicked=all[clickedIdx];const pos=sameFile.indexOf(clicked);queue=pos>=0?sameFile.slice(pos+1):[];total=sameFile.length;}
@@ -344,13 +343,14 @@ function isMechSource(src){return /メカニック|エンジニア|新人|HS/.te
 function isFrontSource(src){return !isMechSource(src)&&/HF|フロント|48回|49回/.test(src);}
 function isShingataShaSource(src){return /新型車/.test(src);}
 
-function renderPerfList(type){
-const el=document.getElementById('perf-list');
-if(!allStats.length){el.innerHTML='<div class="empty">受験データなし</div>';return;}
-let filtered=allStats;
-if(type==='front') filtered=allStats.filter(s=>isFrontSource(s.source||s.id));
-else if(type==='mech') filtered=allStats.filter(s=>isMechSource(s.source||s.id));
-else if(type==='shingatasha') filtered=allStats.filter(s=>isShingataShaSource(s.source||s.id));
+// list:対象データ配列, elId:描画先ID, type:フィルタ種別(''=全件)
+function renderPerfList(list,elId,type){
+const el=document.getElementById(elId);
+if(!list.length){el.innerHTML='<div class="empty">受験データなし</div>';return;}
+let filtered=list;
+if(type==='front') filtered=list.filter(s=>isFrontSource(s.source||s.id));
+else if(type==='mech') filtered=list.filter(s=>isMechSource(s.source||s.id));
+else if(type==='shingatasha') filtered=list.filter(s=>isShingataShaSource(s.source||s.id));
 if(!filtered.length){el.innerHTML='<div class="empty">受験データなし</div>';return;}
 const sorted=[...filtered].sort((a,b)=>(b.lastDate?.seconds||0)-(a.lastDate?.seconds||0));
 el.innerHTML=sorted.map(s=>{
@@ -374,7 +374,7 @@ const cats=type==='mech'?MECH_CATS:type==='front'?FRONT_CATS:SHINGATASHA_CATS;
 const catMap={};
 allCatStats.forEach(c=>{catMap[c.id]=c;});
 const hasData=cats.some(c=>catMap[c]&&catMap[c].total>0);
-renderPerfList(type);
+renderPerfList(allStats,'perf-list',type);
 const srcFilter=type==='front'?isFrontSource:type==='shingatasha'?isShingataShaSource:isMechSource;
 const fw=allWrong.filter(w=>srcFilter(w.source||w.id||''));
 const fh=allHistory.filter(w=>srcFilter(w.source||w.id||''));
@@ -400,14 +400,7 @@ document.getElementById('p-review-badge').textContent=' ('+partsWrong.length+'�
 document.getElementById('p-history-badge').textContent=' ('+partsHistory.length+'問)';
 renderWrongList('p-wrong-list-review',partsWrong,'review','',true);
 renderWrongList('p-wrong-list-history',partsHistory,'history','',true);
-renderPartsPerfList();
-}
-
-function renderPartsPerfList(){
-const el=document.getElementById('p-perf-list');
-if(!partsStats.length){el.innerHTML='<div class="empty">受験データなし</div>';return;}
-const sorted=[...partsStats].sort((a,b)=>(b.lastDate?.seconds||0)-(a.lastDate?.seconds||0));
-el.innerHTML=sorted.map(s=>{const pct=s.lastTotal?Math.round(s.lastCorrect/s.lastTotal*100):0;const color=pct>=70?'#059669':pct>=50?'#f59e0b':'#dc2626';return `<div class="perf-item"><div class="perf-source">${(s.source||s.id).replace(/_/g,' ')}</div><div class="perf-bar-wrap"><div class="perf-bar" style="width:${pct}%;background:${color}"></div></div><div class="perf-pct" style="color:${color}">${pct}%</div></div>`;}).join('');
+renderPerfList(partsStats,'p-perf-list','');
 }
 
 window.switchMainTab=function(tab){
