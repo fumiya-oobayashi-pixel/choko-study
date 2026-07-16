@@ -607,6 +607,7 @@ function showResult() {
 }
 render();
 </script>
+<script>
 // ?q=N 復習モード（マイページ復習フォルダから遷移時）
 (function(){
   var qParam = new URLSearchParams(location.search).get('q');
@@ -682,6 +683,7 @@ render();
     document.body.appendChild(ov);
   }
 })();
+</script>
 
 <script src="./firebase-config.js"></script>
 <script type="module">
