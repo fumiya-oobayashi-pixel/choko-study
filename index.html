@@ -404,7 +404,7 @@ document.addEventListener('click',function(e){
 });
 showSection('mechanic');
 </script>
-<script>document.body.style.visibility='hidden';</script>
+<script>document.body.style.visibility='hidden';setTimeout(function(){if(document.body.style.visibility==='hidden'){location.href='login.html';}},5000);</script>
 <script src="firebase-config.js"></script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -423,4 +423,4 @@ try {
     if (user.isAnonymous) {
       badge.innerHTML = `<span style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;display:flex;align-items:center;gap:6px">
         🔑 ゲスト
-        <span style="cursor:pointer;opacity:.7" onclick="(async()=>{await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js').then((
+        <span style="cursor:pointer;opacity:.7
