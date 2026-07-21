@@ -399,10 +399,10 @@ const questions = [
     text:'環境マネジメントシステムに関する記述として、不適切なものはどれか。',
    cat:'安全/法令',
     choices:{
-      A:'「ＥＭＤ認定」とは、日野独自の認定制度である。',
-      B:'「ＥＭＤ認定」とは、「ＩＳＯ１４００１」認定取得条件を全て満たしているものである。',
+      A:'『ＥＭＤ認定』とは、日野独自の認定制度である。',
+      B:'『ＥＭＤ認定』とは、「ＩＳＯ１４００１」認定取得条件を全て満たしているものである。',
       C:'「環境に優しい事業場表彰」は、国土交通省の制定する制度である。',
-      D:'「ＥＭＤ認定」には３段階の認定クラスがあり、評価は４項目が対象となる。'
+      D:'『ＥＭＤ認定』には３段階の認定クラスがあり、評価は４項目が対象となる。'
     },
     answer:'B',
     explanation:'EMD認定は、ISO14001認証の取得条件全てを満たすものではない。また「環境に優しい事業場表彰」は国土交通省が表彰の指針を出し、各地方運輸局が表彰している。'
@@ -800,7 +800,7 @@ try {
       const _L = q.labels || ['A','B','C','D'];
       const isCorrect = choice === (q.answer !== undefined ? q.answer : _L[q.ans]);
       // カテゴリ別累計
-      const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険");
+      const cat = ((q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険")).replace(/\//g,'_');
       setDoc(doc(db,'users',user.uid,'catStats',cat),{total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
     };
   }

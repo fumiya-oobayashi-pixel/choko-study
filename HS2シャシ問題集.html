@@ -725,7 +725,7 @@ try {
     const q = questions[current];
     if (!q) return;
     const isCorrect = k === q.answer;
-    const mappedCat = _EL_CAT_MAP[q.cat] || q.cat || 'エンジン';
+    const mappedCat = (_EL_CAT_MAP[q.cat] || q.cat || 'エンジン').replace(/\//g,'_');
     setDoc(doc(db, 'users', user.uid, 'catStats', mappedCat), {
       total: increment(1),
       correct: increment(isCorrect ? 1 : 0)

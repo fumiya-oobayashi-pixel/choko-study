@@ -486,7 +486,7 @@ window.switchAdminChart = function(type) {
   document.getElementById('chart-front-btn').classList.toggle('active', type === 'front');
   const cats = type === 'mech' ? MECH_CATS : FRONT_CATS;
   const catMap = {};
-  currentChartCatStats.forEach(c => { catMap[c.id] = c; });
+  currentChartCatStats.forEach(c => { catMap[c.id] = c; catMap[c.id.replace(/_/g,'/')] = c; });
   const data = cats.map(c => {
     const s = catMap[c];
     return (s && s.total) ? Math.round(s.correct / s.total * 100) : 0;

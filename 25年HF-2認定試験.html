@@ -267,7 +267,7 @@ const questions = [
   },
   {
     no:20, pts:3,
-    text:"道路運送車両法に照らし、自動車点検基準のうち、別表第１（事業用自動車等の日常点検基準）原動機の項目に関する記述として、不適切なものはどれか。",
+    text:"道路運送車両法に照らし、自動車点検基準のうち、別表第１（事業用自動車、自家用貨物自動車等の日常点検基準）原動機の項目に関する記述として、不適切なものはどれか。",
    cat:'安全/法令',
     opts:[
       "ファン・ベルトの張り具合が適当であり、かつ、ファン・ベルトに損傷がないこと。",
@@ -734,7 +734,7 @@ try {
       const _L = q.labels || ['A','B','C','D'];
       const isCorrect = choice === (q.answer !== undefined ? q.answer : _L[q.ans]);
       // カテゴリ別累計
-      const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険");
+      const cat = ((q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険")).replace(/\//g,'_');
       setDoc(doc(db,'users',user.uid,'catStats',cat),{total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
     };
   }

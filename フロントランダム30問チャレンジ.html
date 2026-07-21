@@ -290,7 +290,7 @@ try {
       if (!q) return;
       const isCorrect = choice === q.answer;
       const key = window._fbSrc + '_q' + no;
-      const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険");
+      const cat = ((q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険")).replace(/\//g,'_');
       if (isCorrect) {
         import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({doc, deleteDoc, setDoc, increment}) => {
           deleteDoc(doc(db,'users',user.uid,'wrongAnswers',key)).catch(()=>{});

@@ -110,13 +110,13 @@ const questions = [
    ans:0, exp:"料金と有償・無償の説明は受注時点で行う（請求時点ではなく）。受注時に説明することが整備料金の円滑な回収につながる。"
   },
   {no:10,pts:3,labels:L3,
-   text:"ＨＩＴＯＳＳIIお客様照会画面の対応区分に関する記述として、適切なものはどれか。",
+   text:"ＨＩＴＯＳＳⅡお客様照会画面の対応区分に関する記述として、適切なものはどれか。",
    cat:'安全/法令',
    opts:["対応区分「０１」は、優良客である。","対応区分「０２」は、条件付き客である。","対応区分「０４」は、不良客である。"],
    ans:0, exp:"対応区分01（S）は優良客（A適切）。対応区分02（B）は不良客。対応区分04（G）は条件付客。"
   },
   {no:11,pts:3,labels:L3,
-   text:"ＨＩＴＯＳＳIIで売掛金を確認する照会画面として、適切なものはどれか。",
+   text:"ＨＩＴＯＳＳⅡで売掛金を確認する照会画面として、適切なものはどれか。",
    cat:'手形/小切手/領収書/売掛',
    opts:["整備歴照会","お客様照会","お客様車両照会"],
    ans:1, exp:"売掛金の確認は「お客様照会」の画面で行う。整備歴照会は整備の履歴、お客様車両照会は車両情報の確認。"
@@ -572,7 +572,7 @@ try {
       const _L = q.labels || ['A','B','C','D'];
       const isCorrect = choice === (q.answer !== undefined ? q.answer : _L[q.ans]);
       // カテゴリ別累計
-      const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険");
+      const cat = ((q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険")).replace(/\//g,'_');
       setDoc(doc(db,'users',user.uid,'catStats',cat),{total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
     };
   }

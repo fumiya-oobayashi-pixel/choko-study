@@ -529,7 +529,7 @@ try {
       const _L = q.labels || ['A','B','C','D'];
       const isCorrect = choice === (q.answer !== undefined ? q.answer : _L[q.ans]);
       // カテゴリ別累計
-      const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険");
+      const cat = ((q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "一般/保険")).replace(/\//g,'_');
       setDoc(doc(db,'users',user.uid,'catStats',cat),{total:increment(1),correct:increment(isCorrect?1:0)},{merge:true}).catch(()=>{});
     };
   }

@@ -213,7 +213,7 @@ function selectAnswer(chosen, btn, keys) {
       // 復習フォルダ管理
       import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js')
         .then(({doc:d, deleteDoc, setDoc:sd, serverTimestamp, increment:inc}) => {
-          sd(d(db,'users',user.uid,'catStats',q.cat),
+          sd(d(db,'users',user.uid,'catStats',(q.cat||'').replace(/\//g,'_')),
             {total:inc(1),correct:inc(isCorrect?1:0)},{merge:true}).catch(()=>{});
           const key = 'frontPool_q' + q.id;
           if (isCorrect) {

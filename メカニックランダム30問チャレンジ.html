@@ -84,9 +84,9 @@ const normalPool = [{"no": 1, "section": "問1", "label": "問1(1)", "points": 3
 
 let quiz = [], answers = {}, current = 0;
 let wrongAnswerKeys = new Set();
-let firebaseReady = false;
-let currentUid = null;
-let db = null;
+var firebaseReady = false;
+var currentUid = null;
+var db = null;
 
 function shuffle(arr) {
   const a = [...arr];
@@ -167,7 +167,7 @@ function selectAns(idx, key) {
       wrongAnswerKeys.delete(wkey);
       import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({doc, deleteDoc, setDoc, increment}) => {
         deleteDoc(doc(db, 'users', currentUid, 'wrongAnswers', wkey)).catch(()=>{});
-        const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "新装置・一般");
+        const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "新装置・一般")).replace(/\//g,'_');
         setDoc(doc(db,'users',currentUid,'catStats',cat),{total:increment(1),correct:increment(1)},{merge:true}).catch(()=>{});
       });
     } else {
@@ -185,7 +185,7 @@ function selectAns(idx, key) {
           stem: q.stem.substring(0,120), firstWrong: serverTimestamp(),
           url: window.location.pathname
         }, {merge:true}).catch(()=>{});
-        const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "新装置・一般");
+        const cat = (q.section==="問2"||q.section==="問２") ? "計算" : (q.cat || "新装置・一般")).replace(/\//g,'_');
         setDoc(doc(db,'users',currentUid,'catStats',cat),{total:increment(1),correct:increment(0)},{merge:true}).catch(()=>{});
       });
     }
