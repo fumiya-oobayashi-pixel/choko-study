@@ -372,7 +372,7 @@ const wrap=document.querySelector('#service-section .chart-wrap');
 if(!wrap) return;
 const cats=type==='mech'?MECH_CATS:type==='front'?FRONT_CATS:SHINGATASHA_CATS;
 const catMap={};
-allCatStats.forEach(c=>{catMap[c.id]=c;});
+allCatStats.forEach(c=>{catMap[c.id]=c; catMap[c.id.replace(/_/g,'/')]=c;});
 const hasData=cats.some(c=>catMap[c]&&catMap[c].total>0);
 renderPerfList(allStats,'perf-list',type);
 const srcFilter=type==='front'?isFrontSource:type==='shingatasha'?isShingataShaSource:isMechSource;
@@ -514,9 +514,4 @@ ${x.elCats.length?`<div class="weak-el-cats">${elTags}</div>`:''}
 ${showAdvice?`<div class="weak-advice">💡 ${adv.advice}</div>`:''}
 ${showAdvice&&refsHtml?`<div class="weak-ref">📚 参考資料：${refsHtml}</div>`:''}
 </div>`;
-}).join('');
-}
-
-</script>
-</body>
-</html>
+}).join
