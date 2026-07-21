@@ -149,6 +149,7 @@ main{padding:14px;max-width:640px;margin:0 auto;}
   <div class="sub-panel" id="panel-mhs1">
     <div class="sec-label">📗 HS-1 認定1次試験</div>
     <div class="card-list">
+      <a class="qcard hs1" href="./26年HS-1認定1次試験.html" target="_blank"><span class="qcard-icon">📗</span><div class="qcard-body"><div class="qcard-title">26年度　HS-1 認定1次試験</div><div class="qcard-meta">32問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
       <a class="qcard hs1" href="./25年HS-1認定1次試験.html" target="_blank"><span class="qcard-icon">📗</span><div class="qcard-body"><div class="qcard-title">25年度　HS-1 認定1次試験</div><div class="qcard-meta">32問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
       <a class="qcard hs1" href="./24年HS-1認定1次試験.html" target="_blank"><span class="qcard-icon">📗</span><div class="qcard-body"><div class="qcard-title">24年度　HS-1 認定1次試験</div><div class="qcard-meta">32問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
       <a class="qcard hs1" href="./23年HS-1認定1次試験.html" target="_blank"><span class="qcard-icon">📗</span><div class="qcard-body"><div class="qcard-title">23年度　HS-1 認定1次試験</div><div class="qcard-meta">32問 ／ 100点満点</div></div><span class="qcard-arr">›</span></a>
@@ -428,10 +429,4 @@ try {
     badge.innerHTML = `<span style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;display:flex;align-items:center;gap:6px">
       👤 ${name}
       ${admin ? `<a href="./admin.html" style="background:#fde68a;color:#1e3a5f;font-weight:700;text-decoration:none;padding:2px 8px;border-radius:6px">🔐 管理者</a>` : ''}
-      <span style="cursor:pointer;opacity:.7" onclick="(async()=>{await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js').then(({getAuth,signOut})=>signOut(getAuth()));location.reload();})()">ログアウト</span>
-    </span>`;
-  });
-} catch(e) { console.warn('Firebase:', e.message); document.body.style.visibility=''; }
-</script>
-</body>
-</html>
+      <span style="cursor:pointer;opacity:.7" onclick="(async()=>
