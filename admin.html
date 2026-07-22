@@ -92,6 +92,7 @@ main{max-width:900px;margin:0 auto;padding:16px}
         <div style="display:flex;gap:6px;margin-bottom:10px">
           <button class="tab-btn active" id="chart-mech-btn" onclick="switchAdminChart('mech')">🔧 メカニック</button>
           <button class="tab-btn" id="chart-front-btn" onclick="switchAdminChart('front')">🪟 フロント</button>
+          <button class="tab-btn" id="chart-parts-btn" onclick="switchAdminChart('parts')">📦 パーツ</button>
         </div>
         <div style="max-width:480px;margin:0 auto"><canvas id="adminRadarChart"></canvas></div>
         <div id="chart-stats-list" style="margin-top:14px"></div>
@@ -161,10 +162,12 @@ onAuthStateChanged(auth, async user => {
 let allUsersData = {};
 let adminRadarChart = null;
 let currentChartCatStats = [];
+let currentPartsCatStats = [];
 const MECH_CATS = ["エンジン","HV","T/M","ブレーキ","シャシ・フレーム","電気装置","法令","新装置・一般","計算"];
 const FRONT_CATS = ["保証制度","外注（下請法含む）","見積り（事故見積含む）","受付/苦情/電話対応",
                     "ハイトス系/ICT","引渡対応/売上/回収","手形/小切手/領収書/売掛",
                     "通過車両関連","商品知識・車両知識","一般/保険","安全/法令","計算"];
+const PARTS_CATS = ["在庫管理","かんばん","帳票","棚卸","商品知識","安全","販売管理","計算"];
 
 async function loadAllData() {
   try {
@@ -176,7 +179,7 @@ async function loadAllData() {
       const uid = userDoc.id;
       const userData = userDoc.data();
       const [wrongSnap, historySnap, statsSnap, catSnap,
-             partsWrongSnap, partsHistorySnap, partsStatsSnap] = await Promise.all([
+             partsWrongSnap, partsHistorySnap, partsStatsSnap, partsCatSnap] = await Promise.all([
         getDocs(collection(db, 'users', uid, 'wrongAnswers')),
         getDocs(collection(db, 'users', uid, 'wrongHistory')),
         getDocs(collection(db, 'users', uid, 'stats')),
@@ -184,12 +187,13 @@ async function loadAllData() {
         getDocs(collection(db, 'users', uid, 'partsWrongAnswers')).catch(() => ({docs:[]})),
         getDocs(collection(db, 'users', uid, 'partsWrongHistory')).catch(() => ({docs:[]})),
         getDocs(collection(db, 'users', uid, 'partsStats')).catch(() => ({docs:[]})),
+        getDocs(collection(db, 'users', uid, 'partsCatStats')).catch(() => ({docs:[]})),
       ]);
       return { uid, userData,
         wrongList: parse(wrongSnap), historyList: parse(historySnap),
         statsList: parse(statsSnap), catStats: parse(catSnap),
         partsWrongList: parse(partsWrongSnap), partsHistoryList: parse(partsHistorySnap),
-        partsStatsList: parse(partsStatsSnap) };
+        partsStatsList: parse(partsStatsSnap), partsCatStats: parse(partsCatSnap) };
     }));
 
     const userGrid = document.getElementById('user-grid');
@@ -249,8 +253,8 @@ window.showUser = function(uid) {
 
   renderWrongList(data.wrongList, uid);
   renderHistoryList(data.historyList, uid);
-  renderStatsList(data.statsList, uid);
-  renderChartStats(data.catStats||[], uid);
+  renderStatsList(data.statsList, data.partsStatsList||[], uid);
+  renderChartStats(data.catStats||[], uid, data.partsCatStats||[]);
   renderPartsWrongList(data.partsWrongList||[], uid);
   renderPartsHistoryList(data.partsHistoryList||[], uid);
   renderPartsStatsList(data.partsStatsList||[], uid);
@@ -278,21 +282,25 @@ function renderWrongList(wrongList, uid) {
   `).join('');
 }
 
-function renderStatsList(statsList, uid) {
+function renderStatsList(statsList, partsStatsList, uid) {
   const tbody = document.getElementById('stats-body');
   const resetArea = document.getElementById('stats-reset-area');
-  if (!statsList || !statsList.length) {
+  const mechRows = (statsList||[]).map(s => ({ ...s, _kind: 'mech' }));
+  const partsRows = (partsStatsList||[]).map(s => ({ ...s, _kind: 'parts' }));
+  const allRows = [...mechRows, ...partsRows];
+  if (!allRows.length) {
     tbody.innerHTML = '<tr><td colspan="6" class="empty">取り組み履歴なし</td></tr>';
     if (resetArea) resetArea.innerHTML = '';
     return;
   }
-  if (resetArea) resetArea.innerHTML = `<button onclick="resetStats('${uid}')" style="padding:8px 16px;background:#b45309;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">🗑️ このユーザーの取り込み履歴をリセット</button>`;
-  statsList.sort((a,b) => (b.lastDate?.seconds||0) - (a.lastDate?.seconds||0));
-  tbody.innerHTML = statsList.map(s => {
+  if (resetArea) resetArea.innerHTML = `<button onclick="resetStats('${uid}')" style="padding:8px 16px;background:#b45309;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">🗑️ メカニック/フロント履歴リセット</button>`;
+  allRows.sort((a,b) => (b.lastDate?.seconds||0) - (a.lastDate?.seconds||0));
+  tbody.innerHTML = allRows.map(s => {
     const pct = s.lastTotal ? Math.round(s.lastCorrect/s.lastTotal*100) : 0;
     const dateStr = s.lastDate ? new Date(s.lastDate.seconds*1000).toLocaleDateString('ja-JP') : '-';
+    const icon = s._kind === 'parts' ? '📦' : '📝';
     return `<tr>
-      <td>${s.source || s.id}</td>
+      <td>${icon} ${s.source || s.id}</td>
       <td>${s.lastCorrect||0}</td>
       <td>${s.lastTotal||0}</td>
       <td style="color:${pct>=70?'#059669':'#dc2626'};font-weight:700">${pct}%</td>
@@ -467,10 +475,13 @@ window.switchPartsTab = function(sub) {
   });
 };
 
-function renderChartStats(catStats, uid) {
+function renderChartStats(catStats, uid, partsCatStats) {
   currentChartCatStats = catStats || [];
+  currentPartsCatStats = partsCatStats || [];
   const resetArea = document.getElementById('chart-reset-area');
-  if (!catStats || !catStats.length) {
+  const hasMechFront = currentChartCatStats.length > 0;
+  const hasParts = currentPartsCatStats.length > 0;
+  if (!hasMechFront && !hasParts) {
     const el = document.getElementById('chart-stats-list');
     if (el) el.innerHTML = '<div class="empty">チャートデータなし</div>';
     if (resetArea) resetArea.innerHTML = '';
@@ -478,18 +489,30 @@ function renderChartStats(catStats, uid) {
     return;
   }
   if (resetArea) resetArea.innerHTML = `<button onclick="resetChart('${uid}')" style="padding:8px 16px;background:#7e22ce;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">📊 チャートデータをリセット</button>`;
-  switchAdminChart('mech');
+  // パーツデータのみの場合はパーツチャートを先に表示
+  const defaultType = hasMechFront ? 'mech' : 'parts';
+  switchAdminChart(defaultType);
 }
 
 window.switchAdminChart = function(type) {
   document.getElementById('chart-mech-btn').classList.toggle('active', type === 'mech');
   document.getElementById('chart-front-btn').classList.toggle('active', type === 'front');
-  const cats = type === 'mech' ? MECH_CATS : FRONT_CATS;
+  document.getElementById('chart-parts-btn').classList.toggle('active', type === 'parts');
+  const cats = type === 'mech' ? MECH_CATS : type === 'parts' ? PARTS_CATS : FRONT_CATS;
   const catMap = {};
-  currentChartCatStats.forEach(c => { catMap[c.id] = c; catMap[c.id.replace(/_/g,'/')] = c; });
+  if (type === 'parts') {
+    currentPartsCatStats.forEach(c => {
+      const cat = c.cat || c.id.replace(/^[^_]+__/, '').replace(/_/g, '/');
+      if (!catMap[cat]) catMap[cat] = { correct: 0, total: 0 };
+      catMap[cat].correct += (c.correct || 0);
+      catMap[cat].total += (c.total || 0);
+    });
+  } else {
+    currentChartCatStats.forEach(c => { catMap[c.id] = c; catMap[c.id.replace(/_/g,'/')] = c; });
+  }
   const data = cats.map(c => {
     const s = catMap[c];
-    return (s && s.total) ? Math.round(s.correct / s.total * 100) : 0;
+    return (s && s.total) ? Math.round((s.correct || 0) / s.total * 100) : 0;
   });
   if (adminRadarChart) { adminRadarChart.destroy(); adminRadarChart = null; }
   const canvas = document.getElementById('adminRadarChart');
@@ -526,6 +549,7 @@ window.switchAdminChart = function(type) {
     + sorted.map(({id, pct, s}) =>
       `<tr><td>${id}</td><td>${s?.total||0}</td><td>${s?.correct||0}</td><td style="color:${pct>=70?'#059669':'#dc2626'};font-weight:700">${pct}%</td></tr>`
     ).join('') + '</tbody></table>';
+
 };
 
 window.resetChart = async function(uid) {
