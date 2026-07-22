@@ -47,9 +47,40 @@ main{max-width:900px;margin:0 auto;padding:16px}
   <div style="display:flex;gap:8px">
     <a href="./mypage.html" class="logout-btn" style="text-decoration:none">📊 マイページ</a>
     <button class="logout-btn" id="reload-btn" onclick="reloadData()">🔄 再読み込み</button>
+    <button class="logout-btn" onclick="openAddUserModal()" style="background:rgba(16,185,129,.3);border-color:rgba(16,185,129,.5)">➕ ユーザー追加</button>
     <button class="logout-btn" onclick="doLogout()">ログアウト</button>
   </div>
 </header>
+
+<!-- ユーザー追加モーダル -->
+<div id="add-user-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center">
+  <div style="background:white;border-radius:16px;padding:28px;width:min(420px,90vw);box-shadow:0 8px 32px rgba(0,0,0,.2)">
+    <h3 style="font-size:1rem;font-weight:900;color:#1e3a5f;margin-bottom:20px">➕ 新規ユーザー作成</h3>
+    <div style="margin-bottom:14px">
+      <label style="font-size:.8rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px">メールアドレス</label>
+      <input id="new-user-email" type="email" placeholder="xxx@aichi-hino.co.jp"
+        style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none"
+        onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:.8rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px">パスワード（初期）</label>
+      <input id="new-user-password" type="password" placeholder="8文字以上"
+        style="width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none"
+        onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:.82rem;color:#374151;cursor:pointer">
+        <input id="send-reset-email" type="checkbox" checked style="width:16px;height:16px">
+        作成後にパスワードリセットメールを送信する
+      </label>
+    </div>
+    <div id="add-user-error" style="display:none;background:#fee2e2;color:#dc2626;border-radius:8px;padding:10px 12px;font-size:.82rem;margin-bottom:14px"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="closeAddUserModal()" style="padding:10px 20px;border:2px solid #e2e8f0;border-radius:8px;font-weight:700;cursor:pointer;background:white;color:#64748b;font-family:inherit">キャンセル</button>
+      <button id="add-user-btn" onclick="createUser()" style="padding:10px 20px;background:#059669;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit">作成する</button>
+    </div>
+  </div>
+</div>
 
 <main id="main">
   <div class="loading" id="loading">読み込み中...</div>
@@ -133,9 +164,9 @@ main{max-width:900px;margin:0 auto;padding:16px}
 
 <script src="firebase-config.js"></script>
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { initializeApp, deleteApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, collection, getDocs, deleteDoc, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
@@ -144,6 +175,69 @@ const db = getFirestore(app);
 window.doLogout = async () => {
   await signOut(auth);
   location.href = 'login.html';
+};
+
+window.openAddUserModal = function() {
+  document.getElementById('new-user-email').value = '';
+  document.getElementById('new-user-password').value = '';
+  document.getElementById('add-user-error').style.display = 'none';
+  document.getElementById('send-reset-email').checked = true;
+  const modal = document.getElementById('add-user-modal');
+  modal.style.display = 'flex';
+};
+
+window.closeAddUserModal = function() {
+  document.getElementById('add-user-modal').style.display = 'none';
+};
+
+window.createUser = async function() {
+  const email = document.getElementById('new-user-email').value.trim();
+  const password = document.getElementById('new-user-password').value;
+  const sendReset = document.getElementById('send-reset-email').checked;
+  const errEl = document.getElementById('add-user-error');
+  const btn = document.getElementById('add-user-btn');
+
+  errEl.style.display = 'none';
+  if (!email) { errEl.textContent = 'メールアドレスを入力してください'; errEl.style.display = 'block'; return; }
+  if (!password || password.length < 6) { errEl.textContent = 'パスワードは6文字以上で入力してください'; errEl.style.display = 'block'; return; }
+
+  btn.textContent = '作成中...'; btn.disabled = true;
+  try {
+    // セカンダリアプリでユーザー作成（管理者セッションを維持するため）
+    const secondaryApp = initializeApp(FIREBASE_CONFIG, 'secondary_' + Date.now());
+    const secondaryAuth = getAuth(secondaryApp);
+    const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+    const newUid = userCred.user.uid;
+
+    // Firestoreにユーザー情報を登録
+    await setDoc(doc(db, 'users', newUid), {
+      email: email,
+      displayName: email.split('@')[0],
+      lastLogin: new Date().toISOString()
+    }, { merge: true });
+
+    // パスワードリセットメール送信
+    if (sendReset) {
+      await sendPasswordResetEmail(secondaryAuth, email).catch(() => {});
+    }
+
+    // セカンダリアプリを破棄
+    await deleteApp(secondaryApp);
+
+    closeAddUserModal();
+    alert(`✅ ユーザー「${email}」を作成しました。${sendReset ? 'パスワードリセットメールを送信しました。' : ''}`);
+    await reloadData();
+  } catch(e) {
+    const msgs = {
+      'auth/email-already-in-use': 'このメールアドレスは既に使用されています',
+      'auth/invalid-email': 'メールアドレスの形式が正しくありません',
+      'auth/weak-password': 'パスワードが弱すぎます（6文字以上）',
+    };
+    errEl.textContent = msgs[e.code] || ('エラー: ' + e.message);
+    errEl.style.display = 'block';
+  } finally {
+    btn.textContent = '作成する'; btn.disabled = false;
+  }
 };
 
 window.reloadData = async () => {
