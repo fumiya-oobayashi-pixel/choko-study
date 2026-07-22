@@ -306,11 +306,13 @@ async function loadAllData() {
     let totalWrong = 0;
 
     for (const r of userResults) {
-      const { uid, userData, wrongList, historyList, statsList } = r;
+      const { uid, userData, wrongList, historyList, statsList, partsWrongList, partsHistoryList, partsStatsList } = r;
       allUsersData[uid] = { uid, email: userData.email || uid,
         displayName: userData.displayName || userData.email || uid, ...r };
-      totalWrong += wrongList.length;
-      const totalAttempts = statsList.reduce((s,x) => s + (x.totalAttempts||0), 0);
+      totalWrong += wrongList.length + (partsWrongList||[]).length;
+      const totalAttempts = statsList.reduce((s,x) => s + (x.totalAttempts||0), 0)
+                          + (partsStatsList||[]).reduce((s,x) => s + (x.totalAttempts||0), 0);
+      const totalHistory = historyList.length + (partsHistoryList||[]).length;
       const div = document.createElement('div');
       div.className = 'user-card';
       div.onclick = () => showUser(uid);
@@ -318,8 +320,8 @@ async function loadAllData() {
       div.innerHTML = `
         <div class="user-name">👤 ${userData.displayName || userData.email || uid.substring(0,8)}</div>
         <div class="user-meta">${userData.email || ''}</div>
-        <span class="stat-badge red">❌ 復習 ${wrongList.length}問</span>
-        <span class="stat-badge" style="background:#faf5ff;color:#7e22ce">📚 全履歴 ${historyList.length}問</span>
+        <span class="stat-badge red">❌ 復習 ${wrongList.length + (partsWrongList||[]).length}問</span>
+        <span class="stat-badge" style="background:#faf5ff;color:#7e22ce">📚 全履歴 ${totalHistory}問</span>
         <span class="stat-badge">📝 ${totalAttempts}回受験</span>
       `;
       userGrid.appendChild(div);
