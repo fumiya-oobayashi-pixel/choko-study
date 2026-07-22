@@ -46,6 +46,7 @@ main{max-width:900px;margin:0 auto;padding:16px}
   <h1>🔐 ちょこスタ 管理者ダッシュボード</h1>
   <div style="display:flex;gap:8px">
     <a href="./mypage.html" class="logout-btn" style="text-decoration:none">📊 マイページ</a>
+    <button class="logout-btn" id="reload-btn" onclick="reloadData()">🔄 再読み込み</button>
     <button class="logout-btn" onclick="doLogout()">ログアウト</button>
   </div>
 </header>
@@ -143,6 +144,16 @@ const db = getFirestore(app);
 window.doLogout = async () => {
   await signOut(auth);
   location.href = 'login.html';
+};
+
+window.reloadData = async () => {
+  const btn = document.getElementById('reload-btn');
+  if (btn) { btn.textContent = '⏳ 読込中...'; btn.disabled = true; }
+  allUsersData = {};
+  document.getElementById('user-detail').style.display = 'none';
+  document.getElementById('user-grid').innerHTML = '<div class="loading">読み込み中...</div>';
+  await loadAllData();
+  if (btn) { btn.textContent = '🔄 再読み込み'; btn.disabled = false; }
 };
 
 onAuthStateChanged(auth, async user => {
