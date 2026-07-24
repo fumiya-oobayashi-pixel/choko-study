@@ -1230,7 +1230,7 @@ const QUESTIONS = [
   q:"デュトロZEVの普通充電（SAE J1772規格）の充電推定時間（HVバッテリー残量0%～100%）として正しいものはどれか",
   choices:["約8時間（6.6kW）", "約1時間（6.6kW）", "約3時間（6.6kW）", "約12時間（6.6kW）"],
   answer:0,
-  exp:"デュトロZEVの普通充電（6.6kW）でHVバッテリー残量0%～100%まで充電した際の充電時間の目安は<strong>約8時間</strong>。急速充電（40kW）は約1時間が目安。"},,
+  exp:"デュトロZEVの普通充電（6.6kW）でHVバッテリー残量0%～100%まで充電した際の充電時間の目安は<strong>約8時間</strong>。急速充電（40kW）は約1時間が目安。"},
 
   // ===== 中型トラック（レンジャー 新型）ID:2001〜 =====
 {id:2001, vehicle:"中型トラック", category:"安全装置", topic:"PCS", type:"概要",
@@ -1507,7 +1507,7 @@ const QUESTIONS = [
   q:"日野レンジャー2021年モデルのマルチインフォメーションにおいて、GPS時計のデフォルト設定として正しいものはどれか（GPS時計付き車）",
   choices:["「使用する」がデフォルト設定", "「使用しない」がデフォルト設定", "設定なし（常時有効）", "設定なし（常時無効）"],
   answer:0,
-  exp:"21年モデルからGPS時計のデフォルト設定を<strong>「使用する」に変更</strong>した（GPS時計付き車）。手動で「使用しない」に変更することも可能である。"},,
+  exp:"21年モデルからGPS時計のデフォルト設定を<strong>「使用する」に変更</strong>した（GPS時計付き車）。手動で「使用しない」に変更することも可能である。"},
 
   // ===== 大型トラック・大型バス 新型 ID:3001〜 =====
 {id:3001, vehicle:"大型トラック", category:"エンジン", topic:"FCEVシステム", type:"概要",
@@ -1859,7 +1859,7 @@ const QUESTIONS = [
   q:"ブルーリボン Z EVとKV型バスのEDSS停車後の制動保持の違いとして正しいものはどれか",
   choices:["KV型はEDSSブレーキバルブ制御＋エンジン停止、ブルーリボン Z EVは電動パーキングブレーキ＋EVシステムシャットダウン","両車とも同じEDSSブレーキバルブで制動保持する","KV型は電動パーキングブレーキ、ブルーリボン Z EVはEDSSブレーキバルブを使用する","両車とも電動パーキングブレーキで制動保持する"],
   answer:0,
-  exp:"停車後の制動保持の違い：<strong>KV型バス（ディーゼル）</strong>はEDSSブレーキバルブを制御してブレーキ保持し、<strong>エンジンストップリレーをONにしてエンジンを停止</strong>。<strong>ブルーリボン Z EV（電気バス）</strong>は<strong>電動パーキングブレーキモジュールに電動パーキングブレーキ作動を要求</strong>し、<strong>VCUにEVシステムシャットダウン</strong>を要求する。"},,
+  exp:"停車後の制動保持の違い：<strong>KV型バス（ディーゼル）</strong>はEDSSブレーキバルブを制御してブレーキ保持し、<strong>エンジンストップリレーをONにしてエンジンを停止</strong>。<strong>ブルーリボン Z EV（電気バス）</strong>は<strong>電動パーキングブレーキモジュールに電動パーキングブレーキ作動を要求</strong>し、<strong>VCUにEVシステムシャットダウン</strong>を要求する。"},
 
   // ===== 中型バス・小型バス 新型 ID:4001〜 =====
 {id:4001, vehicle:"中型バス", category:"安全装置", topic:"ドライバーステータスモニター", type:"概要",
@@ -2280,4 +2280,75 @@ function renderResult() {
   // Firebase stats記録
   if (window._fbUser && window._fbDb) {
     import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({doc, setDoc, serverTimestamp, increment}) => {
-      setDoc(doc(window._fbDb,'u
+      setDoc(doc(window._fbDb,'users',window._fbUser.uid,'stats','新型車解説確認テスト_スマホ問題集'),{
+        source:'新型車解説確認テスト_スマホ問題集',lastCorrect:score,lastTotal:total,
+        lastDate:serverTimestamp(),totalAttempts:increment(1)
+      },{merge:true}).catch(()=>{});
+    });
+  }
+  let msg = '';
+  if (pct === 100) msg = '🎉 パーフェクト！素晴らしい！';
+  else if (pct >= 80) msg = '👍 よく解けています！';
+  else if (pct >= 60) msg = '📖 もう少し復習してみましょう';
+  else msg = '💪 解説書をよく読み直してみましょう';
+
+  document.getElementById('stats-bar').classList.add('hidden');
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="result-card">
+      <div class="result-label">最終スコア</div>
+      <div class="result-score">${score} / ${total}</div>
+      <div class="result-label">正解率 ${pct}%</div>
+      <div class="result-msg">${msg}</div>
+      <button class="btn-retry" onclick="startQuiz()">もう一度挑戦する</button>
+    </div>
+  `;
+}
+
+  // URLパラメータで初期値を設定
+  (function() {
+    const p = new URLSearchParams(location.search);
+    const v = p.get('vehicle');
+    const c = p.get('category');
+    if (v) {
+      const sel = document.getElementById('sel-vehicle');
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === v) { sel.selectedIndex = i; break; }
+      }
+    }
+    if (c) {
+      const sel = document.getElementById('sel-category');
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === c) { sel.selectedIndex = i; break; }
+      }
+    }
+    if (v || c) startQuiz();
+  })();
+
+</script>
+
+<script src="./firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  onAuthStateChanged(auth, user => {
+    window._fbUser = user || null;
+    window._fbDb = db;
+    const badge = document.getElementById('fb-login-badge');
+    if (badge) {
+      if (user) {
+        const name = user.displayName || user.email.split('@')[0];
+        badge.innerHTML = `<a href="./mypage.html" style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;text-decoration:none">👤 ${name}</a>`;
+      } else {
+        badge.innerHTML = `<a href="./login.html" style="font-size:.72rem;background:rgba(255,255,255,.15);color:white;padding:3px 10px;border-radius:999px;text-decoration:none">ログイン</a>`;
+      }
+    }
+  });
+} catch(e) { console.warn('Firebase:', e.message); }
+</script>
+</body>
+</html>
