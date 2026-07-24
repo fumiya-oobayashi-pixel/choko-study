@@ -543,6 +543,13 @@ const questions = [
 ,
 ];
 
+(function(){
+  var _cnt=parseInt(new URLSearchParams(location.search).get('count'));
+  if(_cnt>0&&_cnt<questions.length){
+    for(var i=questions.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=questions[i];questions[i]=questions[j];questions[j]=t;}
+    questions.splice(_cnt);
+  }
+})();
 let current=0,answers=new Array(questions.length).fill(null);
 function render(){
   const q=questions[current];

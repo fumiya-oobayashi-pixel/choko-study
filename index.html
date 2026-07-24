@@ -108,11 +108,15 @@ main{padding:14px;max-width:640px;margin:0 auto;}
 </div>
 <main>
 <div class="section active" id="section-mechanic">
-  <a class="random-banner" href="./メカニックランダム30問チャレンジ.html" target="_blank" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);">
+  <div class="random-banner" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);">
     <span class="rb-icon">🎲</span>
-    <div class="rb-body"><div class="rb-title">ランダム 30問＋計算2問チャレンジ</div><div class="rb-sub">19〜25年度 HS-1全問からランダム出題 / 毎回ちがう問題</div></div>
-    <span>›</span>
-  </a>
+    <div class="rb-body"><div class="rb-title">ランダムチャレンジ</div><div class="rb-sub">19〜25年度 HS-1全問からランダム出題 / 毎回ちがう問題</div></div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <a href="./メカニックランダム30問チャレンジ.html?count=10" target="_blank" style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.2);color:#fff;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;border:1px solid rgba(255,255,255,0.4)">10問</a>
+      <a href="./メカニックランダム30問チャレンジ.html?count=20" target="_blank" style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.2);color:#fff;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;border:1px solid rgba(255,255,255,0.4)">20問</a>
+      <a href="./メカニックランダム30問チャレンジ.html?count=30" target="_blank" style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.2);color:#fff;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;border:1px solid rgba(255,255,255,0.4)">30問</a>
+    </div>
+  </div>
   <div class="sub-tabs">
     <button class="sub-tab mec active" onclick="showMecSub('mzenkoku')">全国</button>
     <button class="sub-tab shin" onclick="showMecSub('mshin')">新人選</button>
@@ -222,10 +226,10 @@ main{padding:14px;max-width:640px;margin:0 auto;}
   <div class="sub-panel" id="panel-meleaning">
     <div class="sec-label">📱 e-learning 問題集</div>
     <div class="card-list">
-      <a class="qcard el" href="./HS2エンジン問題集.html" target="_blank"><span class="qcard-icon">⚙️</span><div class="qcard-body"><div class="qcard-title">HS-2 エンジン 問題集</div><div class="qcard-meta">55問 ／ エンジン制御・DPR・尿素SCR・HC-SCR・故障診断</div></div><span class="qcard-arr">›</span></a>
-      <a class="qcard el" href="./HS2シャシ問題集.html" target="_blank"><span class="qcard-icon">🚛</span><div class="qcard-body"><div class="qcard-title">HS-2 シャシ 問題集</div><div class="qcard-meta">35問 ／ 動力伝達・制動・操舵走行・電気装置</div></div><span class="qcard-arr">›</span></a>
-      <a class="qcard el" href="./HS3問題集.html" target="_blank"><span class="qcard-icon">🔧</span><div class="qcard-body"><div class="qcard-title">HS-3 問題集</div><div class="qcard-meta">45問 ／ ディーゼルエンジン・エンジン本体・シャシ・電気</div></div><span class="qcard-arr">›</span></a>
-      <a class="qcard el" href="./HS4問題集.html" target="_blank"><span class="qcard-icon">📋</span><div class="qcard-body"><div class="qcard-title">HS-4 問題集</div><div class="qcard-meta">55問 ／ 法律・測定具・安全・定期点検整備</div></div><span class="qcard-arr">›</span></a>
+      <div class="qcard el" style="flex-direction:column;align-items:stretch;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span class="qcard-icon">⚙️</span><div class="qcard-body"><div class="qcard-title">HS-2 エンジン 問題集</div><div class="qcard-meta">55問 ／ エンジン制御・DPR・尿素SCR・HC-SCR・故障診断</div></div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><a href="./HS2エンジン問題集.html?count=10" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">10問</a><a href="./HS2エンジン問題集.html?count=20" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">20問</a><a href="./HS2エンジン問題集.html?count=30" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">30問</a><a href="./HS2エンジン問題集.html" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">全問(55問)</a></div></div>
+      <div class="qcard el" style="flex-direction:column;align-items:stretch;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span class="qcard-icon">🚛</span><div class="qcard-body"><div class="qcard-title">HS-2 シャシ 問題集</div><div class="qcard-meta">35問 ／ 動力伝達・制動・操舵走行・電気装置</div></div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><a href="./HS2シャシ問題集.html?count=10" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">10問</a><a href="./HS2シャシ問題集.html?count=20" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">20問</a><a href="./HS2シャシ問題集.html" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">全問(35問)</a></div></div>
+      <div class="qcard el" style="flex-direction:column;align-items:stretch;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span class="qcard-icon">🔧</span><div class="qcard-body"><div class="qcard-title">HS-3 問題集</div><div class="qcard-meta">45問 ／ ディーゼルエンジン・エンジン本体・シャシ・電気</div></div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><a href="./HS3問題集.html?count=10" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">10問</a><a href="./HS3問題集.html?count=20" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">20問</a><a href="./HS3問題集.html?count=30" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">30問</a><a href="./HS3問題集.html" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">全問(45問)</a></div></div>
+      <div class="qcard el" style="flex-direction:column;align-items:stretch;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span class="qcard-icon">📋</span><div class="qcard-body"><div class="qcard-title">HS-4 問題集</div><div class="qcard-meta">55問 ／ 法律・測定具・安全・定期点検整備</div></div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><a href="./HS4問題集.html?count=10" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">10問</a><a href="./HS4問題集.html?count=20" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">20問</a><a href="./HS4問題集.html?count=30" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">30問</a><a href="./HS4問題集.html" target="_blank" style="padding:7px 12px;border-radius:7px;background:#e0e7ff;color:#3730a3;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">全問(55問)</a></div></div>
     </div>
   </div>
 </div>
@@ -264,11 +268,15 @@ main{padding:14px;max-width:640px;margin:0 auto;}
   </div>
 </div>
 <div class="section" id="section-front">
-  <a class="random-banner" href="./フロントランダム30問チャレンジ.html" target="_blank">
+  <div class="random-banner">
     <span class="rb-icon">🎲</span>
-    <div class="rb-body"><div class="rb-title">ランダム 30問＋計算2問チャレンジ</div><div class="rb-sub">全分野からランダム出題 / 毎回ちがう問題</div></div>
-    <span>›</span>
-  </a>
+    <div class="rb-body"><div class="rb-title">ランダムチャレンジ</div><div class="rb-sub">全分野からランダム出題 / 毎回ちがう問題</div></div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <a href="./フロントランダム30問チャレンジ.html?count=10" target="_blank" style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.2);color:#fff;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;border:1px solid rgba(255,255,255,0.4)">10問</a>
+      <a href="./フロントランダム30問チャレンジ.html?count=20" target="_blank" style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.2);color:#fff;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;border:1px solid rgba(255,255,255,0.4)">20問</a>
+      <a href="./フロントランダム30問チャレンジ.html?count=30" target="_blank" style="padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.2);color:#fff;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;border:1px solid rgba(255,255,255,0.4)">30問</a>
+    </div>
+  </div>
   <div class="sub-tabs">
     <button class="sub-tab sf active" onclick="showSub('sf')">全国</button>
     <button class="sub-tab s1" onclick="showSub('s1')">HF-1</button>
@@ -346,6 +354,7 @@ main{padding:14px;max-width:640px;margin:0 auto;}
       <a class="cat-card" href="./フロントカテゴリ別チャレンジ.html?cat=%E4%B8%80%E8%88%AC%2F%E4%BF%9D%E9%99%BA" target="_blank"><div class="cat-card-name">📄 一般/保険</div><div class="cat-card-count">99問のプールから10問</div></a>
       <a class="cat-card" href="./フロントカテゴリ別チャレンジ.html?cat=%E5%AE%89%E5%85%A8%2F%E6%B3%95%E4%BB%A4" target="_blank"><div class="cat-card-name">⚠️ 安全/法令</div><div class="cat-card-count">302問のプールから10問</div></a>
       <a class="cat-card" href="./フロントカテゴリ別チャレンジ.html?cat=%E8%A8%88%E7%AE%97" target="_blank"><div class="cat-card-name">🔢 計算</div><div class="cat-card-count">31問のプールから10問</div></a>
+      <a class="cat-card" href="./インボイス制度_理解度確認問題.html" target="_blank"><div class="cat-card-name">🧾 インボイス制度</div><div class="cat-card-count">理解度確認問題 全25問</div></a>
     </div>
   </div>
   </div>

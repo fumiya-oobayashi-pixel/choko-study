@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>インボイス制度 理解度確認問題</title>
+<style>
+body{margin:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Yu Gothic',Meiryo,sans-serif;color:#111}
+header{position:sticky;top:0;background:#fff;padding:10px 14px;border-bottom:1px solid #ddd;z-index:10}
+header .title{font-weight:900;font-size:15px;margin-bottom:6px}
+.wrap{max-width:900px;margin:auto;padding:10px 10px 90px}
+.card{background:#fff;border-radius:14px;padding:16px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:10px}
+.qtitle{font-size:13px;color:#666;font-weight:700;margin-bottom:4px}
+.qstem{font-size:16px;font-weight:700;line-height:1.6;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #eee}
+.choices{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.choice{padding:14px 16px;font-size:15px;font-weight:700;border-radius:12px;border:2px solid #c7d2fe;background:#ffffff;color:#111;text-align:left;line-height:1.5;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.choice .label{min-width:24px;font-size:18px;font-weight:900;color:#6366f1}
+.choice.selected{background:#e8f0ff;border-color:#2563eb}
+.choice.selected .label{color:#2563eb}
+.choice.correct{background:#dcfce7;border-color:#16a34a}
+.choice.correct .label{color:#16a34a}
+.choice.wrong{background:#fee2e2;border-color:#dc2626}
+.choice.wrong .label{color:#dc2626}
+.explanation{margin-top:14px;padding:12px;background:#fef9c3;border:1px solid #fde047;border-radius:8px;font-size:13px;line-height:1.6;display:none}
+.explanation.show{display:block}
+.nav{position:fixed;left:0;right:0;bottom:0;max-width:900px;margin:auto;display:flex;gap:10px;padding:10px 14px;background:#f3f4f6ee;border-top:1px solid #ddd}
+.nav button{flex:1;padding:14px;border:none;border-radius:12px;background:#2563eb;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.nav button.secondary{background:#6b7280}
+.result{background:#fff;border-radius:14px;padding:18px;border:1px solid #ddd}
+.bar{height:8px;background:#ddd;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar div{height:100%;background:#d97706;transition:width 0.3s;width:0%}
+.small{font-size:12px;color:#666;margin-top:3px}
+.actions{display:grid;gap:10px;margin-top:16px}
+.score-big{font-size:32px;font-weight:900;color:#d97706;margin:10px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="title">🧾 インボイス制度 理解度確認問題</div>
+  <div class="bar"><div id="barfill"></div></div>
+  <div class="small" id="prog"></div>
+</header>
+
+<div class="wrap">
+  <div class="card" id="quiz"></div>
+  <div id="result" style="display:none"></div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="secondary" onclick="prevQ()">&#9664; 前へ</button>
+  <button onclick="nextQ()" id="nextBtn">次へ &#9654;</button>
+</div>
+
+<script>
+const questions = [
+  {no:1, stem:"インボイス制度（適格請求書等保存方式）が導入された主な目的として、最も適切なものはどれか。",
+   answer:"B",
+   choices:{
+     A:"消費税の税率を10%に引き上げるため",
+     B:"複数税率に対応し、正確な消費税額の計算・控除を行えるようにするため",
+     C:"電子帳簿保存を義務化するため",
+     D:"中小企業の消費税負担を軽減するため"
+   }},
+  {no:2, stem:"適格請求書（インボイス）を発行できる事業者として、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"すべての事業者",
+     B:"税務署長に申請し、適格請求書発行事業者の登録を受けた課税事業者",
+     C:"前々年の課税売上高が1,000万円を超える事業者",
+     D:"消費税の確定申告を行ったすべての事業者"
+   }},
+  {no:3, stem:"適格請求書に記載が必要な事項として、誤っているものはどれか。",
+   answer:"C",
+   choices:{
+     A:"適格請求書発行事業者の氏名又は名称及び登録番号",
+     B:"税率ごとに区分した消費税額等",
+     C:"取引先（買手）の法人番号",
+     D:"課税資産の譲渡等の税抜価額又は税込価額を税率ごとに区分して合計した額"
+   }},
+  {no:4, stem:"免税事業者からの仕入れに関する経過措置について、2026年10月1日から2029年9月30日までの期間における仕入税額控除の割合として、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"100%控除できる",
+     B:"仕入税額相当額の50%を控除できる",
+     C:"控除できない",
+     D:"仕入税額相当額の80%を控除できる"
+   }},
+  {no:5, stem:"適格簡易請求書（簡易インボイス）を発行できる事業者として、正しいものはどれか。",
+   answer:"C",
+   choices:{
+     A:"すべての適格請求書発行事業者",
+     B:"年間売上高が1,000万円以下の事業者",
+     C:"不特定多数の者に対して資産の譲渡等を行う小売業、飲食店業、タクシー業などの事業者",
+     D:"電子インボイスを発行できるシステムを持つ事業者"
+   }},
+  {no:6, stem:"適格請求書の保存期間として、正しいものはどれか。",
+   answer:"C",
+   choices:{
+     A:"3年間",
+     B:"5年間",
+     C:"7年間",
+     D:"10年間"
+   }},
+  {no:7, stem:"仕入税額控除を受けるための原則的な要件として、正しいものはどれか。",
+   answer:"A",
+   choices:{
+     A:"適格請求書等の保存と帳簿への記載",
+     B:"適格請求書の電子保存",
+     C:"取引先の登録番号の確認のみ",
+     D:"税理士による確認を受けること"
+   }},
+  {no:8, stem:"登録番号の形式として、法人の場合の正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"T＋8桁の数字",
+     B:"T＋法人番号（13桁の数字）",
+     C:"T＋マイナンバー（12桁の数字）",
+     D:"T＋税務署コード＋6桁の数字"
+   }},
+  {no:9, stem:"適格請求書発行事業者の登録申請に関する記述として、正しいものはどれか。",
+   answer:"A",
+   choices:{
+     A:"免税事業者が登録を受けるためには、原則として課税事業者となる必要がある",
+     B:"登録申請は都道府県税事務所に行う",
+     C:"登録後はいつでも取り消しができ、翌日から免税事業者に戻れる",
+     D:"登録手数料として10,000円が必要である"
+   }},
+  {no:10, stem:"返品や値引きが発生した場合に発行する書類として、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"修正適格請求書",
+     B:"適格返還請求書（返還インボイス）",
+     C:"適格訂正請求書",
+     D:"マイナス請求書"
+   }},
+  {no:11, stem:"課税仕入れの相手方が適格請求書発行事業者であることの確認方法として、最も適切なものはどれか。",
+   answer:"B",
+   choices:{
+     A:"相手方に電話で確認する",
+     B:"国税庁の「適格請求書発行事業者公表サイト」で登録番号を検索する",
+     C:"商工会議所に問い合わせる",
+     D:"都道府県税事務所に確認する"
+   }},
+  {no:12, stem:"帳簿のみの保存で仕入税額控除が認められる取引として、正しいものはどれか。",
+   answer:"C",
+   choices:{
+     A:"すべての少額取引",
+     B:"1万円未満のすべての取引",
+     C:"自動販売機や入場券など、適格請求書の交付が困難な一定の取引",
+     D:"クレジットカード決済の取引"
+   }},
+  {no:13, stem:"電子インボイス（電子的方法による適格請求書の提供）に関する記述として、正しいものはどれか。",
+   answer:"C",
+   choices:{
+     A:"電子インボイスは紙の請求書より法的効力が弱い",
+     B:"電子インボイスは必ず電子署名が必要である",
+     C:"電子的に提供された適格請求書も、電磁的記録のまま保存することで保存要件を満たす",
+     D:"電子インボイスは大企業のみが利用できる"
+   }},
+  {no:14, stem:"2023年10月1日のインボイス制度開始時点で免税事業者だった場合、経過措置として適格請求書発行事業者の登録申請ができる特例期間はいつまでか。",
+   answer:"B",
+   choices:{
+     A:"2024年3月31日まで",
+     B:"2029年9月30日まで",
+     C:"2025年3月31日まで",
+     D:"期限なし（いつでも登録できる）"
+   }},
+  {no:15, stem:"小規模事業者に係る税額控除に関する経過措置（2割特例）について、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"売上税額の2割を納税額とする特例",
+     B:"売上税額から売上税額の8割を控除し、納税額を売上税額の2割とする特例",
+     C:"課税売上高200万円以下の事業者が対象",
+     D:"2030年9月30日まで適用できる"
+   }},
+  {no:16, stem:"適格請求書の記載事項に誤りがあった場合の対応として、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"新たな請求書を発行するだけでよく、修正の必要はない",
+     B:"修正した適格請求書を交付する",
+     C:"税務署に届け出てから修正する",
+     D:"誤りのある請求書は破棄し、取引をなかったことにする"
+   }},
+  {no:17, stem:"仕入明細書（買手が作成する書類）を仕入税額控除の根拠書類として使用するための要件として、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"買手が一方的に作成すれば使用できる",
+     B:"必要事項が記載されており、売手の確認を受けたものであること",
+     C:"税理士が作成したものであること",
+     D:"電子データで作成されたものであること"
+   }},
+  {no:18, stem:"適格請求書発行事業者が事業を廃止した場合の手続きとして、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"特に手続きは不要で、廃業届のみ提出する",
+     B:"税務署長に適格請求書発行事業者の登録取消届出書を提出する",
+     C:"消費税の確定申告書に廃業の旨を記載する",
+     D:"都道府県税事務所に廃業届を提出する"
+   }},
+  {no:19, stem:"農業者など、一定の事業者が適格請求書の交付が困難な場合に交付義務が免除されるものとして、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"すべての農業者",
+     B:"卸売市場において行われる生鮮食料品等の譲渡など、一定の要件を満たすもの",
+     C:"年間売上高が500万円以下の農業者",
+     D:"個人経営の農業者すべて"
+   }},
+  {no:20, stem:"消費税の申告・納付において、インボイス制度導入後の仕入税額控除の原則的な方法として、正しいものはどれか。",
+   answer:"C",
+   choices:{
+     A:"課税売上割合に基づく一括比例配分方式",
+     B:"前年度の仕入実績に基づく概算控除",
+     C:"適格請求書等に基づく積上げ計算または割戻し計算",
+     D:"売上高の一定割合を自動控除"
+   }},
+  {no:21, stem:"適格請求書発行事業者の情報が公表される国税庁のウェブサイトの名称として、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"e-Tax（国税電子申告・納税システム）",
+     B:"適格請求書発行事業者公表サイト",
+     C:"消費税ナビ",
+     D:"インボイス登録センター"
+   }},
+  {no:22, stem:"請求書等に記載する消費税額の端数処理について、正しいものはどれか。",
+   answer:"B",
+   choices:{
+     A:"税率ごとの消費税額の端数処理は、1つの請求書につき何度でも行える",
+     B:"税率ごとに1回のみ端数処理（切捨て・切上げ・四捨五入）が認められる",
+     C:"端数処理は必ず切捨てでなければならない",
+     D:"端数処理は必ず四捨五入でなければならない"
+   }},
+  {no:23, stem:"2023年10月1日からのインボイス制度開始に伴い、免税事業者が取引先から受ける影響として、最も適切なものはどれか。",
+   answer:"D",
+   choices:{
+     A:"免税事業者との取引は法律で禁止される",
+     B:"免税事業者は消費税の請求ができなくなる",
+     C:"免税事業者との取引額は自動的に消費税分が差し引かれる",
+     D:"買手は免税事業者からの仕入れについて、仕入税額控除ができない（経過措置を除く）"
+   }},
+  {no:24, stem:"インボイス制度における「積上げ計算」の説明として、正しいものはどれか。",
+   answer:"A",
+   choices:{
+     A:"交付した適格請求書の消費税額等を積み上げて売上税額を計算する方法",
+     B:"前年度の売上税額を積み上げて計算する方法",
+     C:"複数の取引をまとめて一括で消費税を計算する方法",
+     D:"課税売上高に税率を乗じて売上税額を計算する方法"
+   }},
+  {no:25, stem:"自社の修理・点検作業の請求書を発行する際、インボイス制度への対応として最も重要な確認事項はどれか。",
+   answer:"C",
+   choices:{
+     A:"請求書のデザインが適切であること",
+     B:"請求書を電子データで送付していること",
+     C:"適格請求書発行事業者の登録を受けており、請求書に登録番号と税率ごとの消費税額を記載していること",
+     D:"請求書に社印が押されていること"
+   }},
+];
+
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+
+function render() {
+  const q = questions[current];
+  const answered = answers[current] !== null;
+  document.getElementById('prog').textContent = (current+1) + ' / ' + questions.length;
+  document.getElementById('barfill').style.width = (((current+1)/questions.length)*100) + '%';
+  const choiceKeys = ['A','B','C','D'];
+  let choicesHtml = '';
+  choiceKeys.forEach(function(k) {
+    let cls = 'choice';
+    if (answered) {
+      if (k === q.answer) cls += ' correct';
+      else if (k === answers[current]) cls += ' wrong';
+    } else if (answers[current] === k) cls += ' selected';
+    choicesHtml += `<button class="${cls}" onclick="select('${k}')" ${answered?'disabled':''}><span class="label">${k}</span><span>${q.choices[k]}</span></button>`;
+  });
+  document.getElementById('quiz').innerHTML = `
+    <div class="qtitle">問${q.no}</div>
+    <div class="qstem">${q.stem}</div>
+    <div class="choices">${choicesHtml}</div>
+    ${answered ? `<div class="explanation show">✅ 正解：<strong>${q.answer}</strong></div>` : ''}
+  `;
+  document.getElementById('nextBtn').textContent = current === questions.length-1 ? '結果を見る' : '次へ ▶';
+}
+
+function select(k) {
+  if (answers[current] !== null) return;
+  answers[current] = k;
+  render();
+  if (current === questions.length-1 && k !== null) {}
+}
+
+function nextQ() {
+  if (current === questions.length-1) { showResult(); return; }
+  current++;
+  render();
+}
+
+function prevQ() {
+  if (current > 0) { current--; render(); }
+}
+
+function showResult() {
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('nav').style.display = 'none';
+  const correct = answers.filter(function(a,i){ return a === questions[i].answer; }).length;
+  const total = questions.length;
+  const pct = Math.round(correct / total * 100);
+  let wrongHtml = '';
+  const wrongs = questions.filter(function(q,i){ return answers[i] !== q.answer; });
+  if (wrongs.length > 0) {
+    wrongHtml = '<div style="margin-top:16px"><div style="font-weight:700;margin-bottom:8px">❌ 間違えた問題</div>';
+    wrongs.forEach(function(q) {
+      wrongHtml += `<div style="margin-bottom:10px;padding:10px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;font-size:13px">
+        <div style="font-weight:700;margin-bottom:4px">問${q.no}：${q.stem.slice(0,40)}…</div>
+        <div>正解：<strong>${q.answer}</strong>　${q.choices[q.answer]}</div>
+      </div>`;
+    });
+    wrongHtml += '</div>';
+  }
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').innerHTML = `
+    <div class="result">
+      <div style="font-size:14px;color:#666">インボイス制度 理解度確認問題</div>
+      <div class="score-big">${correct} / ${total}問正解</div>
+      <div style="font-size:18px;font-weight:700;color:${pct>=80?'#059669':'#dc2626'}">${pct}点</div>
+      <div class="actions">
+        <button style="padding:14px;border:none;border-radius:12px;background:#d97706;color:#fff;font-size:16px;font-weight:700;cursor:pointer" onclick="location.reload()">🔄 もう一度挑戦</button>
+        <button style="padding:14px;border:none;border-radius:12px;background:#6b7280;color:#fff;font-size:16px;font-weight:700;cursor:pointer" onclick="history.back()">← 戻る</button>
+      </div>
+      ${wrongHtml}
+    </div>
+  `;
+}
+
+render();
+</script>
+</body>
+</html>

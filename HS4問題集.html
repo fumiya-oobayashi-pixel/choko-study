@@ -1149,6 +1149,13 @@ const questions = [
    explanation:"正解はC。EV（Electric Vehicle）は電気モーターのみで駆動し、バッテリーの電気エネルギーを使用します。HEV（Hybrid Electric Vehicle）はエンジンとモーターを組み合わせて効率的に駆動します。日野自動車もEV・HEVトラックの普及に取り組んでいます。"}
 ];
 
+(function(){
+  var _cnt=parseInt(new URLSearchParams(location.search).get('count'));
+  if(_cnt>0&&_cnt<questions.length){
+    for(var i=questions.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=questions[i];questions[i]=questions[j];questions[j]=t;}
+    questions.splice(_cnt);
+  }
+})();
 let current=0,answers=new Array(questions.length).fill(null);
 function render(){
   const q=questions[current];

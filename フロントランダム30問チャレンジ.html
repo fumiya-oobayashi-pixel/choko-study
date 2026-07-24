@@ -59,7 +59,8 @@ function shuffle(arr) {
 }
 
 // ランダム選択: 通常30問 + 計算2問
-var normalSelected = shuffle(normalPool).slice(0, 30);
+var _count = parseInt(new URLSearchParams(location.search).get('count'))||30;
+var normalSelected = shuffle(normalPool).slice(0, _count);
 var calcSelected = shuffle(calcPool).slice(0, 2);
 var questions = normalSelected.concat(calcSelected);
 
