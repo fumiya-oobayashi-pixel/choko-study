@@ -2242,7 +2242,7 @@ function selectAnswer(selected, correct) {
       if (isCorrect) {
         deleteDoc(doc(db,'users',user.uid,'wrongAnswers',wkey)).catch(()=>{});
       } else {
-        const stemTxt = (q.stem||'').substring(0,120);
+        const stemTxt = (q.q || q.stem||'').substring(0,120);
         setDoc(doc(db,'users',user.uid,'wrongAnswers',wkey),{source:src,qNo:q.id,label:'Q'+q.id,stem:stemTxt,timestamp:serverTimestamp(),url:window.location.pathname},{merge:true}).catch(()=>{});
         setDoc(doc(db,'users',user.uid,'wrongHistory',wkey),{source:src,qNo:q.id,label:'Q'+q.id,stem:stemTxt,firstWrong:serverTimestamp(),url:window.location.pathname},{merge:true}).catch(()=>{});
       }
