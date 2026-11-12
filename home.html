@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ちょこスタ ホーム</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#f1f5f9;min-height:100vh;color:#1e293b;visibility:hidden}
+header{background:linear-gradient(135deg,#1e3a5f 0%,#2d5a8e 100%);color:white;padding:22px 20px 18px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+header h1{font-size:1.55rem;font-weight:800;letter-spacing:.05em;margin-bottom:3px}
+header p{font-size:.8rem;opacity:.8;letter-spacing:.08em}
+.badge-area{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+main{padding:24px 16px;max-width:600px;margin:0 auto}
+.greeting{text-align:center;margin-bottom:28px}
+.greeting h2{font-size:1.1rem;font-weight:700;color:#1e3a5f;margin-bottom:6px}
+.greeting p{font-size:.85rem;color:#64748b}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.menu-card{display:flex;flex-direction:column;align-items:center;justify-content:center;background:white;border-radius:18px;padding:28px 16px;box-shadow:0 2px 12px rgba(0,0,0,.08);border:3px solid transparent;cursor:pointer;text-decoration:none;color:inherit;transition:all .2s;min-height:160px}
+.menu-card:hover{transform:translateY(-3px);box-shadow:0 6px 24px rgba(0,0,0,.13)}
+.menu-card:active{transform:scale(.97)}
+.menu-card.study{border-color:#2563eb}
+.menu-card.study:hover{border-color:#1d4ed8;background:#eff6ff}
+.menu-card.manual{border-color:#059669}
+.menu-card.manual:hover{border-color:#047857;background:#ecfdf5}
+.menu-icon{font-size:3rem;margin-bottom:12px}
+.menu-title{font-size:1.05rem;font-weight:800;margin-bottom:5px;text-align:center}
+.menu-desc{font-size:.75rem;color:#64748b;text-align:center;line-height:1.5}
+.menu-card.study .menu-title{color:#1e40af}
+.menu-card.manual .menu-title{color:#065f46}
+.arrow{font-size:.75rem;margin-top:10px;color:#94a3b8}
+.mypage-link{display:block;text-align:center;margin-top:20px;font-size:.8rem;color:#64748b;text-decoration:none;padding:10px}
+.mypage-link:hover{color:#1e3a5f}
+@media(max-width:400px){
+  .menu-grid{grid-template-columns:1fr}
+  .menu-card{min-height:120px;flex-direction:row;gap:16px;text-align:left;padding:20px}
+  .menu-icon{font-size:2.2rem;margin-bottom:0}
+  .menu-title{font-size:.95rem}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="badge-area">
+    <h1>🚛 ちょこスタ</h1>
+    <div id="login-badge"></div>
+  </div>
+  <p>愛知日野自動車　サービス技術者ポータル</p>
+</header>
+
+<main>
+  <div class="greeting">
+    <h2>ようこそ！何をしますか？</h2>
+    <p>学習したいメニューを選んでください</p>
+  </div>
+
+  <div class="menu-grid">
+    <a href="./index.html" class="menu-card study">
+      <div class="menu-icon">📚</div>
+      <div class="menu-title">ちょこスタディ</div>
+      <div class="menu-desc">資格試験・技コン<br>問題集・テスト</div>
+      <div class="arrow">タップして開く →</div>
+    </a>
+    <a href="./kaisetsu.html" class="menu-card manual">
+      <div class="menu-icon">📖</div>
+      <div class="menu-title">解説書</div>
+      <div class="menu-desc">整備マニュアル<br>車種・系列で検索</div>
+      <div class="arrow">タップして開く →</div>
+    </a>
+  </div>
+
+  <a href="./mypage.html" class="mypage-link">📊 マイページ（学習履歴・弱点分析）</a>
+</main>
+
+<script src="firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  onAuthStateChanged(auth, user => {
+    if (!user) { location.href = 'login.html'; return; }
+    document.body.style.visibility = '';
+    const badge = document.getElementById('login-badge');
+    if (!badge) return;
+    if (user.isAnonymous) {
+      badge.innerHTML = `<span style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;display:flex;align-items:center;gap:6px">
+        🔑 ゲスト
+        <span style="cursor:pointer;opacity:.7" onclick="(async()=>{await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js').then(({getAuth,signOut})=>signOut(getAuth()));location.href='login.html';})()">退出</span>
+      </span>`;
+      return;
+    }
+    const name = user.displayName || user.email.split('@')[0];
+    badge.innerHTML = `<span style="font-size:.72rem;background:rgba(255,255,255,.2);color:white;padding:3px 8px;border-radius:999px;display:flex;align-items:center;gap:6px">
+      👤 ${name}
+      <span style="cursor:pointer;opacity:.7" onclick="(async()=>{await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js').then(({getAuth,signOut})=>signOut(getAuth()));location.href='login.html';})()">ログアウト</span>
+    </span>`;
+  });
+} catch(e) { console.warn('Firebase:', e.message); document.body.style.visibility=''; }
+</script>
+</body>
+</html>
