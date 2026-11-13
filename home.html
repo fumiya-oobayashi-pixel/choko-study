@@ -81,7 +81,7 @@ try {
   const auth = getAuth(app);
   onAuthStateChanged(auth, user => {
     if (!user) { location.href = 'login.html'; return; }
-    document.body.style.visibility = '';
+    document.body.style.visibility = 'visible';
     const badge = document.getElementById('login-badge');
     if (!badge) return;
     if (user.isAnonymous) {
@@ -97,7 +97,7 @@ try {
       <span style="cursor:pointer;opacity:.7" onclick="(async()=>{await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js').then(({getAuth,signOut})=>signOut(getAuth()));location.href='login.html';})()">ログアウト</span>
     </span>`;
   });
-} catch(e) { console.warn('Firebase:', e.message); document.body.style.visibility=''; }
+} catch(e) { console.warn('Firebase:', e.message); document.body.style.visibility='visible'; }
 </script>
 </body>
 </html>
