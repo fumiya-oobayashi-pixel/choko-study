@@ -73,6 +73,10 @@ main{padding:24px 16px;max-width:600px;margin:0 auto}
 </main>
 
 <script src="firebase-config.js"></script>
+<script>
+// Firebase が応答しない場合の保険（3秒後に強制表示）
+setTimeout(function(){ document.body.style.visibility='visible'; }, 3000);
+</script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
@@ -80,8 +84,8 @@ try {
   const app = initializeApp(FIREBASE_CONFIG);
   const auth = getAuth(app);
   onAuthStateChanged(auth, user => {
-    if (!user) { location.href = 'login.html'; return; }
     document.body.style.visibility = 'visible';
+    if (!user) { location.href = 'login.html'; return; }
     const badge = document.getElementById('login-badge');
     if (!badge) return;
     if (user.isAnonymous) {
